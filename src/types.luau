@@ -108,6 +108,7 @@ export type Tab = {
 	setCookies: (Tab, cookies: { CookieParameters }) -> Future.Future<nil>,
 	sendCharacter: (Tab, character: string) -> Future.Future<nil>,
 	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future.Future<buffer>,
+	evaluate: (Tab, expression: string, awaitPromise: boolean) -> Future.Future<RemoteObject>,
 	enableDebugger: (Tab) -> Future.Future<nil>,
 	disableDebugger: (Tab) -> Future.Future<nil>,
 	close: (Tab) -> Future.Future<nil>,
@@ -155,6 +156,93 @@ export type Cookie = {
 	sourcePort: number,
 	partitionKey: CookiePartitionKey?,
 	partitionKeyOpaque: boolean?,
+}
+
+export type ObjectType = "object" | "function" | "undefined" | "string" | "number" | "boolean" | "symbol" | "bigint"
+
+export type ObjectSubtype =
+	"array"
+	| "null"
+	| "node"
+	| "regexp"
+	| "date"
+	| "map"
+	| "set"
+	| "weakmap"
+	| "weakset"
+	| "iterator"
+	| "generator"
+	| "error"
+	| "proxy"
+	| "promise"
+	| "typedarray"
+	| "arraybuffer"
+	| "dataview"
+	| "webassemblymemory"
+	| "wasmvalue"
+
+export type DeepSerializedValue = {
+	type: "undefined"
+		| "null"
+		| "string"
+		| "number"
+		| "boolean"
+		| "bigint"
+		| "regexp"
+		| "date"
+		| "symbol"
+		| "array"
+		| "object"
+		| "function"
+		| "map"
+		| "set"
+		| "weakmap"
+		| "weakset"
+		| "error"
+		| "proxy"
+		| "promise"
+		| "typedarray"
+		| "arraybuffer"
+		| "node"
+		| "window"
+		| "generator",
+	value: any?,
+	objectId: string?,
+	weakLocalObjectReference: number?,
+}
+
+export type ObjectPreview = {
+	type: ObjectType,
+	subtype: ObjectSubtype?,
+	description: string?,
+	overflow: boolean,
+	properties: { PropertyPreview },
+	entries: { EntryPreview }?,
+}
+
+export type PropertyPreview = {
+	name: string,
+	type: ObjectType,
+	value: string?,
+	valuePreview: ObjectPreview?,
+	subtype: ObjectSubtype?,
+}
+
+export type EntryPreview = { key: ObjectPreview?, value: ObjectPreview }
+
+export type CustomPreview = { header: string, bodyGetterId: string? }
+
+export type RemoteObject = {
+	type: ObjectType,
+	subtype: ObjectSubtype?,
+	className: string?,
+	value: any?,
+	unserializableValue: string?,
+	description: string?,
+	deepSerializedValue: DeepSerializedValue?,
+	objectId: string?,
+	preview: ObjectPreview?,
+	customPreview: CustomPreview?,
 }
 
 export type Viewport = {

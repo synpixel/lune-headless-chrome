@@ -83,6 +83,23 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 		end)
 	end
 
+	function tab:evaluate(expression, awaitPromise)
+		return mapFuture(
+			bridge:sendOverProtocol("Runtime.evaluate", {
+				expression = expression,
+				returnByValue = false,
+				generatePreview = true,
+				silent = false,
+				awaitPromise = awaitPromise,
+				includeCommandLineAPI = false,
+				userGesture = false,
+			}),
+			function(result)
+				return result.result
+			end
+		)
+	end
+
 	function tab:enableDebugger()
 		return bridge:sendOverProtocol("Debugger.enable")
 	end
