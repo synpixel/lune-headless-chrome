@@ -1,0 +1,131 @@
+local Future = require("./packages/future")
+
+export type ProtocolInfo<ExtraInfo = {}> = ExtraInfo & {
+	webSocketDebuggerUrl: string,
+}
+
+export type TargetInfo = {
+	targetId: string,
+	-- https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22
+	type: "tab"
+		| "page"
+		| "iframe"
+		| "worker"
+		| "shared_worker"
+		| "service_worker"
+		| "worklet"
+		| "shared_storage_worklet"
+		| "browser"
+		| "webview"
+		| "other"
+		| "auction_worklet"
+		| "assistive_technology",
+	title: string,
+	url: string,
+	attached: boolean,
+	openerId: string?,
+	canAccessOpener: boolean,
+	openerFrameId: string?,
+	browserContextId: string?,
+	subtype: string?,
+}
+
+export type BridgeProtocolRequest = {
+	id: number,
+	method: string,
+	params: { [string]: any }?,
+}
+
+export type BridgeProtocolResponse = {
+	id: number,
+	result: { [string]: any }?,
+}
+
+export type Bridge = {
+	sendOverProtocol: (Bridge, method: string, parameters: { [string]: any }?) -> Future.Future<{ [string]: any }>,
+	destroy: (Bridge) -> (),
+}
+
+export type BrowserVersion = {
+	jsVersion: string,
+	product: string,
+	protocolVersion: string,
+	revision: string,
+	userAgent: string,
+}
+
+export type Browser = {
+	getVersion: (Browser) -> Future.Future<BrowserVersion>,
+	newTab: (Browser) -> Future.Future<Tab>,
+	close: (Browser) -> Future.Future<nil>,
+}
+
+export type BrowserLaunchOptions = {
+	headless: boolean,
+	sandbox: boolean,
+	enableGpu: boolean,
+	enableLogging: boolean,
+	windowSize: { width: number, height: number },
+	port: number,
+	ignoreCertificateErrors: boolean,
+	path: string,
+	userDataDirectory: string,
+	extensions: { string },
+	args: { string },
+	disableDefaultArgs: boolean,
+	idleBrowserTimeout: number,
+	processEnvs: { [string]: string },
+	proxyServer: string,
+}
+
+-- type functions when?
+export type PartialBrowserLaunchOptions = {
+	headless: boolean?,
+	sandbox: boolean?,
+	enableGpu: boolean?,
+	enableLogging: boolean?,
+	windowSize: { width: number, height: number }?,
+	port: number?,
+	ignoreCertificateErrors: boolean?,
+	path: string?,
+	userDataDirectory: string?,
+	extensions: { string }?,
+	args: { string }?,
+	disableDefaultArgs: boolean?,
+	idleBrowserTimeout: number?,
+	processEnvs: { [string]: string }?,
+	proxyServer: string?,
+}
+
+export type Tab = {
+	getTargetId: (Tab) -> Future.Future<string>,
+	getTargetInfo: (Tab) -> Future.Future<TargetInfo>,
+	getUrl: (Tab) -> Future.Future<string>,
+	navigateTo: (Tab, url: string) -> Future.Future<nil>,
+	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future.Future<nil>,
+	getCookies: (Tab) -> Future.Future<{ Cookie }>,
+	setCookies: (Tab, cookies: { CookieParameters }) -> Future.Future<nil>,
+	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future.Future<buffer>,
+	close: (Tab) -> Future.Future<nil>,
+}
+
+export type CookieParameters = {
+	name: string,
+	value: string,
+	url: string?,
+}
+
+export type Cookie = {
+	name: string,
+	value: string,
+}
+
+export type ScreenshotOptions = {
+	format: "jpeg" | "png" | "webp",
+	quality: number?,
+	fromSurface: boolean?,
+	captureBeyondViewport: boolean?,
+	optimizeForSpeed: boolean?,
+}
+
+return nil

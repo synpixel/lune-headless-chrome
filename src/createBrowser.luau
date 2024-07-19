@@ -1,0 +1,50 @@
+local net = require("@lune/net")
+local createBridge = require("./createBridge")
+local launchBrowser = require("./utils/launchBrowser")
+local patchLaunchOptions = require("./utils/patchLaunchOptions")
+local createTab = require("./createTab")
+local Future = require("./packages/future")
+local types = require("./types")
+
+local function fetchBrowserProtocolInfo(port: number): types.TargetInfo
+	local response = net.request(`http://localhost:{port}/json/version`)
+	local version = net.jsonDecode(response.body)
+	return version
+end
+
+local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOptions): types.Browser
+	local launchOptions = patchLaunchOptions(partialLaunchOptions)
+
+	local launchResult = launchBrowser(launchOptions)
+	assert(launchResult.ok, launchResult.stderr)
+
+	local protocolInfo = fetchBrowserProtocolInfo(launchOptions.port)
+	local socket = net.socket(protocolInfo.webSocketDebuggerUrl)
+	local bridge = createBridge(socket)
+
+	local browser = {}
+
+	function browser:getVersion()
+		return bridge:sendOverProtocol("Browser.getVersion")
+	end
+
+	function browser:newTab()
+		return Future.spawn(function()
+			local response = net.request({
+				method = "PUT",
+				url = `http://localhost:{launchOptions.port}/json/new`,
+			})
+
+			local protocolInfo: types.ProtocolInfo<{ id: string }> = net.jsonDecode(response.body)
+			return createTab(protocolInfo)
+		end)
+	end
+
+	function browser:close()
+		return bridge:sendOverProtocol("Browser.close")
+	end
+
+	return browser
+end
+
+return createBrowser
