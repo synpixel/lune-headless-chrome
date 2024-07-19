@@ -108,6 +108,8 @@ export type Tab = {
 	setCookies: (Tab, cookies: { CookieParameters }) -> Future.Future<nil>,
 	sendCharacter: (Tab, character: string) -> Future.Future<nil>,
 	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future.Future<buffer>,
+	enableDebugger: (Tab) -> Future.Future<nil>,
+	disableDebugger: (Tab) -> Future.Future<nil>,
 	close: (Tab) -> Future.Future<nil>,
 }
 

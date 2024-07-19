@@ -79,6 +79,14 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 		end)
 	end
 
+	function tab:enableDebugger()
+		return bridge:sendOverProtocol("Debugger.enable")
+	end
+
+	function tab:disableDebugger()
+		return bridge:sendOverProtocol("Debugger.disable")
+	end
+
 	function tab:close()
 		return bridge:sendOverProtocol("Page.close")
 	end
