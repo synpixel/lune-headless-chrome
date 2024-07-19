@@ -109,15 +109,48 @@ export type Tab = {
 	close: (Tab) -> Future.Future<nil>,
 }
 
+export type CookieSameSite = "Strict" | "Lax" | "None"
+
+export type CookiePriority = "Low" | "Medium" | "High"
+
+export type CookieSourceScheme = "Unset" | "NonSecure" | "Secure"
+
+export type CookiePartitionKey = { topLevelSite: string, hasCrossSiteAncestor: boolean }
+
 export type CookieParameters = {
 	name: string,
 	value: string,
 	url: string?,
+	domain: string?,
+	path: string?,
+	secure: boolean?,
+	httpOnly: boolean?,
+	sameSite: CookieSameSite?,
+	expires: number?,
+	priority: CookiePriority?,
+	sameParty: boolean?,
+	sourceScheme: CookieSourceScheme?,
+	sourcePort: number?,
+	partitionKey: CookiePartitionKey?,
 }
 
 export type Cookie = {
 	name: string,
 	value: string,
+	domain: string,
+	path: string,
+	expires: number,
+	size: number,
+	httpOnly: boolean,
+	secure: boolean,
+	session: boolean,
+	sameSite: CookieSameSite?,
+	priority: CookiePriority,
+	sameParty: boolean,
+	sourceScheme: CookieSourceScheme,
+	sourcePort: number,
+	partitionKey: CookiePartitionKey?,
+	partitionKeyOpaque: boolean?,
 }
 
 export type ScreenshotOptions = {
