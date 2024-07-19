@@ -66,6 +66,10 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 		end)
 	end
 
+	function tab:sendCharacter(character)
+		return bridge:sendOverProtocol("Input.insertText", { text = character })
+	end
+
 	function tab:captureScreenshot(options)
 		return mapFuture(bridge:sendOverProtocol("Page.captureScreenshot"), function(result)
 			local data = buffer.fromstring(result.data)

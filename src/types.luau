@@ -105,6 +105,7 @@ export type Tab = {
 	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future.Future<nil>,
 	getCookies: (Tab) -> Future.Future<{ Cookie }>,
 	setCookies: (Tab, cookies: { CookieParameters }) -> Future.Future<nil>,
+	sendCharacter: (Tab, character: string) -> Future.Future<nil>,
 	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future.Future<buffer>,
 	close: (Tab) -> Future.Future<nil>,
 }
