@@ -20,6 +20,8 @@ export type Cookie = types.Cookie
 export type Viewport = types.Viewport
 export type ScreenshotOptions = types.ScreenshotOptions
 
+export type RemoteObject = types.RemoteObject
+
 return {
 	createBrowser = createBrowser,
 }

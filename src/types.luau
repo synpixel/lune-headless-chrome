@@ -158,6 +158,23 @@ export type Cookie = {
 	partitionKeyOpaque: boolean?,
 }
 
+export type Viewport = {
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	scale: number,
+}
+
+export type ScreenshotOptions = {
+	format: "jpeg" | "png" | "webp",
+	quality: number?,
+	clip: Viewport?,
+	fromSurface: boolean?,
+	captureBeyondViewport: boolean?,
+	optimizeForSpeed: boolean?,
+}
+
 export type ObjectType = "object" | "function" | "undefined" | "string" | "number" | "boolean" | "symbol" | "bigint"
 
 export type ObjectSubtype =
@@ -243,23 +260,6 @@ export type RemoteObject = {
 	objectId: string?,
 	preview: ObjectPreview?,
 	customPreview: CustomPreview?,
-}
-
-export type Viewport = {
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	scale: number,
-}
-
-export type ScreenshotOptions = {
-	format: "jpeg" | "png" | "webp",
-	quality: number?,
-	clip: Viewport?,
-	fromSurface: boolean?,
-	captureBeyondViewport: boolean?,
-	optimizeForSpeed: boolean?,
 }
 
 return nil
