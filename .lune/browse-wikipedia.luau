@@ -25,3 +25,6 @@ local screenshot = tab:captureScreenshot({
 
 fs.writeFile("screenshot.jpeg", screenshot)
 print("wrote screenshot to screenshot.jpeg")
+
+browser:close():await()
+print("closed browser")
