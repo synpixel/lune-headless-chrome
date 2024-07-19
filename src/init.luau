@@ -1,5 +1,8 @@
 local createBrowser = require("./createBrowser")
+local Future = require("./packages/future")
 local types = require("./types")
+
+export type Future<T> = Future.Future<T>
 
 export type TargetInfo = types.TargetInfo
 
