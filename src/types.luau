@@ -101,6 +101,7 @@ export type Tab = {
 	getTargetId: (Tab) -> Future.Future<string>,
 	getTargetInfo: (Tab) -> Future.Future<TargetInfo>,
 	getUrl: (Tab) -> Future.Future<string>,
+	getTitle: (Tab) -> Future.Future<string>,
 	navigateTo: (Tab, url: string) -> Future.Future<nil>,
 	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future.Future<nil>,
 	getCookies: (Tab) -> Future.Future<{ Cookie }>,
