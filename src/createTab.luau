@@ -2,6 +2,7 @@ local net = require("@lune/net")
 local createBridge = require("./createBridge")
 local mapList = require("./utils/mapList")
 local mapFuture = require("./utils/mapFuture")
+local Future = require("./packages/future")
 local base64 = require("./packages/base64")
 local types = require("./types")
 
@@ -46,14 +47,17 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 	end
 
 	function tab:getCookies()
-		return mapFuture(tab:getUrl(), function(url)
+		return Future.spawn(function()
+			local url = tab:getUrl():await()
 			local result = bridge:sendOverProtocol("Network.getCookies", { urls = { url } }):await()
 			return result.cookies
 		end)
 	end
 
 	function tab:setCookies(cookies)
-		return mapFuture(tab:getUrl(), function(url)
+		return Future.spawn(function()
+			local url = tab:getUrl():await()
+
 			local patchedCookies = mapList(cookies, function(cookie)
 				if cookie.url ~= nil then
 					return cookie
