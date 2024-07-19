@@ -153,9 +153,18 @@ export type Cookie = {
 	partitionKeyOpaque: boolean?,
 }
 
+export type Viewport = {
+	x: number,
+	y: number,
+	width: number,
+	height: number,
+	scale: number,
+}
+
 export type ScreenshotOptions = {
 	format: "jpeg" | "png" | "webp",
 	quality: number?,
+	clip: Viewport?,
 	fromSurface: boolean?,
 	captureBeyondViewport: boolean?,
 	optimizeForSpeed: boolean?,
