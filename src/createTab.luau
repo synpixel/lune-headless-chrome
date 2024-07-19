@@ -62,7 +62,7 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 				return copy
 			end)
 
-			return bridge:sendOverProtocol("Network.setCookies", { cookies = patchedCookies })
+			return bridge:sendOverProtocol("Network.setCookies", { cookies = patchedCookies }):await()
 		end)
 	end
 
