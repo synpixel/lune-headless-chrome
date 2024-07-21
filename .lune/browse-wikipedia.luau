@@ -6,25 +6,38 @@ local browser = chrome.createBrowser({
 	port = 3466,
 })
 
-local browserVersion = browser:getVersion():await()
-print("browser version:", browserVersion)
-
 local tab = browser:newTab():await()
-print("opened tab")
 
+-- navigate to wikipedia
 tab:navigateTo("https://www.wikipedia.org/"):await()
-print("navigated to Wikipedia")
 
-local targetInfo = tab:getTargetInfo():await()
-print("tab target info:", targetInfo)
+-- wait for network/javascript/dom to make the search-box available
+-- and click it.
+tab:waitForElement("input#searchInput"):await():click():await()
 
+-- type in a query and press `Enter`
+tab:sendCharacters("WebKit"):await():pressKey("Enter"):await()
+
+-- we should end up on the WebKit-page once navigated
+local element = tab:waitForElement("#firstHeading"):await()
+assert(tab:getUrl():await():find("WebKit") ~= nil)
+
+-- take a screenshot of the entire browser window
 local screenshot = tab:captureScreenshot({
 	format = "jpeg",
-	optimizeForSpeed = true,
 }):await()
 
+-- save the screenshot to disc
 fs.writeFile("screenshot.jpeg", screenshot)
-print("wrote screenshot to screenshot.jpeg")
 
-browser:close():await()
-print("closed browser")
+-- run JavaScript in the page
+local functionDeclaration = [[
+	function getIdTwice() {
+		// `this` is always the element that you called `callFunction` on
+		const id = this.id;
+		return id + id;
+	}
+]]
+
+local remoteObject = element:callFunction(functionDeclaration):await()
+assert(remoteObject.value == "firstHeadingfirstHeading")
