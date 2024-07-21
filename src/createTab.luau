@@ -33,8 +33,9 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:getTargetInfo()
-		local targetId = tab:getTargetId()
-		return mapFuture(bridge:sendOverProtocol(Target.getTargetInfo, { targetId = targetId }), function(result)
+		return Future.spawn(function()
+			local targetId = tab:getTargetId():await()
+			local result = bridge:sendOverProtocol(Target.getTargetInfo, { targetId = targetId }):await()
 			return result.targetInfo
 		end)
 	end
