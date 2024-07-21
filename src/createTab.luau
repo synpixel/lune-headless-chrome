@@ -181,7 +181,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:captureScreenshot(options)
-		return mapFuture(bridge:sendOverProtocol(Page.captureScreenshot), function(result)
+		return mapFuture(bridge:sendOverProtocol(Page.captureScreenshot, options), function(result)
 			local data = buffer.fromstring(result.data)
 			return base64.decode(data)
 		end)
