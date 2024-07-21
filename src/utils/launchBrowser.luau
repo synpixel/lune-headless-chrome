@@ -29,9 +29,7 @@ local DEFAULT_ARGUMENTS = {
 }
 
 local function launchBrowser(launchOptions: types.BrowserLaunchOptions): process.SpawnResult
-	if launchOptions.port == nil then
-		error("port required")
-	end
+	assert(launchOptions.port ~= nil, "port required")
 
 	local arguments = {
 		"--remote-debugging-port=" .. launchOptions.port,
@@ -87,9 +85,7 @@ local function launchBrowser(launchOptions: types.BrowserLaunchOptions): process
 		end
 	end
 
-	if launchOptions.path == nil then
-		error("chrome path required")
-	end
+	assert(launchOptions.path ~= nil, "chrome path required")
 
 	local result = process.spawn(launchOptions.path, arguments, {
 		shell = true,
