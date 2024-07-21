@@ -1,5 +1,5 @@
 local process = require("@lune/process")
-local types = require("../types")
+local types = require("./types")
 
 local DEFAULT_ARGUMENTS = {
 	"--disable-background-networking",

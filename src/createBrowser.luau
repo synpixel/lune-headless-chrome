@@ -1,6 +1,6 @@
 local net = require("@lune/net")
 local createBridge = require("./createBridge")
-local launchBrowser = require("./utils/launchBrowser")
+local launchBrowser = require("./launchBrowser")
 local patchLaunchOptions = require("./utils/patchLaunchOptions")
 local createTab = require("./createTab")
 local Future = require("./packages/future")
