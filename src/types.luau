@@ -5,6 +5,7 @@ local Network = require("./protocol/Network")
 local DOM = require("./protocol/DOM")
 local Runtime = require("./protocol/Runtime")
 local Page = require("./protocol/Page")
+local Input = require("./protocol/Input")
 
 export type Future<T> = Future.Future<T>
 
@@ -107,10 +108,10 @@ export type Tab = {
 	acknowledgeScreencastFrame: (Tab, sessionId: number) -> Future<nil>,
 	evaluate: (Tab, expression: string, awaitPromise: boolean?) -> Future<Runtime.RemoteObject>,
 	getContent: (Tab) -> Future<string>,
-	describeNode: (Tab, nodeId: number) -> Future<DOM.Node>,
+	describeNode: (Tab, nodeId: DOM.NodeId) -> Future<DOM.Node>,
 	getDocument: (Tab) -> Future<DOM.Node>,
-	runQuerySelectorOnNode: (Tab, nodeId: number, selector: string) -> Future<Element?>,
-	runQuerySelectorAllOnNode: (Tab, nodeId: number, selector: string) -> Future<{ Element }>,
+	runQuerySelectorOnNode: (Tab, nodeId: DOM.NodeId, selector: string) -> Future<Element?>,
+	runQuerySelectorAllOnNode: (Tab, nodeId: DOM.NodeId, selector: string) -> Future<{ Element }>,
 	findElement: (Tab, selector: string) -> Future<Element?>,
 	findElementByXPath: (Tab, query: string) -> Future<Element?>,
 	findElements: (Tab, selector: string) -> Future<{ Element }>,
