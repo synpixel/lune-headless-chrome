@@ -11,8 +11,8 @@ export type Account = {
 	idpConfigUrl: string,
 	idpLoginUrl: string,
 	loginState: LoginState,
-	termsOfServiceUrl: string,
-	privacyPolicyUrl: string,
+	termsOfServiceUrl: string?,
+	privacyPolicyUrl: string?,
 }
 return {
 	enable = "FedCm.enable",

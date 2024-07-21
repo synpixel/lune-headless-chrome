@@ -6,7 +6,7 @@ local Runtime = require("./Runtime")
 export type FrameId = string
 export type AdFrameType = "none" | "child" | "root"
 export type AdFrameExplanation = "ParentIsAd" | "CreatedByAdScript" | "MatchedBlockingRule"
-export type AdFrameStatus = { adFrameType: AdFrameType, explanations: { AdFrameExplanation } }
+export type AdFrameStatus = { adFrameType: AdFrameType, explanations: { AdFrameExplanation }? }
 export type AdScriptId = { scriptId: Runtime.ScriptId, debuggerId: Runtime.UniqueDebuggerId }
 export type SecureContextType = "Secure" | "SecureLocalhost" | "InsecureScheme" | "InsecureAncestor"
 export type CrossOriginIsolatedContextType = "Isolated" | "NotIsolated" | "NotIsolatedFeatureDisabled"
@@ -107,7 +107,7 @@ export type PermissionsPolicyBlockLocator = { frameId: FrameId, blockReason: Per
 export type PermissionsPolicyFeatureState = {
 	feature: PermissionsPolicyFeature,
 	allowed: boolean,
-	locator: PermissionsPolicyBlockLocator,
+	locator: PermissionsPolicyBlockLocator?,
 }
 export type OriginTrialTokenStatus =
 	"Success"
@@ -134,23 +134,23 @@ export type OriginTrialToken = {
 }
 export type OriginTrialTokenWithStatus = {
 	rawTokenText: string,
-	parsedToken: OriginTrialToken,
+	parsedToken: OriginTrialToken?,
 	status: OriginTrialTokenStatus,
 }
 export type OriginTrial =
 	{ trialName: string, status: OriginTrialStatus, tokensWithStatus: { OriginTrialTokenWithStatus } }
 export type Frame = {
 	id: FrameId,
-	parentId: FrameId,
+	parentId: FrameId?,
 	loaderId: Network.LoaderId,
-	name: string,
+	name: string?,
 	url: string,
-	urlFragment: string,
+	urlFragment: string?,
 	domainAndRegistry: string,
 	securityOrigin: string,
 	mimeType: string,
-	unreachableUrl: string,
-	adFrameStatus: AdFrameStatus,
+	unreachableUrl: string?,
+	adFrameStatus: AdFrameStatus?,
 	secureContextType: SecureContextType,
 	crossOriginIsolatedContextType: CrossOriginIsolatedContextType,
 	gatedAPIFeatures: { GatedAPIFeatures },
@@ -159,13 +159,13 @@ export type FrameResource = {
 	url: string,
 	type: Network.ResourceType,
 	mimeType: string,
-	lastModified: Network.TimeSinceEpoch,
-	contentSize: number,
-	failed: boolean,
-	canceled: boolean,
+	lastModified: Network.TimeSinceEpoch?,
+	contentSize: number?,
+	failed: boolean?,
+	canceled: boolean?,
 }
-export type FrameResourceTree = { frame: Frame, childFrames: { FrameResourceTree }, resources: { FrameResource } }
-export type FrameTree = { frame: Frame, childFrames: { FrameTree } }
+export type FrameResourceTree = { frame: Frame, childFrames: { FrameResourceTree }?, resources: { FrameResource } }
+export type FrameTree = { frame: Frame, childFrames: { FrameTree }? }
 export type ScriptIdentifier = string
 export type TransitionType =
 	"link"
@@ -190,7 +190,7 @@ export type ScreencastFrameMetadata = {
 	deviceHeight: number,
 	scrollOffsetX: number,
 	scrollOffsetY: number,
-	timestamp: Network.TimeSinceEpoch,
+	timestamp: Network.TimeSinceEpoch?,
 }
 export type DialogType = "alert" | "confirm" | "prompt" | "beforeunload"
 export type AppManifestError = { message: string, critical: number, line: number, column: number }
@@ -204,20 +204,20 @@ export type VisualViewport = {
 	clientWidth: number,
 	clientHeight: number,
 	scale: number,
-	zoom: number,
+	zoom: number?,
 }
 export type Viewport = { x: number, y: number, width: number, height: number, scale: number }
 export type FontFamilies = {
-	standard: string,
-	fixed: string,
-	serif: string,
-	sansSerif: string,
-	cursive: string,
-	fantasy: string,
-	math: string,
+	standard: string?,
+	fixed: string?,
+	serif: string?,
+	sansSerif: string?,
+	cursive: string?,
+	fantasy: string?,
+	math: string?,
 }
 export type ScriptFontFamilies = { script: string, fontFamilies: FontFamilies }
-export type FontSizes = { standard: number, fixed: number }
+export type FontSizes = { standard: number?, fixed: number? }
 export type ClientNavigationReason =
 	"formSubmissionGet"
 	| "formSubmissionPost"
@@ -239,55 +239,55 @@ export type ReferrerPolicy =
 	| "strictOrigin"
 	| "strictOriginWhenCrossOrigin"
 	| "unsafeUrl"
-export type CompilationCacheParams = { url: string, eager: boolean }
-export type FileFilter = { name: string, accepts: { string } }
+export type CompilationCacheParams = { url: string, eager: boolean? }
+export type FileFilter = { name: string?, accepts: { string }? }
 export type FileHandler = {
 	action: string,
 	name: string,
-	icons: { ImageResource },
-	accepts: { FileFilter },
+	icons: { ImageResource }?,
+	accepts: { FileFilter }?,
 	launchType: string,
 }
-export type ImageResource = { url: string, sizes: string, type: string }
+export type ImageResource = { url: string, sizes: string?, type: string? }
 export type LaunchHandler = { clientMode: string }
 export type ProtocolHandler = { protocol: string, url: string }
-export type RelatedApplication = { id: string, url: string }
+export type RelatedApplication = { id: string?, url: string }
 export type ScopeExtension = { origin: string, hasOriginWildcard: boolean }
-export type Screenshot = { image: ImageResource, formFactor: string, label: string }
+export type Screenshot = { image: ImageResource, formFactor: string, label: string? }
 export type ShareTarget = {
 	action: string,
 	method: string,
 	enctype: string,
-	title: string,
-	text: string,
-	url: string,
-	files: { FileFilter },
+	title: string?,
+	text: string?,
+	url: string?,
+	files: { FileFilter }?,
 }
 export type Shortcut = { name: string, url: string }
 export type WebAppManifest = {
-	backgroundColor: string,
-	description: string,
-	dir: string,
-	display: string,
-	displayOverrides: { string },
-	fileHandlers: { FileHandler },
-	icons: { ImageResource },
-	id: string,
-	lang: string,
-	launchHandler: LaunchHandler,
-	name: string,
-	orientation: string,
-	preferRelatedApplications: boolean,
-	protocolHandlers: { ProtocolHandler },
-	relatedApplications: { RelatedApplication },
-	scope: string,
-	scopeExtensions: { ScopeExtension },
-	screenshots: { Screenshot },
-	shareTarget: ShareTarget,
-	shortName: string,
-	shortcuts: { Shortcut },
-	startUrl: string,
-	themeColor: string,
+	backgroundColor: string?,
+	description: string?,
+	dir: string?,
+	display: string?,
+	displayOverrides: { string }?,
+	fileHandlers: { FileHandler }?,
+	icons: { ImageResource }?,
+	id: string?,
+	lang: string?,
+	launchHandler: LaunchHandler?,
+	name: string?,
+	orientation: string?,
+	preferRelatedApplications: boolean?,
+	protocolHandlers: { ProtocolHandler }?,
+	relatedApplications: { RelatedApplication }?,
+	scope: string?,
+	scopeExtensions: { ScopeExtension }?,
+	screenshots: { Screenshot }?,
+	shareTarget: ShareTarget?,
+	shortName: string?,
+	shortcuts: { Shortcut }?,
+	startUrl: string?,
+	themeColor: string?,
 }
 export type AutoResponseMode = "none" | "autoAccept" | "autoReject" | "autoOptOut"
 export type NavigationType = "Navigation" | "BackForwardCacheRestore"
@@ -430,13 +430,17 @@ export type BackForwardCacheNotRestoredReason =
 	| "EmbedderExtensionSentMessageToCachedFrame"
 	| "RequestedByWebViewClient"
 export type BackForwardCacheNotRestoredReasonType = "SupportPending" | "PageSupportNeeded" | "Circumstantial"
-export type BackForwardCacheBlockingDetails =
-	{ url: string, ["function"]: string, lineNumber: number, columnNumber: number }
+export type BackForwardCacheBlockingDetails = {
+	url: string?,
+	["function"]: string?,
+	lineNumber: number,
+	columnNumber: number,
+}
 export type BackForwardCacheNotRestoredExplanation = {
 	type: BackForwardCacheNotRestoredReasonType,
 	reason: BackForwardCacheNotRestoredReason,
-	context: string,
-	details: { BackForwardCacheBlockingDetails },
+	context: string?,
+	details: { BackForwardCacheBlockingDetails }?,
 }
 export type BackForwardCacheNotRestoredExplanationTree = {
 	url: string,

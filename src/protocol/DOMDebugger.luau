@@ -10,9 +10,9 @@ export type EventListener = {
 	scriptId: Runtime.ScriptId,
 	lineNumber: number,
 	columnNumber: number,
-	handler: Runtime.RemoteObject,
-	originalHandler: Runtime.RemoteObject,
-	backendNodeId: DOM.BackendNodeId,
+	handler: Runtime.RemoteObject?,
+	originalHandler: Runtime.RemoteObject?,
+	backendNodeId: DOM.BackendNodeId?,
 }
 return {
 	getEventListeners = "DOMDebugger.getEventListeners",

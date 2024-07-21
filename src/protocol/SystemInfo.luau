@@ -1,8 +1,8 @@
 export type GPUDevice = {
 	vendorId: number,
 	deviceId: number,
-	subSysId: number,
-	revision: number,
+	subSysId: number?,
+	revision: number?,
 	vendorString: string,
 	deviceString: string,
 	driverVendor: string,
@@ -26,8 +26,8 @@ export type ImageDecodeAcceleratorCapability = {
 }
 export type GPUInfo = {
 	devices: { GPUDevice },
-	auxAttributes: {},
-	featureStatus: {},
+	auxAttributes: {}?,
+	featureStatus: {}?,
 	driverBugWorkarounds: { string },
 	videoDecoding: { VideoDecodeAcceleratorCapability },
 	videoEncoding: { VideoEncodeAcceleratorCapability },

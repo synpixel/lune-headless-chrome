@@ -3,17 +3,17 @@ local Debugger = require("./Debugger")
 export type ProfileNode = {
 	id: number,
 	callFrame: Runtime.CallFrame,
-	hitCount: number,
-	children: { number },
-	deoptReason: string,
-	positionTicks: { PositionTickInfo },
+	hitCount: number?,
+	children: { number }?,
+	deoptReason: string?,
+	positionTicks: { PositionTickInfo }?,
 }
 export type Profile = {
 	nodes: { ProfileNode },
 	startTime: number,
 	endTime: number,
-	samples: { number },
-	timeDeltas: { number },
+	samples: { number }?,
+	timeDeltas: { number }?,
 }
 export type PositionTickInfo = { line: number, ticks: number }
 export type CoverageRange = { startOffset: number, endOffset: number, count: number }

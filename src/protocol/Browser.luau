@@ -1,7 +1,7 @@
 export type BrowserContextID = string
 export type WindowID = number
 export type WindowState = "normal" | "minimized" | "maximized" | "fullscreen"
-export type Bounds = { left: number, top: number, width: number, height: number, windowState: WindowState }
+export type Bounds = { left: number?, top: number?, width: number?, height: number?, windowState: WindowState? }
 export type PermissionType =
 	"accessibilityEvents"
 	| "audioCapture"
@@ -35,11 +35,11 @@ export type PermissionType =
 export type PermissionSetting = "granted" | "denied" | "prompt"
 export type PermissionDescriptor = {
 	name: string,
-	sysex: boolean,
-	userVisibleOnly: boolean,
-	allowWithoutSanitization: boolean,
-	allowWithoutGesture: boolean,
-	panTiltZoom: boolean,
+	sysex: boolean?,
+	userVisibleOnly: boolean?,
+	allowWithoutSanitization: boolean?,
+	allowWithoutGesture: boolean?,
+	panTiltZoom: boolean?,
 }
 export type BrowserCommandId = "openTabSearch" | "closeTabSearch"
 export type Bucket = { low: number, high: number, count: number }

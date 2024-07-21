@@ -16,7 +16,7 @@ export type BaseAudioContext = {
 	contextId: GraphObjectId,
 	contextType: ContextType,
 	contextState: ContextState,
-	realtimeData: ContextRealtimeData,
+	realtimeData: ContextRealtimeData?,
 	callbackBufferSize: number,
 	maxOutputChannelCount: number,
 	sampleRate: number,

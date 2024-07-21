@@ -3,11 +3,11 @@ export type RuleSet = {
 	id: RuleSetId,
 	loaderId: Network.LoaderId,
 	sourceText: string,
-	backendNodeId: DOM.BackendNodeId,
-	url: string,
-	requestId: Network.RequestId,
-	errorType: RuleSetErrorType,
-	errorMessage: string,
+	backendNodeId: DOM.BackendNodeId?,
+	url: string?,
+	requestId: Network.RequestId?,
+	errorType: RuleSetErrorType?,
+	errorMessage: string?,
 }
 export type RuleSetErrorType = "SourceIsNotJsonObject" | "InvalidRulesSkipped"
 export type SpeculationAction = "Prefetch" | "Prerender"
@@ -16,7 +16,7 @@ export type PreloadingAttemptKey = {
 	loaderId: Network.LoaderId,
 	action: SpeculationAction,
 	url: string,
-	targetHint: SpeculationTargetHint,
+	targetHint: SpeculationTargetHint?,
 }
 export type PreloadingAttemptSource = {
 	key: PreloadingAttemptKey,
@@ -126,5 +126,5 @@ export type PrefetchStatus =
 	| "PrefetchResponseUsed"
 	| "PrefetchSuccessfulButNotUsed"
 	| "PrefetchNotUsedProbeFailed"
-export type PrerenderMismatchedHeaders = { headerName: string, initialValue: string, activationValue: string }
+export type PrerenderMismatchedHeaders = { headerName: string, initialValue: string?, activationValue: string? }
 return { enable = "Preload.enable", disable = "Preload.disable" }

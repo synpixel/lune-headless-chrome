@@ -4,15 +4,15 @@ export type SecurityState = "unknown" | "neutral" | "insecure" | "secure" | "inf
 export type CertificateSecurityState = {
 	protocol: string,
 	keyExchange: string,
-	keyExchangeGroup: string,
+	keyExchangeGroup: string?,
 	cipher: string,
-	mac: string,
+	mac: string?,
 	certificate: { string },
 	subjectName: string,
 	issuer: string,
 	validFrom: Network.TimeSinceEpoch,
 	validTo: Network.TimeSinceEpoch,
-	certificateNetworkError: string,
+	certificateNetworkError: string?,
 	certificateHasWeakSignature: boolean,
 	certificateHasSha1Signature: boolean,
 	modernSSL: boolean,
@@ -22,11 +22,11 @@ export type CertificateSecurityState = {
 	obsoleteSslSignature: boolean,
 }
 export type SafetyTipStatus = "badReputation" | "lookalike"
-export type SafetyTipInfo = { safetyTipStatus: SafetyTipStatus, safeUrl: string }
+export type SafetyTipInfo = { safetyTipStatus: SafetyTipStatus, safeUrl: string? }
 export type VisibleSecurityState = {
 	securityState: SecurityState,
-	certificateSecurityState: CertificateSecurityState,
-	safetyTipInfo: SafetyTipInfo,
+	certificateSecurityState: CertificateSecurityState?,
+	safetyTipInfo: SafetyTipInfo?,
 	securityStateIssueIds: { string },
 }
 export type SecurityStateExplanation = {
@@ -36,7 +36,7 @@ export type SecurityStateExplanation = {
 	description: string,
 	mixedContentType: MixedContentType,
 	certificate: { string },
-	recommendations: { string },
+	recommendations: { string }?,
 }
 export type InsecureContentStatus = {
 	ranMixedContent: boolean,

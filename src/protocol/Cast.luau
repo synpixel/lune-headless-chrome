@@ -1,4 +1,4 @@
-export type Sink = { name: string, id: string, session: string }
+export type Sink = { name: string, id: string, session: string? }
 return {
 	enable = "Cast.enable",
 	disable = "Cast.disable",

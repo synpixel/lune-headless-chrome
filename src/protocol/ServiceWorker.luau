@@ -9,11 +9,11 @@ export type ServiceWorkerVersion = {
 	scriptURL: string,
 	runningStatus: ServiceWorkerVersionRunningStatus,
 	status: ServiceWorkerVersionStatus,
-	scriptLastModified: number,
-	scriptResponseTime: number,
-	controlledClients: { Target.TargetID },
-	targetId: Target.TargetID,
-	routerRules: string,
+	scriptLastModified: number?,
+	scriptResponseTime: number?,
+	controlledClients: { Target.TargetID }?,
+	targetId: Target.TargetID?,
+	routerRules: string?,
 }
 export type ServiceWorkerErrorMessage = {
 	errorMessage: string,

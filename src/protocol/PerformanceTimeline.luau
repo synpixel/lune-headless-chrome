@@ -4,11 +4,11 @@ export type LargestContentfulPaint = {
 	renderTime: Network.TimeSinceEpoch,
 	loadTime: Network.TimeSinceEpoch,
 	size: number,
-	elementId: string,
-	url: string,
-	nodeId: DOM.BackendNodeId,
+	elementId: string?,
+	url: string?,
+	nodeId: DOM.BackendNodeId?,
 }
-export type LayoutShiftAttribution = { previousRect: DOM.Rect, currentRect: DOM.Rect, nodeId: DOM.BackendNodeId }
+export type LayoutShiftAttribution = { previousRect: DOM.Rect, currentRect: DOM.Rect, nodeId: DOM.BackendNodeId? }
 export type LayoutShift = {
 	value: number,
 	hadRecentInput: boolean,
@@ -20,8 +20,8 @@ export type TimelineEvent = {
 	type: string,
 	name: string,
 	time: Network.TimeSinceEpoch,
-	duration: number,
-	lcpDetails: LargestContentfulPaint,
-	layoutShiftDetails: LayoutShift,
+	duration: number?,
+	lcpDetails: LargestContentfulPaint?,
+	layoutShiftDetails: LayoutShift?,
 }
 return { enable = "PerformanceTimeline.enable" }

@@ -11,16 +11,16 @@ export type MediaFeature = { name: string, value: string }
 export type VirtualTimePolicy = "advance" | "pause" | "pauseIfNetworkFetchesPending"
 export type UserAgentBrandVersion = { brand: string, version: string }
 export type UserAgentMetadata = {
-	brands: { UserAgentBrandVersion },
-	fullVersionList: { UserAgentBrandVersion },
-	fullVersion: string,
+	brands: { UserAgentBrandVersion }?,
+	fullVersionList: { UserAgentBrandVersion }?,
+	fullVersion: string?,
 	platform: string,
 	platformVersion: string,
 	architecture: string,
 	model: string,
 	mobile: boolean,
-	bitness: string,
-	wow64: boolean,
+	bitness: string?,
+	wow64: boolean?,
 }
 export type SensorType =
 	"absolute-orientation"
@@ -32,14 +32,14 @@ export type SensorType =
 	| "magnetometer"
 	| "proximity"
 	| "relative-orientation"
-export type SensorMetadata = { available: boolean, minimumFrequency: number, maximumFrequency: number }
+export type SensorMetadata = { available: boolean?, minimumFrequency: number?, maximumFrequency: number? }
 export type SensorReadingSingle = { value: number }
 export type SensorReadingXYZ = { x: number, y: number, z: number }
 export type SensorReadingQuaternion = { x: number, y: number, z: number, w: number }
-export type SensorReading = { single: SensorReadingSingle, xyz: SensorReadingXYZ, quaternion: SensorReadingQuaternion }
+export type SensorReading = { single: SensorReadingSingle?, xyz: SensorReadingXYZ?, quaternion: SensorReadingQuaternion? }
 export type PressureSource = "cpu"
 export type PressureState = "nominal" | "fair" | "serious" | "critical"
-export type PressureMetadata = { available: boolean }
+export type PressureMetadata = { available: boolean? }
 export type DisabledImageType = "avif" | "webp"
 return {
 	canEmulate = "Emulation.canEmulate",

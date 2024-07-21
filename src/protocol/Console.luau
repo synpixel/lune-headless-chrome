@@ -13,8 +13,8 @@ export type ConsoleMessage = {
 		| "worker",
 	level: "log" | "warning" | "error" | "debug" | "info",
 	text: string,
-	url: string,
-	line: number,
-	column: number,
+	url: string?,
+	line: number?,
+	column: number?,
 }
 return { clearMessages = "Console.clearMessages", disable = "Console.disable", enable = "Console.enable" }

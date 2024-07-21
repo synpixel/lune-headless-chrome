@@ -1,15 +1,15 @@
 local IO = require("./IO")
 export type MemoryDumpConfig = {}
 export type TraceConfig = {
-	recordMode: "recordUntilFull" | "recordContinuously" | "recordAsMuchAsPossible" | "echoToConsole",
-	traceBufferSizeInKb: number,
-	enableSampling: boolean,
-	enableSystrace: boolean,
-	enableArgumentFilter: boolean,
-	includedCategories: { string },
-	excludedCategories: { string },
-	syntheticDelays: { string },
-	memoryDumpConfig: MemoryDumpConfig,
+	recordMode: "recordUntilFull" | "recordContinuously" | "recordAsMuchAsPossible" | "echoToConsole"?,
+	traceBufferSizeInKb: number?,
+	enableSampling: boolean?,
+	enableSystrace: boolean?,
+	enableArgumentFilter: boolean?,
+	includedCategories: { string }?,
+	excludedCategories: { string }?,
+	syntheticDelays: { string }?,
+	memoryDumpConfig: MemoryDumpConfig?,
 }
 export type StreamFormat = "json" | "proto"
 export type StreamCompression = "none" | "gzip"

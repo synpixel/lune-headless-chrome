@@ -16,14 +16,14 @@ export type LogEntry = {
 		| "other",
 	level: "verbose" | "info" | "warning" | "error",
 	text: string,
-	category: "cors",
+	category: "cors"?,
 	timestamp: Runtime.Timestamp,
-	url: string,
-	lineNumber: number,
-	stackTrace: Runtime.StackTrace,
-	networkRequestId: Network.RequestId,
-	workerId: string,
-	args: { Runtime.RemoteObject },
+	url: string?,
+	lineNumber: number?,
+	stackTrace: Runtime.StackTrace?,
+	networkRequestId: Network.RequestId?,
+	workerId: string?,
+	args: { Runtime.RemoteObject }?,
 }
 export type ViolationSetting = {
 	name: "longTask"

@@ -32,18 +32,18 @@ export type AXValueNativeSourceType =
 	| "other"
 export type AXValueSource = {
 	type: AXValueSourceType,
-	value: AXValue,
-	attribute: string,
-	attributeValue: AXValue,
-	superseded: boolean,
-	nativeSource: AXValueNativeSourceType,
-	nativeSourceValue: AXValue,
-	invalid: boolean,
-	invalidReason: string,
+	value: AXValue?,
+	attribute: string?,
+	attributeValue: AXValue?,
+	superseded: boolean?,
+	nativeSource: AXValueNativeSourceType?,
+	nativeSourceValue: AXValue?,
+	invalid: boolean?,
+	invalidReason: string?,
 }
-export type AXRelatedNode = { backendDOMNodeId: DOM.BackendNodeId, idref: string, text: string }
+export type AXRelatedNode = { backendDOMNodeId: DOM.BackendNodeId, idref: string?, text: string? }
 export type AXProperty = { name: AXPropertyName, value: AXValue }
-export type AXValue = { type: AXValueType, value: any, relatedNodes: { AXRelatedNode }, sources: { AXValueSource } }
+export type AXValue = { type: AXValueType, value: any?, relatedNodes: { AXRelatedNode }?, sources: { AXValueSource }? }
 export type AXPropertyName =
 	"busy"
 	| "disabled"
@@ -88,17 +88,17 @@ export type AXPropertyName =
 export type AXNode = {
 	nodeId: AXNodeId,
 	ignored: boolean,
-	ignoredReasons: { AXProperty },
-	role: AXValue,
-	chromeRole: AXValue,
-	name: AXValue,
-	description: AXValue,
-	value: AXValue,
-	properties: { AXProperty },
-	parentId: AXNodeId,
-	childIds: { AXNodeId },
-	backendDOMNodeId: DOM.BackendNodeId,
-	frameId: Page.FrameId,
+	ignoredReasons: { AXProperty }?,
+	role: AXValue?,
+	chromeRole: AXValue?,
+	name: AXValue?,
+	description: AXValue?,
+	value: AXValue?,
+	properties: { AXProperty }?,
+	parentId: AXNodeId?,
+	childIds: { AXNodeId }?,
+	backendDOMNodeId: DOM.BackendNodeId?,
+	frameId: Page.FrameId?,
 }
 return {
 	disable = "Accessibility.disable",

@@ -1,5 +1,5 @@
 export type SerializedStorageKey = string
-export type StorageId = { securityOrigin: string, storageKey: SerializedStorageKey, isLocalStorage: boolean }
+export type StorageId = { securityOrigin: string?, storageKey: SerializedStorageKey?, isLocalStorage: boolean }
 export type Item = { string }
 return {
 	clear = "DOMStorage.clear",

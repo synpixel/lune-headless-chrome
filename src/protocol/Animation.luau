@@ -9,15 +9,15 @@ export type Animation = {
 	startTime: number,
 	currentTime: number,
 	type: "CSSTransition" | "CSSAnimation" | "WebAnimation",
-	source: AnimationEffect,
-	cssId: string,
-	viewOrScrollTimeline: ViewOrScrollTimeline,
+	source: AnimationEffect?,
+	cssId: string?,
+	viewOrScrollTimeline: ViewOrScrollTimeline?,
 }
 export type ViewOrScrollTimeline = {
-	sourceNodeId: DOM.BackendNodeId,
-	startOffset: number,
-	endOffset: number,
-	subjectNodeId: DOM.BackendNodeId,
+	sourceNodeId: DOM.BackendNodeId?,
+	startOffset: number?,
+	endOffset: number?,
+	subjectNodeId: DOM.BackendNodeId?,
 	axis: DOM.ScrollOrientation,
 }
 export type AnimationEffect = {
@@ -28,11 +28,11 @@ export type AnimationEffect = {
 	duration: number,
 	direction: string,
 	fill: string,
-	backendNodeId: DOM.BackendNodeId,
-	keyframesRule: KeyframesRule,
+	backendNodeId: DOM.BackendNodeId?,
+	keyframesRule: KeyframesRule?,
 	easing: string,
 }
-export type KeyframesRule = { name: string, keyframes: { KeyframeStyle } }
+export type KeyframesRule = { name: string?, keyframes: { KeyframeStyle } }
 export type KeyframeStyle = { offset: string, easing: string }
 return {
 	disable = "Animation.disable",

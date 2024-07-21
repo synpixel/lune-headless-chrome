@@ -70,16 +70,16 @@ export type SharedStorageMetadata = {
 export type SharedStorageReportingMetadata = { eventType: string, reportingUrl: string }
 export type SharedStorageUrlWithMetadata = { url: string, reportingMetadata: { SharedStorageReportingMetadata } }
 export type SharedStorageAccessParams = {
-	scriptSourceUrl: string,
-	operationName: string,
-	serializedData: string,
-	urlsWithMetadata: { SharedStorageUrlWithMetadata },
-	key: string,
-	value: string,
-	ignoreIfPresent: boolean,
+	scriptSourceUrl: string?,
+	operationName: string?,
+	serializedData: string?,
+	urlsWithMetadata: { SharedStorageUrlWithMetadata }?,
+	key: string?,
+	value: string?,
+	ignoreIfPresent: boolean?,
 }
 export type StorageBucketsDurability = "relaxed" | "strict"
-export type StorageBucket = { storageKey: SerializedStorageKey, name: string }
+export type StorageBucket = { storageKey: SerializedStorageKey, name: string? }
 export type StorageBucketInfo = {
 	bucket: StorageBucket,
 	id: string,
@@ -95,7 +95,7 @@ export type SignedInt64AsBase10 = string
 export type AttributionReportingFilterDataEntry = { key: string, values: { string } }
 export type AttributionReportingFilterConfig = {
 	filterValues: { AttributionReportingFilterDataEntry },
-	lookbackWindow: number,
+	lookbackWindow: number?,
 }
 export type AttributionReportingFilterPair = {
 	filters: { AttributionReportingFilterConfig },
@@ -114,10 +114,10 @@ export type AttributionReportingAggregatableDebugReportingData = {
 	types: { string },
 }
 export type AttributionReportingAggregatableDebugReportingConfig = {
-	budget: number,
+	budget: number?,
 	keyPiece: UnsignedInt128AsBase16,
 	debugData: { AttributionReportingAggregatableDebugReportingData },
-	aggregationCoordinatorOrigin: string,
+	aggregationCoordinatorOrigin: string?,
 }
 export type AttributionReportingSourceRegistration = {
 	time: Network.TimeSinceEpoch,
@@ -132,7 +132,7 @@ export type AttributionReportingSourceRegistration = {
 	priority: SignedInt64AsBase10,
 	filterData: { AttributionReportingFilterDataEntry },
 	aggregationKeys: { AttributionReportingAggregationKeysEntry },
-	debugKey: UnsignedInt64AsBase10,
+	debugKey: UnsignedInt64AsBase10?,
 	triggerDataMatching: AttributionReportingTriggerDataMatching,
 	destinationLimitPriority: SignedInt64AsBase10,
 	aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig,
@@ -165,7 +165,7 @@ export type AttributionReportingAggregatableValueEntry = {
 export type AttributionReportingEventTriggerData = {
 	data: UnsignedInt64AsBase10,
 	priority: SignedInt64AsBase10,
-	dedupKey: UnsignedInt64AsBase10,
+	dedupKey: UnsignedInt64AsBase10?,
 	filters: AttributionReportingFilterPair,
 }
 export type AttributionReportingAggregatableTriggerData = {
@@ -174,21 +174,21 @@ export type AttributionReportingAggregatableTriggerData = {
 	filters: AttributionReportingFilterPair,
 }
 export type AttributionReportingAggregatableDedupKey = {
-	dedupKey: UnsignedInt64AsBase10,
+	dedupKey: UnsignedInt64AsBase10?,
 	filters: AttributionReportingFilterPair,
 }
 export type AttributionReportingTriggerRegistration = {
 	filters: AttributionReportingFilterPair,
-	debugKey: UnsignedInt64AsBase10,
+	debugKey: UnsignedInt64AsBase10?,
 	aggregatableDedupKeys: { AttributionReportingAggregatableDedupKey },
 	eventTriggerData: { AttributionReportingEventTriggerData },
 	aggregatableTriggerData: { AttributionReportingAggregatableTriggerData },
 	aggregatableValues: { AttributionReportingAggregatableValueEntry },
 	aggregatableFilteringIdMaxBytes: number,
 	debugReporting: boolean,
-	aggregationCoordinatorOrigin: string,
+	aggregationCoordinatorOrigin: string?,
 	sourceRegistrationTimeConfig: AttributionReportingSourceRegistrationTimeConfig,
-	triggerContextId: string,
+	triggerContextId: string?,
 	aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig,
 }
 export type AttributionReportingEventLevelResult =

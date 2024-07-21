@@ -1,6 +1,6 @@
 local Network = require("./Network")
 export type AffectedCookie = { name: string, path: string, domain: string }
-export type AffectedRequest = { requestId: Network.RequestId, url: string }
+export type AffectedRequest = { requestId: Network.RequestId, url: string? }
 export type AffectedFrame = { frameId: Page.FrameId }
 export type CookieExclusionReason =
 	"ExcludeSameSiteUnspecifiedTreatedAsLax"
@@ -27,14 +27,14 @@ export type CookieWarningReason =
 	| "WarnCrossSiteRedirectDowngradeChangesInclusion"
 export type CookieOperation = "SetCookie" | "ReadCookie"
 export type CookieIssueDetails = {
-	cookie: AffectedCookie,
-	rawCookieLine: string,
+	cookie: AffectedCookie?,
+	rawCookieLine: string?,
 	cookieWarningReasons: { CookieWarningReason },
 	cookieExclusionReasons: { CookieExclusionReason },
 	operation: CookieOperation,
-	siteForCookies: string,
-	cookieUrl: string,
-	request: AffectedRequest,
+	siteForCookies: string?,
+	cookieUrl: string?,
+	request: AffectedRequest?,
 }
 export type MixedContentResolutionStatus =
 	"MixedContentBlocked"
@@ -71,12 +71,12 @@ export type MixedContentResourceType =
 	| "XMLHttpRequest"
 	| "XSLT"
 export type MixedContentIssueDetails = {
-	resourceType: MixedContentResourceType,
+	resourceType: MixedContentResourceType?,
 	resolutionStatus: MixedContentResolutionStatus,
 	insecureURL: string,
 	mainResourceURL: string,
-	request: AffectedRequest,
-	frame: AffectedFrame,
+	request: AffectedRequest?,
+	frame: AffectedFrame?,
 }
 export type BlockedByResponseReason =
 	"CoepFrameResourceNeedsCoepHeader"
@@ -88,8 +88,8 @@ export type BlockedByResponseReason =
 	| "CorpNotSameSite"
 export type BlockedByResponseIssueDetails = {
 	request: AffectedRequest,
-	parentFrame: AffectedFrame,
-	blockedFrame: AffectedFrame,
+	parentFrame: AffectedFrame?,
+	blockedFrame: AffectedFrame?,
 	reason: BlockedByResponseReason,
 }
 export type HeavyAdResolutionStatus = "HeavyAdBlocked" | "HeavyAdWarning"
@@ -102,15 +102,15 @@ export type ContentSecurityPolicyViolationType =
 	| "kTrustedTypesSinkViolation"
 	| "kTrustedTypesPolicyViolation"
 	| "kWasmEvalViolation"
-export type SourceCodeLocation = { scriptId: Runtime.ScriptId, url: string, lineNumber: number, columnNumber: number }
+export type SourceCodeLocation = { scriptId: Runtime.ScriptId?, url: string, lineNumber: number, columnNumber: number }
 export type ContentSecurityPolicyIssueDetails = {
-	blockedURL: string,
+	blockedURL: string?,
 	violatedDirective: string,
 	isReportOnly: boolean,
 	contentSecurityPolicyViolationType: ContentSecurityPolicyViolationType,
-	frameAncestor: AffectedFrame,
-	sourceCodeLocation: SourceCodeLocation,
-	violatingNodeId: DOM.BackendNodeId,
+	frameAncestor: AffectedFrame?,
+	sourceCodeLocation: SourceCodeLocation?,
+	violatingNodeId: DOM.BackendNodeId?,
 }
 export type SharedArrayBufferIssueType = "TransferIssue" | "CreationIssue"
 export type SharedArrayBufferIssueDetails = {
@@ -131,10 +131,10 @@ export type CorsIssueDetails = {
 	corsErrorStatus: Network.CorsErrorStatus,
 	isWarning: boolean,
 	request: AffectedRequest,
-	location: SourceCodeLocation,
-	initiatorOrigin: string,
-	resourceIPAddressSpace: Network.IPAddressSpace,
-	clientSecurityState: Network.ClientSecurityState,
+	location: SourceCodeLocation?,
+	initiatorOrigin: string?,
+	resourceIPAddressSpace: Network.IPAddressSpace?,
+	clientSecurityState: Network.ClientSecurityState?,
 }
 export type AttributionReportingIssueType =
 	"PermissionPolicyDisabled"
@@ -183,9 +183,9 @@ export type SharedDictionaryError =
 	| "WriteErrorUnsupportedType"
 export type AttributionReportingIssueDetails = {
 	violationType: AttributionReportingIssueType,
-	request: AffectedRequest,
-	violatingNodeId: DOM.BackendNodeId,
-	invalidParameter: string,
+	request: AffectedRequest?,
+	violatingNodeId: DOM.BackendNodeId?,
+	invalidParameter: string?,
 }
 export type QuirksModeIssueDetails = {
 	isLimitedQuirksMode: boolean,
@@ -194,7 +194,7 @@ export type QuirksModeIssueDetails = {
 	frameId: Page.FrameId,
 	loaderId: Network.LoaderId,
 }
-export type NavigatorUserAgentIssueDetails = { url: string, location: SourceCodeLocation }
+export type NavigatorUserAgentIssueDetails = { url: string, location: SourceCodeLocation? }
 export type SharedDictionaryIssueDetails = { sharedDictionaryError: SharedDictionaryError, request: AffectedRequest }
 export type GenericIssueErrorType =
 	"FormLabelForNameError"
@@ -210,13 +210,13 @@ export type GenericIssueErrorType =
 	| "ResponseWasBlockedByORB"
 export type GenericIssueDetails = {
 	errorType: GenericIssueErrorType,
-	frameId: Page.FrameId,
-	violatingNodeId: DOM.BackendNodeId,
-	violatingNodeAttribute: string,
-	request: AffectedRequest,
+	frameId: Page.FrameId?,
+	violatingNodeId: DOM.BackendNodeId?,
+	violatingNodeAttribute: string?,
+	request: AffectedRequest?,
 }
 export type DeprecationIssueDetails =
-	{ affectedFrame: AffectedFrame, sourceCodeLocation: SourceCodeLocation, type: string }
+	{ affectedFrame: AffectedFrame?, sourceCodeLocation: SourceCodeLocation, type: string }
 export type BounceTrackingIssueDetails = { trackingSites: { string } }
 export type CookieDeprecationMetadataIssueDetails = {
 	allowedSites: { string },
@@ -289,18 +289,18 @@ export type ClientHintIssueDetails = {
 	sourceCodeLocation: SourceCodeLocation,
 	clientHintIssueReason: ClientHintIssueReason,
 }
-export type FailedRequestInfo = { url: string, failureMessage: string, requestId: Network.RequestId }
+export type FailedRequestInfo = { url: string, failureMessage: string, requestId: Network.RequestId? }
 export type StyleSheetLoadingIssueReason = "LateImportRule" | "RequestFailed"
 export type StylesheetLoadingIssueDetails = {
 	sourceCodeLocation: SourceCodeLocation,
 	styleSheetLoadingIssueReason: StyleSheetLoadingIssueReason,
-	failedRequestInfo: FailedRequestInfo,
+	failedRequestInfo: FailedRequestInfo?,
 }
 export type PropertyRuleIssueReason = "InvalidSyntax" | "InvalidInitialValue" | "InvalidInherits" | "InvalidName"
 export type PropertyRuleIssueDetails = {
 	sourceCodeLocation: SourceCodeLocation,
 	propertyRuleIssueReason: PropertyRuleIssueReason,
-	propertyValue: string,
+	propertyValue: string?,
 }
 export type InspectorIssueCode =
 	"CookieIssue"
@@ -325,30 +325,30 @@ export type InspectorIssueCode =
 	| "PropertyRuleIssue"
 	| "SharedDictionaryIssue"
 export type InspectorIssueDetails = {
-	cookieIssueDetails: CookieIssueDetails,
-	mixedContentIssueDetails: MixedContentIssueDetails,
-	blockedByResponseIssueDetails: BlockedByResponseIssueDetails,
-	heavyAdIssueDetails: HeavyAdIssueDetails,
-	contentSecurityPolicyIssueDetails: ContentSecurityPolicyIssueDetails,
-	sharedArrayBufferIssueDetails: SharedArrayBufferIssueDetails,
-	lowTextContrastIssueDetails: LowTextContrastIssueDetails,
-	corsIssueDetails: CorsIssueDetails,
-	attributionReportingIssueDetails: AttributionReportingIssueDetails,
-	quirksModeIssueDetails: QuirksModeIssueDetails,
-	navigatorUserAgentIssueDetails: NavigatorUserAgentIssueDetails,
-	genericIssueDetails: GenericIssueDetails,
-	deprecationIssueDetails: DeprecationIssueDetails,
-	clientHintIssueDetails: ClientHintIssueDetails,
-	federatedAuthRequestIssueDetails: FederatedAuthRequestIssueDetails,
-	bounceTrackingIssueDetails: BounceTrackingIssueDetails,
-	cookieDeprecationMetadataIssueDetails: CookieDeprecationMetadataIssueDetails,
-	stylesheetLoadingIssueDetails: StylesheetLoadingIssueDetails,
-	propertyRuleIssueDetails: PropertyRuleIssueDetails,
-	federatedAuthUserInfoRequestIssueDetails: FederatedAuthUserInfoRequestIssueDetails,
-	sharedDictionaryIssueDetails: SharedDictionaryIssueDetails,
+	cookieIssueDetails: CookieIssueDetails?,
+	mixedContentIssueDetails: MixedContentIssueDetails?,
+	blockedByResponseIssueDetails: BlockedByResponseIssueDetails?,
+	heavyAdIssueDetails: HeavyAdIssueDetails?,
+	contentSecurityPolicyIssueDetails: ContentSecurityPolicyIssueDetails?,
+	sharedArrayBufferIssueDetails: SharedArrayBufferIssueDetails?,
+	lowTextContrastIssueDetails: LowTextContrastIssueDetails?,
+	corsIssueDetails: CorsIssueDetails?,
+	attributionReportingIssueDetails: AttributionReportingIssueDetails?,
+	quirksModeIssueDetails: QuirksModeIssueDetails?,
+	navigatorUserAgentIssueDetails: NavigatorUserAgentIssueDetails?,
+	genericIssueDetails: GenericIssueDetails?,
+	deprecationIssueDetails: DeprecationIssueDetails?,
+	clientHintIssueDetails: ClientHintIssueDetails?,
+	federatedAuthRequestIssueDetails: FederatedAuthRequestIssueDetails?,
+	bounceTrackingIssueDetails: BounceTrackingIssueDetails?,
+	cookieDeprecationMetadataIssueDetails: CookieDeprecationMetadataIssueDetails?,
+	stylesheetLoadingIssueDetails: StylesheetLoadingIssueDetails?,
+	propertyRuleIssueDetails: PropertyRuleIssueDetails?,
+	federatedAuthUserInfoRequestIssueDetails: FederatedAuthUserInfoRequestIssueDetails?,
+	sharedDictionaryIssueDetails: SharedDictionaryIssueDetails?,
 }
 export type IssueId = string
-export type InspectorIssue = { code: InspectorIssueCode, details: InspectorIssueDetails, issueId: IssueId }
+export type InspectorIssue = { code: InspectorIssueCode, details: InspectorIssueDetails, issueId: IssueId? }
 return {
 	getEncodedResponse = "Audits.getEncodedResponse",
 	disable = "Audits.disable",

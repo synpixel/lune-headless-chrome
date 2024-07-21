@@ -1,21 +1,21 @@
 export type TouchPoint = {
 	x: number,
 	y: number,
-	radiusX: number,
-	radiusY: number,
-	rotationAngle: number,
-	force: number,
-	tangentialPressure: number,
-	tiltX: number,
-	tiltY: number,
-	twist: number,
-	id: number,
+	radiusX: number?,
+	radiusY: number?,
+	rotationAngle: number?,
+	force: number?,
+	tangentialPressure: number?,
+	tiltX: number?,
+	tiltY: number?,
+	twist: number?,
+	id: number?,
 }
 export type GestureSourceType = "default" | "touch" | "mouse"
 export type MouseButton = "none" | "left" | "middle" | "right" | "back" | "forward"
 export type TimeSinceEpoch = number
-export type DragDataItem = { mimeType: string, data: string, title: string, baseURL: string }
-export type DragData = { items: { DragDataItem }, files: { string }, dragOperationsMask: number }
+export type DragDataItem = { mimeType: string, data: string, title: string?, baseURL: string? }
+export type DragData = { items: { DragDataItem }, files: { string }?, dragOperationsMask: number }
 return {
 	dispatchDragEvent = "Input.dispatchDragEvent",
 	dispatchKeyEvent = "Input.dispatchKeyEvent",

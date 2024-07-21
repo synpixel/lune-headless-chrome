@@ -15,7 +15,7 @@ export type Cache = {
 	cacheId: CacheId,
 	securityOrigin: string,
 	storageKey: string,
-	storageBucket: Storage.StorageBucket,
+	storageBucket: Storage.StorageBucket?,
 	cacheName: string,
 }
 export type Header = { name: string, value: string }

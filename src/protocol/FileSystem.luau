@@ -4,7 +4,7 @@ export type File = { name: string, lastModified: Network.TimeSinceEpoch, size: n
 export type Directory = { name: string, nestedDirectories: { string }, nestedFiles: { File } }
 export type BucketFileSystemLocator = {
 	storageKey: Storage.SerializedStorageKey,
-	bucketName: string,
+	bucketName: string?,
 	pathComponents: { string },
 }
 return { getDirectory = "FileSystem.getDirectory" }

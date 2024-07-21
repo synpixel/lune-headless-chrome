@@ -6,13 +6,13 @@ export type TargetInfo = {
 	title: string,
 	url: string,
 	attached: boolean,
-	openerId: TargetID,
+	openerId: TargetID?,
 	canAccessOpener: boolean,
-	openerFrameId: Page.FrameId,
-	browserContextId: Browser.BrowserContextID,
-	subtype: string,
+	openerFrameId: Page.FrameId?,
+	browserContextId: Browser.BrowserContextID?,
+	subtype: string?,
 }
-export type FilterEntry = { exclude: boolean, type: string }
+export type FilterEntry = { exclude: boolean?, type: string? }
 export type TargetFilter = { FilterEntry }
 export type RemoteLocation = { host: string, port: number }
 return {

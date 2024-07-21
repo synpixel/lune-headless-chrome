@@ -68,8 +68,8 @@ export type ResourceTiming = {
 	workerReady: number,
 	workerFetchStart: number,
 	workerRespondWithSettled: number,
-	workerRouterEvaluationStart: number,
-	workerCacheLookupStart: number,
+	workerRouterEvaluationStart: number?,
+	workerCacheLookupStart: number?,
 	sendStart: number,
 	sendEnd: number,
 	pushStart: number,
@@ -78,16 +78,16 @@ export type ResourceTiming = {
 	receiveHeadersEnd: number,
 }
 export type ResourcePriority = "VeryLow" | "Low" | "Medium" | "High" | "VeryHigh"
-export type PostDataEntry = { bytes: string }
+export type PostDataEntry = { bytes: string? }
 export type Request = {
 	url: string,
-	urlFragment: string,
+	urlFragment: string?,
 	method: string,
 	headers: Headers,
-	postData: string,
-	hasPostData: boolean,
-	postDataEntries: { PostDataEntry },
-	mixedContentType: Security.MixedContentType,
+	postData: string?,
+	hasPostData: boolean?,
+	postDataEntries: { PostDataEntry }?,
+	mixedContentType: Security.MixedContentType?,
 	initialPriority: ResourcePriority,
 	referrerPolicy: "unsafe-url"
 		| "no-referrer-when-downgrade"
@@ -97,9 +97,9 @@ export type Request = {
 		| "same-origin"
 		| "strict-origin"
 		| "strict-origin-when-cross-origin",
-	isLinkPreload: boolean,
-	trustTokenParams: TrustTokenParams,
-	isSameSite: boolean,
+	isLinkPreload: boolean?,
+	trustTokenParams: TrustTokenParams?,
+	isSameSite: boolean?,
 }
 export type SignedCertificateTimestamp = {
 	status: string,
@@ -114,9 +114,9 @@ export type SignedCertificateTimestamp = {
 export type SecurityDetails = {
 	protocol: string,
 	keyExchange: string,
-	keyExchangeGroup: string,
+	keyExchangeGroup: string?,
 	cipher: string,
-	mac: string,
+	mac: string?,
 	certificateId: Security.CertificateId,
 	subjectName: string,
 	sanList: { string },
@@ -125,7 +125,7 @@ export type SecurityDetails = {
 	validTo: TimeSinceEpoch,
 	signedCertificateTimestampList: { SignedCertificateTimestamp },
 	certificateTransparencyCompliance: CertificateTransparencyCompliance,
-	serverSignatureAlgorithm: number,
+	serverSignatureAlgorithm: number?,
 	encryptedClientHello: boolean,
 }
 export type CertificateTransparencyCompliance = "unknown" | "not-compliant" | "compliant"
@@ -184,7 +184,7 @@ export type ServiceWorkerResponseSource = "cache-storage" | "http-cache" | "fall
 export type TrustTokenParams = {
 	operation: TrustTokenOperationType,
 	refreshPolicy: "UseCached" | "Refresh",
-	issuers: { string },
+	issuers: { string }?,
 }
 export type TrustTokenOperationType = "Issuance" | "Redemption" | "Signing"
 export type AlternateProtocolUsage =
@@ -198,57 +198,57 @@ export type AlternateProtocolUsage =
 	| "unspecifiedReason"
 export type ServiceWorkerRouterSource = "network" | "cache" | "fetch-event" | "race-network-and-fetch-handler"
 export type ServiceWorkerRouterInfo = {
-	ruleIdMatched: number,
-	matchedSourceType: ServiceWorkerRouterSource,
-	actualSourceType: ServiceWorkerRouterSource,
+	ruleIdMatched: number?,
+	matchedSourceType: ServiceWorkerRouterSource?,
+	actualSourceType: ServiceWorkerRouterSource?,
 }
 export type Response = {
 	url: string,
 	status: number,
 	statusText: string,
 	headers: Headers,
-	headersText: string,
+	headersText: string?,
 	mimeType: string,
 	charset: string,
-	requestHeaders: Headers,
-	requestHeadersText: string,
+	requestHeaders: Headers?,
+	requestHeadersText: string?,
 	connectionReused: boolean,
 	connectionId: number,
-	remoteIPAddress: string,
-	remotePort: number,
-	fromDiskCache: boolean,
-	fromServiceWorker: boolean,
-	fromPrefetchCache: boolean,
-	fromEarlyHints: boolean,
-	serviceWorkerRouterInfo: ServiceWorkerRouterInfo,
+	remoteIPAddress: string?,
+	remotePort: number?,
+	fromDiskCache: boolean?,
+	fromServiceWorker: boolean?,
+	fromPrefetchCache: boolean?,
+	fromEarlyHints: boolean?,
+	serviceWorkerRouterInfo: ServiceWorkerRouterInfo?,
 	encodedDataLength: number,
-	timing: ResourceTiming,
-	serviceWorkerResponseSource: ServiceWorkerResponseSource,
-	responseTime: TimeSinceEpoch,
-	cacheStorageCacheName: string,
-	protocol: string,
-	alternateProtocolUsage: AlternateProtocolUsage,
+	timing: ResourceTiming?,
+	serviceWorkerResponseSource: ServiceWorkerResponseSource?,
+	responseTime: TimeSinceEpoch?,
+	cacheStorageCacheName: string?,
+	protocol: string?,
+	alternateProtocolUsage: AlternateProtocolUsage?,
 	securityState: Security.SecurityState,
-	securityDetails: SecurityDetails,
+	securityDetails: SecurityDetails?,
 }
 export type WebSocketRequest = { headers: Headers }
 export type WebSocketResponse = {
 	status: number,
 	statusText: string,
 	headers: Headers,
-	headersText: string,
-	requestHeaders: Headers,
-	requestHeadersText: string,
+	headersText: string?,
+	requestHeaders: Headers?,
+	requestHeadersText: string?,
 }
 export type WebSocketFrame = { opcode: number, mask: boolean, payloadData: string }
-export type CachedResource = { url: string, type: ResourceType, response: Response, bodySize: number }
+export type CachedResource = { url: string, type: ResourceType, response: Response?, bodySize: number }
 export type Initiator = {
 	type: "parser" | "script" | "preload" | "SignedExchange" | "preflight" | "other",
-	stack: Runtime.StackTrace,
-	url: string,
-	lineNumber: number,
-	columnNumber: number,
-	requestId: RequestId,
+	stack: Runtime.StackTrace?,
+	url: string?,
+	lineNumber: number?,
+	columnNumber: number?,
+	requestId: RequestId?,
 }
 export type CookiePartitionKey = { topLevelSite: string, hasCrossSiteAncestor: boolean }
 export type Cookie = {
@@ -261,13 +261,13 @@ export type Cookie = {
 	httpOnly: boolean,
 	secure: boolean,
 	session: boolean,
-	sameSite: CookieSameSite,
+	sameSite: CookieSameSite?,
 	priority: CookiePriority,
 	sameParty: boolean,
 	sourceScheme: CookieSourceScheme,
 	sourcePort: number,
-	partitionKey: CookiePartitionKey,
-	partitionKeyOpaque: boolean,
+	partitionKey: CookiePartitionKey?,
+	partitionKeyOpaque: boolean?,
 }
 export type SetCookieBlockedReason =
 	"SecureOnly"
@@ -320,47 +320,48 @@ export type CookieExemptionReason =
 	| "TopLevelStorageAccess"
 	| "CorsOptIn"
 	| "Scheme"
-export type BlockedSetCookieWithReason = { blockedReasons: { SetCookieBlockedReason }, cookieLine: string, cookie: Cookie }
+export type BlockedSetCookieWithReason =
+	{ blockedReasons: { SetCookieBlockedReason }, cookieLine: string, cookie: Cookie? }
 export type ExemptedSetCookieWithReason = { exemptionReason: CookieExemptionReason, cookieLine: string, cookie: Cookie }
 export type AssociatedCookie = {
 	cookie: Cookie,
 	blockedReasons: { CookieBlockedReason },
-	exemptionReason: CookieExemptionReason,
+	exemptionReason: CookieExemptionReason?,
 }
 export type CookieParam = {
 	name: string,
 	value: string,
-	url: string,
-	domain: string,
-	path: string,
-	secure: boolean,
-	httpOnly: boolean,
-	sameSite: CookieSameSite,
-	expires: TimeSinceEpoch,
-	priority: CookiePriority,
-	sameParty: boolean,
-	sourceScheme: CookieSourceScheme,
-	sourcePort: number,
-	partitionKey: CookiePartitionKey,
+	url: string?,
+	domain: string?,
+	path: string?,
+	secure: boolean?,
+	httpOnly: boolean?,
+	sameSite: CookieSameSite?,
+	expires: TimeSinceEpoch?,
+	priority: CookiePriority?,
+	sameParty: boolean?,
+	sourceScheme: CookieSourceScheme?,
+	sourcePort: number?,
+	partitionKey: CookiePartitionKey?,
 }
-export type AuthChallenge = { source: "Server" | "Proxy", origin: string, scheme: string, realm: string }
+export type AuthChallenge = { source: "Server" | "Proxy"?, origin: string, scheme: string, realm: string }
 export type AuthChallengeResponse = {
 	response: "Default" | "CancelAuth" | "ProvideCredentials",
-	username: string,
-	password: string,
+	username: string?,
+	password: string?,
 }
 export type InterceptionStage = "Request" | "HeadersReceived"
-export type RequestPattern = { urlPattern: string, resourceType: ResourceType, interceptionStage: InterceptionStage }
+export type RequestPattern = { urlPattern: string?, resourceType: ResourceType?, interceptionStage: InterceptionStage? }
 export type SignedExchangeSignature = {
 	label: string,
 	signature: string,
 	integrity: string,
-	certUrl: string,
-	certSha256: string,
+	certUrl: string?,
+	certSha256: string?,
 	validityUrl: string,
 	date: number,
 	expires: number,
-	certificates: { string },
+	certificates: { string }?,
 }
 export type SignedExchangeHeader = {
 	requestUrl: string,
@@ -376,12 +377,12 @@ export type SignedExchangeErrorField =
 	| "signatureCertSha256"
 	| "signatureValidityUrl"
 	| "signatureTimestamps"
-export type SignedExchangeError = { message: string, signatureIndex: number, errorField: SignedExchangeErrorField }
+export type SignedExchangeError = { message: string, signatureIndex: number?, errorField: SignedExchangeErrorField? }
 export type SignedExchangeInfo = {
 	outerResponse: Response,
-	header: SignedExchangeHeader,
-	securityDetails: SecurityDetails,
-	errors: { SignedExchangeError },
+	header: SignedExchangeHeader?,
+	securityDetails: SecurityDetails?,
+	errors: { SignedExchangeError }?,
 }
 export type ContentEncoding = "deflate" | "gzip" | "br" | "zstd"
 export type PrivateNetworkRequestPolicy =
@@ -408,15 +409,15 @@ export type CrossOriginOpenerPolicyValue =
 export type CrossOriginOpenerPolicyStatus = {
 	value: CrossOriginOpenerPolicyValue,
 	reportOnlyValue: CrossOriginOpenerPolicyValue,
-	reportingEndpoint: string,
-	reportOnlyReportingEndpoint: string,
+	reportingEndpoint: string?,
+	reportOnlyReportingEndpoint: string?,
 }
 export type CrossOriginEmbedderPolicyValue = "None" | "Credentialless" | "RequireCorp"
 export type CrossOriginEmbedderPolicyStatus = {
 	value: CrossOriginEmbedderPolicyValue,
 	reportOnlyValue: CrossOriginEmbedderPolicyValue,
-	reportingEndpoint: string,
-	reportOnlyReportingEndpoint: string,
+	reportingEndpoint: string?,
+	reportOnlyReportingEndpoint: string?,
 }
 export type ContentSecurityPolicySource = "HTTP" | "Meta"
 export type ContentSecurityPolicyStatus = {
@@ -425,9 +426,9 @@ export type ContentSecurityPolicyStatus = {
 	source: ContentSecurityPolicySource,
 }
 export type SecurityIsolationStatus = {
-	coop: CrossOriginOpenerPolicyStatus,
-	coep: CrossOriginEmbedderPolicyStatus,
-	csp: { ContentSecurityPolicyStatus },
+	coop: CrossOriginOpenerPolicyStatus?,
+	coep: CrossOriginEmbedderPolicyStatus?,
+	csp: { ContentSecurityPolicyStatus }?,
 }
 export type ReportStatus = "Queued" | "Pending" | "MarkedForRemoval" | "Success"
 export type ReportId = string
@@ -445,11 +446,11 @@ export type ReportingApiReport = {
 export type ReportingApiEndpoint = { url: string, groupName: string }
 export type LoadNetworkResourcePageResult = {
 	success: boolean,
-	netError: number,
-	netErrorName: string,
-	httpStatusCode: number,
-	stream: IO.StreamHandle,
-	headers: Network.Headers,
+	netError: number?,
+	netErrorName: string?,
+	httpStatusCode: number?,
+	stream: IO.StreamHandle?,
+	headers: Network.Headers?,
 }
 export type LoadNetworkResourceOptions = { disableCache: boolean, includeCredentials: boolean }
 return {
