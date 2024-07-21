@@ -128,12 +128,33 @@ export type Tab = {
 
 export type Point = { x: number, y: number }
 
+export type ElementQuad = {
+	topLeft: Point,
+	topRight: Point,
+	bottomRight: Point,
+	bottomLeft: Point,
+}
+
+export type BoxModel = DOM.BoxModel & {
+	content: ElementQuad,
+	padding: ElementQuad,
+	border: ElementQuad,
+	margin: ElementQuad,
+}
+
 export type ScreenshotOptions = {
 	format: "jpeg" | "png" | "webp",
 	quality: number?,
 	clip: Page.Viewport?,
 	fromSurface: boolean?,
 	captureBeyondViewport: boolean?,
+	optimizeForSpeed: boolean?,
+}
+
+export type ElementScreenshotOptions = {
+	format: "jpeg" | "png" | "webp",
+	quality: number?,
+	fromSurface: boolean?,
 	optimizeForSpeed: boolean?,
 }
 
@@ -169,11 +190,13 @@ export type Element = {
 		awaitPromise: boolean?
 	) -> Future<Runtime.RemoteObject>,
 	getPosition: (Element) -> Future<Point>,
+	getBoxModel: (Element) -> Future<BoxModel>,
 	scrollIntoView: (Element) -> Future<Element>,
 	moveMouseOver: (Element) -> Future<Element>,
 	click: (Element) -> Future<Element>,
 	sendCharactersInto: (Element, characters: string) -> Future<Element>,
 	focus: (Element) -> Future<Element>,
+	captureScreenshot: (Element, options: ElementScreenshotOptions) -> Future<buffer>,
 }
 
 return nil

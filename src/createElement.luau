@@ -7,12 +7,7 @@ local DOM = require("./protocol/DOM")
 local Runtime = require("./protocol/Runtime")
 local types = require("./types")
 
-local function useElementQuad(quad: { number }): {
-	topLeft: types.Point,
-	topRight: types.Point,
-	bottomRight: types.Point,
-	bottomLeft: types.Point,
-}
+local function useElementQuad(quad: { number }): types.ElementQuad
 	return {
 		topLeft = { x = quad[1], y = quad[2] },
 		topRight = { x = quad[3], y = quad[4] },
@@ -165,6 +160,21 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 		end)
 	end
 
+	function element:getBoxModel()
+		return mapFuture(tab:sendOverProtocol(DOM.getBoxModel, { backendNodeId = node.backendNodeId }), function(result)
+			local model = result.model
+			return {
+				content = useElementQuad(model.content),
+				padding = useElementQuad(model.padding),
+				border = useElementQuad(model.border),
+				margin = useElementQuad(model.margin),
+				width = model.width,
+				height = model.height,
+				shapeOutside = model.shapeOutside,
+			}
+		end)
+	end
+
 	function element:scrollIntoView()
 		return Future.spawn(function()
 			local declaration = [[
@@ -232,6 +242,30 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 				backendNodeId = node.backendNodeId,
 			}):await()
 			return element
+		end)
+	end
+
+	function element:captureScreenshot(options: types.ElementScreenshotOptions)
+		return Future.spawn(function()
+			element:scrollIntoView():await()
+
+			local model = element:getBoxModel():await()
+			local viewport = {
+				x = model.content.topLeft.x,
+				y = model.content.topLeft.y,
+				width = model.content.topRight.x - model.content.topLeft.x,
+				height = model.content.bottomLeft.y - model.content.topLeft.y,
+				scale = 1,
+			}
+
+			return tab:captureScreenshot({
+				format = options.format,
+				quality = options.quality,
+				clip = viewport,
+				fromSurface = options.fromSurface,
+				captureBeyondViewport = false,
+				optimizeForSpeed = options.optimizeForSpeed,
+			}):await()
 		end)
 	end
 

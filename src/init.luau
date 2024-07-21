@@ -10,7 +10,9 @@ export type Browser = types.Browser
 
 export type Tab = types.Tab
 export type Point = types.Point
+export type ElementQuad = types.ElementQuad
 export type ScreenshotOptions = types.ScreenshotOptions
+export type ElementScreenshotOptions = types.ElementScreenshotOptions
 export type ScreencastOptions = types.ScreencastOptions
 export type ScreencastFrame = types.ScreencastFrame
 
