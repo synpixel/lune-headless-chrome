@@ -184,6 +184,30 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		end)
 	end
 
+	function tab:startScreencast(options)
+		return bridge:sendOverProtocol(Page.startScreencast, options)
+	end
+
+	function tab:stopScreencast()
+		return bridge:sendOverProtocol(Page.stopScreencast)
+	end
+
+	function tab:onScreencastFrame(callback)
+		return bridge:subscribeToEvent(Page.screencastFrame, function(result)
+			local data = buffer.fromstring(result.data)
+
+			callback({
+				data = base64.decode(data),
+				metadata = result.metadata,
+				sessionId = result.sessionId,
+			})
+		end)
+	end
+
+	function tab:acknowledgeScreencastFrame(sessionId)
+		return bridge:sendOverProtocol(Page.screencastFrameAck, { sessionId = sessionId })
+	end
+
 	function tab:evaluate(expression, awaitPromise)
 		return mapFuture(
 			bridge:sendOverProtocol(Runtime.evaluate, {

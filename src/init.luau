@@ -11,6 +11,8 @@ export type Browser = types.Browser
 export type Tab = types.Tab
 export type Point = types.Point
 export type ScreenshotOptions = types.ScreenshotOptions
+export type ScreencastOptions = types.ScreencastOptions
+export type ScreencastFrame = types.ScreencastFrame
 
 return {
 	createBrowser = createBrowser,

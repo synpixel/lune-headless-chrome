@@ -99,6 +99,10 @@ export type Tab = {
 	moveMouseToPoint: (Tab, point: Point) -> Future<Tab>,
 	clickAtPoint: (Tab, point: Point) -> Future<Tab>,
 	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future<buffer>,
+	startScreencast: (Tab, options: ScreencastOptions) -> Future<nil>,
+	stopScreencast: (Tab) -> Future<nil>,
+	onScreencastFrame: (Tab, callback: (frame: ScreencastFrame) -> ()) -> () -> (),
+	acknowledgeScreencastFrame: (Tab, sessionId: number) -> Future<nil>,
 	evaluate: (Tab, expression: string, awaitPromise: boolean?) -> Future<Runtime.RemoteObject>,
 	getContent: (Tab) -> Future<string>,
 	describeNode: (Tab, nodeId: number) -> Future<DOM.Node>,
@@ -129,6 +133,20 @@ export type ScreenshotOptions = {
 	fromSurface: boolean?,
 	captureBeyondViewport: boolean?,
 	optimizeForSpeed: boolean?,
+}
+
+export type ScreencastOptions = {
+	format: "jpeg" | "png",
+	quality: number?,
+	maxWidth: number?,
+	maxHeight: number?,
+	everyNthFrame: number?,
+}
+
+export type ScreencastFrame = {
+	data: buffer,
+	metadata: Page.ScreencastFrameMetadata,
+	sessionId: number,
 }
 
 export type Element = {

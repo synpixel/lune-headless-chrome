@@ -23,8 +23,12 @@ end
 
 local function createElement(tab: types.Tab, nodeId: number): types.Element
 	local node = tab:describeNode(nodeId):await()
-	local object =
-		tab:sendOverProtocol(DOM.resolveNode, { backendNodeId = node.backendNodeId }):await().object :: Runtime.RemoteObject
+	local object: Runtime.RemoteObject = nil
+
+	do
+		local result = tab:sendOverProtocol(DOM.resolveNode, { backendNodeId = node.backendNodeId }):await()
+		object = result.object
+	end
 
 	local element = {}
 
