@@ -91,7 +91,12 @@ local function launchBrowser(launchOptions: types.BrowserLaunchOptions): process
 		error("chrome path required")
 	end
 
-	local result = process.spawn(launchOptions.path, arguments, { shell = true, env = launchOptions.processEnvs })
+	local result = process.spawn(launchOptions.path, arguments, {
+		shell = true,
+		stdio = "none",
+		env = launchOptions.processEnvs,
+	})
+
 	return result
 end
 

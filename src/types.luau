@@ -1,4 +1,5 @@
 local Future = require("./packages/future")
+local Browser = require("./protocol/Browser")
 local Target = require("./protocol/Target")
 local Network = require("./protocol/Network")
 local DOM = require("./protocol/DOM")
