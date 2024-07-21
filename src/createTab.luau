@@ -52,7 +52,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:navigateTo(url)
-		return bridge:sendOverProtocol(Page.navigate, { url = url })
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Page.navigate, { url = url }):await()
+			return tab
+		end)
 	end
 
 	function tab:reload(ignoreCache, scriptToEvaluateOnLoad)
