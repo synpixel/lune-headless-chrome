@@ -5,7 +5,6 @@ local Network = require("./protocol/Network")
 local DOM = require("./protocol/DOM")
 local Runtime = require("./protocol/Runtime")
 local Page = require("./protocol/Page")
-local Input = require("./protocol/Input")
 
 export type Future<T> = Future.Future<T>
 
