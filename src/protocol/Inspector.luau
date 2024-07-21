@@ -1,1 +1,4 @@
-return { disable = "Inspector.disable", enable = "Inspector.enable" }
+return {
+	disable = "Inspector.disable",
+	enable = "Inspector.enable",
+}

@@ -23,7 +23,7 @@ export type PreloadingAttemptSource = {
 	ruleSetIds: { RuleSetId },
 	nodeIds: { DOM.BackendNodeId },
 }
-export type PrerenderFinalStatus =
+export type PrerenderFinalStatus = (
 	"Activated"
 	| "Destroyed"
 	| "LowEndDevice"
@@ -93,8 +93,9 @@ export type PrerenderFinalStatus =
 	| "JavaScriptInterfaceRemoved"
 	| "AllPrerenderingCanceled"
 	| "WindowClosed"
+)
 export type PreloadingStatus = "Pending" | "Running" | "Ready" | "Success" | "Failure" | "NotSupported"
-export type PrefetchStatus =
+export type PrefetchStatus = (
 	"PrefetchAllowed"
 	| "PrefetchFailedIneligibleRedirect"
 	| "PrefetchFailedInvalidRedirect"
@@ -126,5 +127,9 @@ export type PrefetchStatus =
 	| "PrefetchResponseUsed"
 	| "PrefetchSuccessfulButNotUsed"
 	| "PrefetchNotUsedProbeFailed"
+)
 export type PrerenderMismatchedHeaders = { headerName: string, initialValue: string?, activationValue: string? }
-return { enable = "Preload.enable", disable = "Preload.disable" }
+return {
+	enable = "Preload.enable",
+	disable = "Preload.disable",
+}

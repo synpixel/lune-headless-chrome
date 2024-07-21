@@ -1,7 +1,8 @@
 local Runtime = require("./Runtime")
 local Network = require("./Network")
 export type LogEntry = {
-	source: "xml"
+	source: (
+		"xml"
 		| "javascript"
 		| "network"
 		| "storage"
@@ -13,7 +14,8 @@ export type LogEntry = {
 		| "violation"
 		| "intervention"
 		| "recommendation"
-		| "other",
+		| "other"
+	),
 	level: "verbose" | "info" | "warning" | "error",
 	text: string,
 	category: "cors"?,
@@ -26,13 +28,15 @@ export type LogEntry = {
 	args: { Runtime.RemoteObject }?,
 }
 export type ViolationSetting = {
-	name: "longTask"
+	name: (
+		"longTask"
 		| "longLayout"
 		| "blockedEvent"
 		| "blockedParser"
 		| "discouragedAPIUse"
 		| "handler"
-		| "recurringHandler",
+		| "recurringHandler"
+	),
 	threshold: number,
 }
 return {

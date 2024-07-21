@@ -22,7 +22,7 @@ export type UserAgentMetadata = {
 	bitness: string?,
 	wow64: boolean?,
 }
-export type SensorType =
+export type SensorType = (
 	"absolute-orientation"
 	| "accelerometer"
 	| "ambient-light"
@@ -32,6 +32,7 @@ export type SensorType =
 	| "magnetometer"
 	| "proximity"
 	| "relative-orientation"
+)
 export type SensorMetadata = { available: boolean?, minimumFrequency: number?, maximumFrequency: number? }
 export type SensorReadingSingle = { value: number }
 export type SensorReadingXYZ = { x: number, y: number, z: number }

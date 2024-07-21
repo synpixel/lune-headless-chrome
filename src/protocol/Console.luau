@@ -1,6 +1,7 @@
 local Runtime = require("./Runtime")
 export type ConsoleMessage = {
-	source: "xml"
+	source: (
+		"xml"
 		| "javascript"
 		| "network"
 		| "console-api"
@@ -10,11 +11,16 @@ export type ConsoleMessage = {
 		| "security"
 		| "other"
 		| "deprecation"
-		| "worker",
+		| "worker"
+	),
 	level: "log" | "warning" | "error" | "debug" | "info",
 	text: string,
 	url: string?,
 	line: number?,
 	column: number?,
 }
-return { clearMessages = "Console.clearMessages", disable = "Console.disable", enable = "Console.enable" }
+return {
+	clearMessages = "Console.clearMessages",
+	disable = "Console.disable",
+	enable = "Console.enable",
+}

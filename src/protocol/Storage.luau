@@ -1,7 +1,7 @@
 local Browser = require("./Browser")
 local Network = require("./Network")
 export type SerializedStorageKey = string
-export type StorageType =
+export type StorageType = (
 	"appcache"
 	| "cookies"
 	| "file_systems"
@@ -16,10 +16,11 @@ export type StorageType =
 	| "storage_buckets"
 	| "all"
 	| "other"
+)
 export type UsageForType = { storageType: StorageType, usage: number }
 export type TrustTokens = { issuerOrigin: string, count: number }
 export type InterestGroupAuctionId = string
-export type InterestGroupAccessType =
+export type InterestGroupAccessType = (
 	"join"
 	| "leave"
 	| "update"
@@ -31,14 +32,12 @@ export type InterestGroupAccessType =
 	| "topLevelBid"
 	| "topLevelAdditionalBid"
 	| "clear"
+)
 export type InterestGroupAuctionEventType = "started" | "configResolved"
-export type InterestGroupAuctionFetchType =
-	"bidderJs"
-	| "bidderWasm"
-	| "sellerJs"
-	| "bidderTrustedSignals"
-	| "sellerTrustedSignals"
-export type SharedStorageAccessType =
+export type InterestGroupAuctionFetchType = (
+	"bidderJs" | "bidderWasm" | "sellerJs" | "bidderTrustedSignals" | "sellerTrustedSignals"
+)
+export type SharedStorageAccessType = (
 	"documentAddModule"
 	| "documentSelectURL"
 	| "documentRun"
@@ -60,6 +59,7 @@ export type SharedStorageAccessType =
 	| "headerAppend"
 	| "headerDelete"
 	| "headerClear"
+)
 export type SharedStorageEntry = { key: string, value: string }
 export type SharedStorageMetadata = {
 	creationTime: Network.TimeSinceEpoch,
@@ -137,7 +137,7 @@ export type AttributionReportingSourceRegistration = {
 	destinationLimitPriority: SignedInt64AsBase10,
 	aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig,
 }
-export type AttributionReportingSourceRegistrationResult =
+export type AttributionReportingSourceRegistrationResult = (
 	"success"
 	| "internalError"
 	| "insufficientSourceCapacity"
@@ -152,6 +152,7 @@ export type AttributionReportingSourceRegistrationResult =
 	| "exceedsMaxChannelCapacity"
 	| "exceedsMaxTriggerStateCardinality"
 	| "destinationPerDayReportingLimitReached"
+)
 export type AttributionReportingSourceRegistrationTimeConfig = "include" | "exclude"
 export type AttributionReportingAggregatableValueDictEntry = {
 	key: string,
@@ -191,7 +192,7 @@ export type AttributionReportingTriggerRegistration = {
 	triggerContextId: string?,
 	aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig,
 }
-export type AttributionReportingEventLevelResult =
+export type AttributionReportingEventLevelResult = (
 	"success"
 	| "successDroppedLowerPriority"
 	| "internalError"
@@ -211,7 +212,8 @@ export type AttributionReportingEventLevelResult =
 	| "notRegistered"
 	| "reportWindowNotStarted"
 	| "noMatchingTriggerData"
-export type AttributionReportingAggregatableResult =
+)
+export type AttributionReportingAggregatableResult = (
 	"success"
 	| "internalError"
 	| "noCapacityForAttributionDestination"
@@ -226,6 +228,7 @@ export type AttributionReportingAggregatableResult =
 	| "deduplicated"
 	| "reportWindowPassed"
 	| "excessiveReports"
+)
 export type RelatedWebsiteSet = { primarySites: { string }, associatedSites: { string }, serviceSites: { string } }
 return {
 	getStorageKeyForFrame = "Storage.getStorageKeyForFrame",

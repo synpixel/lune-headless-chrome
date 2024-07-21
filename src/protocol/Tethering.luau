@@ -1,1 +1,4 @@
-return { bind = "Tethering.bind", unbind = "Tethering.unbind" }
+return {
+	bind = "Tethering.bind",
+	unbind = "Tethering.unbind",
+}

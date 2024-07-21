@@ -1,6 +1,6 @@
 local DOM = require("./DOM")
 export type AXNodeId = string
-export type AXValueType =
+export type AXValueType = (
 	"boolean"
 	| "tristate"
 	| "booleanOrUndefined"
@@ -18,8 +18,9 @@ export type AXValueType =
 	| "role"
 	| "internalRole"
 	| "valueUndefined"
+)
 export type AXValueSourceType = "attribute" | "implicit" | "style" | "contents" | "placeholder" | "relatedElement"
-export type AXValueNativeSourceType =
+export type AXValueNativeSourceType = (
 	"description"
 	| "figcaption"
 	| "label"
@@ -30,6 +31,7 @@ export type AXValueNativeSourceType =
 	| "tablecaption"
 	| "title"
 	| "other"
+)
 export type AXValueSource = {
 	type: AXValueSourceType,
 	value: AXValue?,
@@ -44,7 +46,7 @@ export type AXValueSource = {
 export type AXRelatedNode = { backendDOMNodeId: DOM.BackendNodeId, idref: string?, text: string? }
 export type AXProperty = { name: AXPropertyName, value: AXValue }
 export type AXValue = { type: AXValueType, value: any?, relatedNodes: { AXRelatedNode }?, sources: { AXValueSource }? }
-export type AXPropertyName =
+export type AXPropertyName = (
 	"busy"
 	| "disabled"
 	| "editable"
@@ -85,6 +87,7 @@ export type AXPropertyName =
 	| "labelledby"
 	| "owns"
 	| "url"
+)
 export type AXNode = {
 	nodeId: AXNodeId,
 	ignored: boolean,

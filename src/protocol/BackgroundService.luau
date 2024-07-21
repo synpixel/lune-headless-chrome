@@ -1,10 +1,11 @@
-export type ServiceName =
+export type ServiceName = (
 	"backgroundFetch"
 	| "backgroundSync"
 	| "pushMessaging"
 	| "notifications"
 	| "paymentHandler"
 	| "periodicBackgroundSync"
+)
 export type EventMetadata = { key: string, value: string }
 export type BackgroundServiceEvent = {
 	timestamp: Network.TimeSinceEpoch,

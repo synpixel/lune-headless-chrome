@@ -1,7 +1,7 @@
 local Debugger = require("./Debugger")
 local Runtime = require("./Runtime")
 local Security = require("./Security")
-export type ResourceType =
+export type ResourceType = (
 	"Document"
 	| "Stylesheet"
 	| "Image"
@@ -20,10 +20,11 @@ export type ResourceType =
 	| "CSPViolationReport"
 	| "Preflight"
 	| "Other"
+)
 export type LoaderId = string
 export type RequestId = string
 export type InterceptionId = string
-export type ErrorReason =
+export type ErrorReason = (
 	"Failed"
 	| "Aborted"
 	| "TimedOut"
@@ -38,19 +39,13 @@ export type ErrorReason =
 	| "AddressUnreachable"
 	| "BlockedByClient"
 	| "BlockedByResponse"
+)
 export type TimeSinceEpoch = number
 export type MonotonicTime = number
 export type Headers = {}
-export type ConnectionType =
-	"none"
-	| "cellular2g"
-	| "cellular3g"
-	| "cellular4g"
-	| "bluetooth"
-	| "ethernet"
-	| "wifi"
-	| "wimax"
-	| "other"
+export type ConnectionType = (
+	"none" | "cellular2g" | "cellular3g" | "cellular4g" | "bluetooth" | "ethernet" | "wifi" | "wimax" | "other"
+)
 export type CookieSameSite = "Strict" | "Lax" | "None"
 export type CookiePriority = "Low" | "Medium" | "High"
 export type CookieSourceScheme = "Unset" | "NonSecure" | "Secure"
@@ -89,14 +84,16 @@ export type Request = {
 	postDataEntries: { PostDataEntry }?,
 	mixedContentType: Security.MixedContentType?,
 	initialPriority: ResourcePriority,
-	referrerPolicy: "unsafe-url"
+	referrerPolicy: (
+		"unsafe-url"
 		| "no-referrer-when-downgrade"
 		| "no-referrer"
 		| "origin"
 		| "origin-when-cross-origin"
 		| "same-origin"
 		| "strict-origin"
-		| "strict-origin-when-cross-origin",
+		| "strict-origin-when-cross-origin"
+	),
 	isLinkPreload: boolean?,
 	trustTokenParams: TrustTokenParams?,
 	isSameSite: boolean?,
@@ -129,7 +126,7 @@ export type SecurityDetails = {
 	encryptedClientHello: boolean,
 }
 export type CertificateTransparencyCompliance = "unknown" | "not-compliant" | "compliant"
-export type BlockedReason =
+export type BlockedReason = (
 	"other"
 	| "csp"
 	| "mixed-content"
@@ -144,7 +141,8 @@ export type BlockedReason =
 	| "corp-not-same-origin-after-defaulted-to-same-origin-by-dip"
 	| "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip"
 	| "corp-not-same-site"
-export type CorsError =
+)
+export type CorsError = (
 	"DisallowedByMode"
 	| "InvalidResponse"
 	| "WildcardOriginNotAllowed"
@@ -179,6 +177,7 @@ export type CorsError =
 	| "PreflightMissingPrivateNetworkAccessName"
 	| "PrivateNetworkAccessPermissionUnavailable"
 	| "PrivateNetworkAccessPermissionDenied"
+)
 export type CorsErrorStatus = { corsError: CorsError, failedParameter: string }
 export type ServiceWorkerResponseSource = "cache-storage" | "http-cache" | "fallback-code" | "network"
 export type TrustTokenParams = {
@@ -187,7 +186,7 @@ export type TrustTokenParams = {
 	issuers: { string }?,
 }
 export type TrustTokenOperationType = "Issuance" | "Redemption" | "Signing"
-export type AlternateProtocolUsage =
+export type AlternateProtocolUsage = (
 	"alternativeJobWonWithoutRace"
 	| "alternativeJobWonRace"
 	| "mainJobWonRace"
@@ -196,6 +195,7 @@ export type AlternateProtocolUsage =
 	| "dnsAlpnH3JobWonWithoutRace"
 	| "dnsAlpnH3JobWonRace"
 	| "unspecifiedReason"
+)
 export type ServiceWorkerRouterSource = "network" | "cache" | "fetch-event" | "race-network-and-fetch-handler"
 export type ServiceWorkerRouterInfo = {
 	ruleIdMatched: number?,
@@ -269,7 +269,7 @@ export type Cookie = {
 	partitionKey: CookiePartitionKey?,
 	partitionKeyOpaque: boolean?,
 }
-export type SetCookieBlockedReason =
+export type SetCookieBlockedReason = (
 	"SecureOnly"
 	| "SameSiteStrict"
 	| "SameSiteLax"
@@ -292,7 +292,8 @@ export type SetCookieBlockedReason =
 	| "NameValuePairExceedsMaxSize"
 	| "DisallowedCharacter"
 	| "NoCookieContent"
-export type CookieBlockedReason =
+)
+export type CookieBlockedReason = (
 	"SecureOnly"
 	| "NotOnPath"
 	| "DomainMismatch"
@@ -309,7 +310,8 @@ export type CookieBlockedReason =
 	| "SchemefulSameSiteUnspecifiedTreatedAsLax"
 	| "SamePartyFromCrossPartyContext"
 	| "NameValuePairExceedsMaxSize"
-export type CookieExemptionReason =
+)
+export type CookieExemptionReason = (
 	"None"
 	| "UserSetting"
 	| "TPCDMetadata"
@@ -320,6 +322,7 @@ export type CookieExemptionReason =
 	| "TopLevelStorageAccess"
 	| "CorsOptIn"
 	| "Scheme"
+)
 export type BlockedSetCookieWithReason =
 	{ blockedReasons: { SetCookieBlockedReason }, cookieLine: string, cookie: Cookie? }
 export type ExemptedSetCookieWithReason = { exemptionReason: CookieExemptionReason, cookieLine: string, cookie: Cookie }
@@ -344,7 +347,7 @@ export type CookieParam = {
 	sourcePort: number?,
 	partitionKey: CookiePartitionKey?,
 }
-export type AuthChallenge = { source: "Server" | "Proxy"?, origin: string, scheme: string, realm: string }
+export type AuthChallenge = { source: ("Server" | "Proxy")?, origin: string, scheme: string, realm: string }
 export type AuthChallengeResponse = {
 	response: "Default" | "CancelAuth" | "ProvideCredentials",
 	username: string?,
@@ -370,13 +373,14 @@ export type SignedExchangeHeader = {
 	signatures: { SignedExchangeSignature },
 	headerIntegrity: string,
 }
-export type SignedExchangeErrorField =
+export type SignedExchangeErrorField = (
 	"signatureSig"
 	| "signatureIntegrity"
 	| "signatureCertUrl"
 	| "signatureCertSha256"
 	| "signatureValidityUrl"
 	| "signatureTimestamps"
+)
 export type SignedExchangeError = { message: string, signatureIndex: number?, errorField: SignedExchangeErrorField? }
 export type SignedExchangeInfo = {
 	outerResponse: Response,
@@ -385,12 +389,9 @@ export type SignedExchangeInfo = {
 	errors: { SignedExchangeError }?,
 }
 export type ContentEncoding = "deflate" | "gzip" | "br" | "zstd"
-export type PrivateNetworkRequestPolicy =
-	"Allow"
-	| "BlockFromInsecureToMorePrivate"
-	| "WarnFromInsecureToMorePrivate"
-	| "PreflightBlock"
-	| "PreflightWarn"
+export type PrivateNetworkRequestPolicy = (
+	"Allow" | "BlockFromInsecureToMorePrivate" | "WarnFromInsecureToMorePrivate" | "PreflightBlock" | "PreflightWarn"
+)
 export type IPAddressSpace = "Local" | "Private" | "Public" | "Unknown"
 export type ConnectTiming = { requestTime: number }
 export type ClientSecurityState = {
@@ -398,7 +399,7 @@ export type ClientSecurityState = {
 	initiatorIPAddressSpace: IPAddressSpace,
 	privateNetworkRequestPolicy: PrivateNetworkRequestPolicy,
 }
-export type CrossOriginOpenerPolicyValue =
+export type CrossOriginOpenerPolicyValue = (
 	"SameOrigin"
 	| "SameOriginAllowPopups"
 	| "RestrictProperties"
@@ -406,6 +407,7 @@ export type CrossOriginOpenerPolicyValue =
 	| "SameOriginPlusCoep"
 	| "RestrictPropertiesPlusCoep"
 	| "NoopenerAllowPopups"
+)
 export type CrossOriginOpenerPolicyStatus = {
 	value: CrossOriginOpenerPolicyValue,
 	reportOnlyValue: CrossOriginOpenerPolicyValue,

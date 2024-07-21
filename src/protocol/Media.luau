@@ -11,4 +11,7 @@ export type PlayerError = {
 	cause: { PlayerError },
 	data: {},
 }
-return { enable = "Media.enable", disable = "Media.disable" }
+return {
+	enable = "Media.enable",
+	disable = "Media.disable",
+}

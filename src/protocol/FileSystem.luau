@@ -7,4 +7,6 @@ export type BucketFileSystemLocator = {
 	bucketName: string?,
 	pathComponents: { string },
 }
-return { getDirectory = "FileSystem.getDirectory" }
+return {
+	getDirectory = "FileSystem.getDirectory",
+}

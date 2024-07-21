@@ -1,7 +1,7 @@
 local IO = require("./IO")
 export type MemoryDumpConfig = {}
 export type TraceConfig = {
-	recordMode: "recordUntilFull" | "recordContinuously" | "recordAsMuchAsPossible" | "echoToConsole"?,
+	recordMode: ("recordUntilFull" | "recordContinuously" | "recordAsMuchAsPossible" | "echoToConsole")?,
 	traceBufferSizeInKb: number?,
 	enableSampling: boolean?,
 	enableSystrace: boolean?,

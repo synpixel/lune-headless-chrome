@@ -1,1 +1,3 @@
-return { loadUnpacked = "Extensions.loadUnpacked" }
+return {
+	loadUnpacked = "Extensions.loadUnpacked",
+}

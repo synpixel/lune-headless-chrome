@@ -2,7 +2,7 @@ local Network = require("./Network")
 export type AffectedCookie = { name: string, path: string, domain: string }
 export type AffectedRequest = { requestId: Network.RequestId, url: string? }
 export type AffectedFrame = { frameId: Page.FrameId }
-export type CookieExclusionReason =
+export type CookieExclusionReason = (
 	"ExcludeSameSiteUnspecifiedTreatedAsLax"
 	| "ExcludeSameSiteNoneInsecure"
 	| "ExcludeSameSiteLax"
@@ -12,7 +12,8 @@ export type CookieExclusionReason =
 	| "ExcludeDomainNonASCII"
 	| "ExcludeThirdPartyCookieBlockedInFirstPartySet"
 	| "ExcludeThirdPartyPhaseout"
-export type CookieWarningReason =
+)
+export type CookieWarningReason = (
 	"WarnSameSiteUnspecifiedCrossSiteContext"
 	| "WarnSameSiteNoneInsecure"
 	| "WarnSameSiteUnspecifiedLaxAllowUnsafe"
@@ -25,6 +26,7 @@ export type CookieWarningReason =
 	| "WarnDomainNonASCII"
 	| "WarnThirdPartyPhaseout"
 	| "WarnCrossSiteRedirectDowngradeChangesInclusion"
+)
 export type CookieOperation = "SetCookie" | "ReadCookie"
 export type CookieIssueDetails = {
 	cookie: AffectedCookie?,
@@ -36,11 +38,10 @@ export type CookieIssueDetails = {
 	cookieUrl: string?,
 	request: AffectedRequest?,
 }
-export type MixedContentResolutionStatus =
-	"MixedContentBlocked"
-	| "MixedContentAutomaticallyUpgraded"
-	| "MixedContentWarning"
-export type MixedContentResourceType =
+export type MixedContentResolutionStatus = (
+	"MixedContentBlocked" | "MixedContentAutomaticallyUpgraded" | "MixedContentWarning"
+)
+export type MixedContentResourceType = (
 	"AttributionSrc"
 	| "Audio"
 	| "Beacon"
@@ -70,6 +71,7 @@ export type MixedContentResourceType =
 	| "Worker"
 	| "XMLHttpRequest"
 	| "XSLT"
+)
 export type MixedContentIssueDetails = {
 	resourceType: MixedContentResourceType?,
 	resolutionStatus: MixedContentResolutionStatus,
@@ -78,7 +80,7 @@ export type MixedContentIssueDetails = {
 	request: AffectedRequest?,
 	frame: AffectedFrame?,
 }
-export type BlockedByResponseReason =
+export type BlockedByResponseReason = (
 	"CoepFrameResourceNeedsCoepHeader"
 	| "CoopSandboxedIFrameCannotNavigateToCoopPage"
 	| "CorpNotSameOrigin"
@@ -86,6 +88,7 @@ export type BlockedByResponseReason =
 	| "CorpNotSameOriginAfterDefaultedToSameOriginByDip"
 	| "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"
 	| "CorpNotSameSite"
+)
 export type BlockedByResponseIssueDetails = {
 	request: AffectedRequest,
 	parentFrame: AffectedFrame?,
@@ -95,13 +98,14 @@ export type BlockedByResponseIssueDetails = {
 export type HeavyAdResolutionStatus = "HeavyAdBlocked" | "HeavyAdWarning"
 export type HeavyAdReason = "NetworkTotalLimit" | "CpuTotalLimit" | "CpuPeakLimit"
 export type HeavyAdIssueDetails = { resolution: HeavyAdResolutionStatus, reason: HeavyAdReason, frame: AffectedFrame }
-export type ContentSecurityPolicyViolationType =
+export type ContentSecurityPolicyViolationType = (
 	"kInlineViolation"
 	| "kEvalViolation"
 	| "kURLViolation"
 	| "kTrustedTypesSinkViolation"
 	| "kTrustedTypesPolicyViolation"
 	| "kWasmEvalViolation"
+)
 export type SourceCodeLocation = { scriptId: Runtime.ScriptId?, url: string, lineNumber: number, columnNumber: number }
 export type ContentSecurityPolicyIssueDetails = {
 	blockedURL: string?,
@@ -136,7 +140,7 @@ export type CorsIssueDetails = {
 	resourceIPAddressSpace: Network.IPAddressSpace?,
 	clientSecurityState: Network.ClientSecurityState?,
 }
-export type AttributionReportingIssueType =
+export type AttributionReportingIssueType = (
 	"PermissionPolicyDisabled"
 	| "UntrustworthyReportingOrigin"
 	| "InsecureContext"
@@ -157,7 +161,8 @@ export type AttributionReportingIssueType =
 	| "NoRegisterTriggerHeader"
 	| "NoRegisterOsSourceHeader"
 	| "NoRegisterOsTriggerHeader"
-export type SharedDictionaryError =
+)
+export type SharedDictionaryError = (
 	"UseErrorCrossOriginNoCorsRequest"
 	| "UseErrorDictionaryLoadFailure"
 	| "UseErrorMatchingDictionaryNotUsed"
@@ -181,6 +186,7 @@ export type SharedDictionaryError =
 	| "WriteErrorShuttingDown"
 	| "WriteErrorTooLongIdField"
 	| "WriteErrorUnsupportedType"
+)
 export type AttributionReportingIssueDetails = {
 	violationType: AttributionReportingIssueType,
 	request: AffectedRequest?,
@@ -196,7 +202,7 @@ export type QuirksModeIssueDetails = {
 }
 export type NavigatorUserAgentIssueDetails = { url: string, location: SourceCodeLocation? }
 export type SharedDictionaryIssueDetails = { sharedDictionaryError: SharedDictionaryError, request: AffectedRequest }
-export type GenericIssueErrorType =
+export type GenericIssueErrorType = (
 	"FormLabelForNameError"
 	| "FormDuplicateIdForInputError"
 	| "FormInputWithNoLabelError"
@@ -208,6 +214,7 @@ export type GenericIssueErrorType =
 	| "FormLabelForMatchesNonExistingIdError"
 	| "FormInputHasWrongButWellIntendedAutocompleteValueError"
 	| "ResponseWasBlockedByORB"
+)
 export type GenericIssueDetails = {
 	errorType: GenericIssueErrorType,
 	frameId: Page.FrameId?,
@@ -215,8 +222,11 @@ export type GenericIssueDetails = {
 	violatingNodeAttribute: string?,
 	request: AffectedRequest?,
 }
-export type DeprecationIssueDetails =
-	{ affectedFrame: AffectedFrame?, sourceCodeLocation: SourceCodeLocation, type: string }
+export type DeprecationIssueDetails = {
+	affectedFrame: AffectedFrame?,
+	sourceCodeLocation: SourceCodeLocation,
+	type: string,
+}
 export type BounceTrackingIssueDetails = { trackingSites: { string } }
 export type CookieDeprecationMetadataIssueDetails = {
 	allowedSites: { string },
@@ -226,7 +236,7 @@ export type CookieDeprecationMetadataIssueDetails = {
 }
 export type ClientHintIssueReason = "MetaTagAllowListInvalidOrigin" | "MetaTagModifiedHTML"
 export type FederatedAuthRequestIssueDetails = { federatedAuthRequestIssueReason: FederatedAuthRequestIssueReason }
-export type FederatedAuthRequestIssueReason =
+export type FederatedAuthRequestIssueReason = (
 	"ShouldEmbargo"
 	| "TooManyRequests"
 	| "WellKnownHttpNotFound"
@@ -272,10 +282,11 @@ export type FederatedAuthRequestIssueReason =
 	| "InvalidFieldsSpecified"
 	| "RelyingPartyOriginIsOpaque"
 	| "TypeNotMatching"
+)
 export type FederatedAuthUserInfoRequestIssueDetails = {
 	federatedAuthUserInfoRequestIssueReason: FederatedAuthUserInfoRequestIssueReason,
 }
-export type FederatedAuthUserInfoRequestIssueReason =
+export type FederatedAuthUserInfoRequestIssueReason = (
 	"NotSameOrigin"
 	| "NotIframe"
 	| "NotPotentiallyTrustworthy"
@@ -285,6 +296,7 @@ export type FederatedAuthUserInfoRequestIssueReason =
 	| "InvalidConfigOrWellKnown"
 	| "InvalidAccountsResponse"
 	| "NoReturningUserFromFetchedAccounts"
+)
 export type ClientHintIssueDetails = {
 	sourceCodeLocation: SourceCodeLocation,
 	clientHintIssueReason: ClientHintIssueReason,
@@ -302,7 +314,7 @@ export type PropertyRuleIssueDetails = {
 	propertyRuleIssueReason: PropertyRuleIssueReason,
 	propertyValue: string?,
 }
-export type InspectorIssueCode =
+export type InspectorIssueCode = (
 	"CookieIssue"
 	| "MixedContentIssue"
 	| "BlockedByResponseIssue"
@@ -324,6 +336,7 @@ export type InspectorIssueCode =
 	| "FederatedAuthUserInfoRequestIssue"
 	| "PropertyRuleIssue"
 	| "SharedDictionaryIssue"
+)
 export type InspectorIssueDetails = {
 	cookieIssueDetails: CookieIssueDetails?,
 	mixedContentIssueDetails: MixedContentIssueDetails?,

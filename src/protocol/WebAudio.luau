@@ -42,4 +42,8 @@ export type AudioParam = {
 	minValue: number,
 	maxValue: number,
 }
-return { enable = "WebAudio.enable", disable = "WebAudio.disable", getRealtimeData = "WebAudio.getRealtimeData" }
+return {
+	enable = "WebAudio.enable",
+	disable = "WebAudio.disable",
+	getRealtimeData = "WebAudio.getRealtimeData",
+}

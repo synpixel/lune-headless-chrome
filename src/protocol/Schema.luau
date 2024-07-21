@@ -1,2 +1,4 @@
 export type Domain = { name: string, version: string }
-return { getDomains = "Schema.getDomains" }
+return {
+	getDomains = "Schema.getDomains",
+}

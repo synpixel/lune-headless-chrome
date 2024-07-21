@@ -16,7 +16,8 @@ export type CallFrame = {
 	canBeRestarted: boolean?,
 }
 export type Scope = {
-	type: "global"
+	type: (
+		"global"
 		| "local"
 		| "with"
 		| "closure"
@@ -25,7 +26,8 @@ export type Scope = {
 		| "script"
 		| "eval"
 		| "module"
-		| "wasm-expression-stack",
+		| "wasm-expression-stack"
+	),
 	object: Runtime.RemoteObject,
 	name: string?,
 	startLocation: Location?,
@@ -36,7 +38,7 @@ export type BreakLocation = {
 	scriptId: Runtime.ScriptId,
 	lineNumber: number,
 	columnNumber: number?,
-	type: "debuggerStatement" | "call" | "return"?,
+	type: ("debuggerStatement" | "call" | "return")?,
 }
 export type WasmDisassemblyChunk = { lines: { string }, bytecodeOffsets: { number } }
 export type ScriptLanguage = "JavaScript" | "WebAssembly"

@@ -5,7 +5,7 @@ export type RequestId = string
 export type RequestStage = "Request" | "Response"
 export type RequestPattern = { urlPattern: string?, resourceType: Network.ResourceType?, requestStage: RequestStage? }
 export type HeaderEntry = { name: string, value: string }
-export type AuthChallenge = { source: "Server" | "Proxy"?, origin: string, scheme: string, realm: string }
+export type AuthChallenge = { source: ("Server" | "Proxy")?, origin: string, scheme: string, realm: string }
 export type AuthChallengeResponse = {
 	response: "Default" | "CancelAuth" | "ProvideCredentials",
 	username: string?,

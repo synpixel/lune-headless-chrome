@@ -35,7 +35,7 @@ export type FlexContainerHighlightConfig = {
 	crossAlignment: LineStyle?,
 }
 export type FlexItemHighlightConfig = { baseSizeBox: BoxStyle?, baseSizeBorder: LineStyle?, flexibilityArrow: LineStyle? }
-export type LineStyle = { color: DOM.RGBA?, pattern: "dashed" | "dotted"? }
+export type LineStyle = { color: DOM.RGBA?, pattern: ("dashed" | "dotted")? }
 export type BoxStyle = { fillColor: DOM.RGBA?, hatchColor: DOM.RGBA? }
 export type ContrastAlgorithm = "aa" | "aaa" | "apca"
 export type HighlightConfig = {
@@ -84,7 +84,9 @@ export type IsolatedElementHighlightConfig = {
 	nodeId: DOM.NodeId,
 }
 export type IsolationModeHighlightConfig = { resizerColor: DOM.RGBA?, resizerHandleColor: DOM.RGBA?, maskColor: DOM.RGBA? }
-export type InspectMode = "searchForNode" | "searchForUAShadowDOM" | "captureAreaScreenshot" | "showDistances" | "none"
+export type InspectMode = (
+	"searchForNode" | "searchForUAShadowDOM" | "captureAreaScreenshot" | "showDistances" | "none"
+)
 return {
 	disable = "Overlay.disable",
 	enable = "Overlay.enable",

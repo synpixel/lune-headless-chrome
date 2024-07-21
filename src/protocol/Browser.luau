@@ -2,7 +2,7 @@ export type BrowserContextID = string
 export type WindowID = number
 export type WindowState = "normal" | "minimized" | "maximized" | "fullscreen"
 export type Bounds = { left: number?, top: number?, width: number?, height: number?, windowState: WindowState? }
-export type PermissionType =
+export type PermissionType = (
 	"accessibilityEvents"
 	| "audioCapture"
 	| "backgroundSync"
@@ -32,6 +32,7 @@ export type PermissionType =
 	| "wakeLockScreen"
 	| "wakeLockSystem"
 	| "windowManagement"
+)
 export type PermissionSetting = "granted" | "denied" | "prompt"
 export type PermissionDescriptor = {
 	name: string,

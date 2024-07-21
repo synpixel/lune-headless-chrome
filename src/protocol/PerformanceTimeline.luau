@@ -24,4 +24,6 @@ export type TimelineEvent = {
 	lcpDetails: LargestContentfulPaint?,
 	layoutShiftDetails: LayoutShift?,
 }
-return { enable = "PerformanceTimeline.enable" }
+return {
+	enable = "PerformanceTimeline.enable",
+}

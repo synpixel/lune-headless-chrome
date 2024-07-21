@@ -1,8 +1,9 @@
 export type ScriptId = string
 export type SerializationOptions =
-	{ serialization: "deep" | "json" | "idOnly", maxDepth: number?, additionalParameters: {}? }
+	{ serialization: "deep" | "json" | "idOnly", maxDepth: number?, additionalParameters: {} }
 export type DeepSerializedValue = {
-	type: "undefined"
+	type: (
+		"undefined"
 		| "null"
 		| "string"
 		| "number"
@@ -25,7 +26,8 @@ export type DeepSerializedValue = {
 		| "arraybuffer"
 		| "node"
 		| "window"
-		| "generator",
+		| "generator"
+	),
 	value: any?,
 	objectId: string?,
 	weakLocalObjectReference: number?,
@@ -34,7 +36,8 @@ export type RemoteObjectId = string
 export type UnserializableValue = string
 export type RemoteObject = {
 	type: "object" | "function" | "undefined" | "string" | "number" | "boolean" | "symbol" | "bigint",
-	subtype: "array"
+	subtype: (
+		"array"
 		| "null"
 		| "node"
 		| "regexp"
@@ -52,7 +55,8 @@ export type RemoteObject = {
 		| "arraybuffer"
 		| "dataview"
 		| "webassemblymemory"
-		| "wasmvalue"?,
+		| "wasmvalue"
+	)?,
 	className: string?,
 	value: any?,
 	unserializableValue: UnserializableValue?,
@@ -65,7 +69,8 @@ export type RemoteObject = {
 export type CustomPreview = { header: string, bodyGetterId: RemoteObjectId? }
 export type ObjectPreview = {
 	type: "object" | "function" | "undefined" | "string" | "number" | "boolean" | "symbol" | "bigint",
-	subtype: "array"
+	subtype: (
+		"array"
 		| "null"
 		| "node"
 		| "regexp"
@@ -83,7 +88,8 @@ export type ObjectPreview = {
 		| "arraybuffer"
 		| "dataview"
 		| "webassemblymemory"
-		| "wasmvalue"?,
+		| "wasmvalue"
+	)?,
 	description: string?,
 	overflow: boolean,
 	properties: { PropertyPreview },
@@ -94,7 +100,8 @@ export type PropertyPreview = {
 	type: "object" | "function" | "undefined" | "string" | "number" | "boolean" | "symbol" | "accessor" | "bigint",
 	value: string?,
 	valuePreview: ObjectPreview?,
-	subtype: "array"
+	subtype: (
+		"array"
 		| "null"
 		| "node"
 		| "regexp"
@@ -112,7 +119,8 @@ export type PropertyPreview = {
 		| "arraybuffer"
 		| "dataview"
 		| "webassemblymemory"
-		| "wasmvalue"?,
+		| "wasmvalue"
+	)?,
 }
 export type EntryPreview = { key: ObjectPreview?, value: ObjectPreview }
 export type PropertyDescriptor = {
@@ -136,7 +144,7 @@ export type ExecutionContextDescription = {
 	origin: string,
 	name: string,
 	uniqueId: string,
-	auxData: {}?,
+	auxData: {},
 }
 export type ExceptionDetails = {
 	exceptionId: number,
@@ -148,7 +156,7 @@ export type ExceptionDetails = {
 	stackTrace: StackTrace?,
 	exception: RemoteObject?,
 	executionContextId: ExecutionContextId?,
-	exceptionMetaData: {}?,
+	exceptionMetaData: {},
 }
 export type Timestamp = number
 export type TimeDelta = number

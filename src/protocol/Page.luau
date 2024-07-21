@@ -10,12 +10,10 @@ export type AdFrameStatus = { adFrameType: AdFrameType, explanations: { AdFrameE
 export type AdScriptId = { scriptId: Runtime.ScriptId, debuggerId: Runtime.UniqueDebuggerId }
 export type SecureContextType = "Secure" | "SecureLocalhost" | "InsecureScheme" | "InsecureAncestor"
 export type CrossOriginIsolatedContextType = "Isolated" | "NotIsolated" | "NotIsolatedFeatureDisabled"
-export type GatedAPIFeatures =
-	"SharedArrayBuffers"
-	| "SharedArrayBuffersTransferAllowed"
-	| "PerformanceMeasureMemory"
-	| "PerformanceProfile"
-export type PermissionsPolicyFeature =
+export type GatedAPIFeatures = (
+	"SharedArrayBuffers" | "SharedArrayBuffersTransferAllowed" | "PerformanceMeasureMemory" | "PerformanceProfile"
+)
+export type PermissionsPolicyFeature = (
 	"accelerometer"
 	| "ambient-light-sensor"
 	| "attribution-reporting"
@@ -102,6 +100,7 @@ export type PermissionsPolicyFeature =
 	| "web-share"
 	| "window-management"
 	| "xr-spatial-tracking"
+)
 export type PermissionsPolicyBlockReason = "Header" | "IframeAttribute" | "InFencedFrameTree" | "InIsolatedApp"
 export type PermissionsPolicyBlockLocator = { frameId: FrameId, blockReason: PermissionsPolicyBlockReason }
 export type PermissionsPolicyFeatureState = {
@@ -109,7 +108,7 @@ export type PermissionsPolicyFeatureState = {
 	allowed: boolean,
 	locator: PermissionsPolicyBlockLocator?,
 }
-export type OriginTrialTokenStatus =
+export type OriginTrialTokenStatus = (
 	"Success"
 	| "NotSupported"
 	| "Insecure"
@@ -122,6 +121,7 @@ export type OriginTrialTokenStatus =
 	| "TokenDisabled"
 	| "FeatureDisabledForUser"
 	| "UnknownTrial"
+)
 export type OriginTrialStatus = "Enabled" | "ValidTokenNotProvided" | "OSNotSupported" | "TrialNotAllowed"
 export type OriginTrialUsageRestriction = "None" | "Subset"
 export type OriginTrialToken = {
@@ -167,7 +167,7 @@ export type FrameResource = {
 export type FrameResourceTree = { frame: Frame, childFrames: { FrameResourceTree }?, resources: { FrameResource } }
 export type FrameTree = { frame: Frame, childFrames: { FrameTree }? }
 export type ScriptIdentifier = string
-export type TransitionType =
+export type TransitionType = (
 	"link"
 	| "typed"
 	| "address_bar"
@@ -181,6 +181,7 @@ export type TransitionType =
 	| "keyword"
 	| "keyword_generated"
 	| "other"
+)
 export type NavigationEntry =
 	{ id: number, url: string, userTypedURL: string, title: string, transitionType: TransitionType }
 export type ScreencastFrameMetadata = {
@@ -218,7 +219,7 @@ export type FontFamilies = {
 }
 export type ScriptFontFamilies = { script: string, fontFamilies: FontFamilies }
 export type FontSizes = { standard: number?, fixed: number? }
-export type ClientNavigationReason =
+export type ClientNavigationReason = (
 	"formSubmissionGet"
 	| "formSubmissionPost"
 	| "httpHeaderRefresh"
@@ -227,10 +228,11 @@ export type ClientNavigationReason =
 	| "pageBlockInterstitial"
 	| "reload"
 	| "anchorClick"
+)
 export type ClientNavigationDisposition = "currentTab" | "newTab" | "newWindow" | "download"
 export type InstallabilityErrorArgument = { name: string, value: string }
 export type InstallabilityError = { errorId: string, errorArguments: { InstallabilityErrorArgument } }
-export type ReferrerPolicy =
+export type ReferrerPolicy = (
 	"noReferrer"
 	| "noReferrerWhenDowngrade"
 	| "origin"
@@ -239,6 +241,7 @@ export type ReferrerPolicy =
 	| "strictOrigin"
 	| "strictOriginWhenCrossOrigin"
 	| "unsafeUrl"
+)
 export type CompilationCacheParams = { url: string, eager: boolean? }
 export type FileFilter = { name: string?, accepts: { string }? }
 export type FileHandler = {
@@ -291,7 +294,7 @@ export type WebAppManifest = {
 }
 export type AutoResponseMode = "none" | "autoAccept" | "autoReject" | "autoOptOut"
 export type NavigationType = "Navigation" | "BackForwardCacheRestore"
-export type BackForwardCacheNotRestoredReason =
+export type BackForwardCacheNotRestoredReason = (
 	"NotPrimaryMainFrame"
 	| "BackForwardCacheDisabled"
 	| "RelatedActiveContentsExist"
@@ -429,6 +432,7 @@ export type BackForwardCacheNotRestoredReason =
 	| "EmbedderExtensionMessagingForOpenPort"
 	| "EmbedderExtensionSentMessageToCachedFrame"
 	| "RequestedByWebViewClient"
+)
 export type BackForwardCacheNotRestoredReasonType = "SupportPending" | "PageSupportNeeded" | "Circumstantial"
 export type BackForwardCacheBlockingDetails = {
 	url: string?,

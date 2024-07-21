@@ -26,8 +26,8 @@ export type ImageDecodeAcceleratorCapability = {
 }
 export type GPUInfo = {
 	devices: { GPUDevice },
-	auxAttributes: {}?,
-	featureStatus: {}?,
+	auxAttributes: {},
+	featureStatus: {},
 	driverBugWorkarounds: { string },
 	videoDecoding: { VideoDecodeAcceleratorCapability },
 	videoEncoding: { VideoEncodeAcceleratorCapability },

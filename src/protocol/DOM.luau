@@ -2,7 +2,7 @@ local Runtime = require("./Runtime")
 export type NodeId = number
 export type BackendNodeId = number
 export type BackendNode = { nodeType: number, nodeName: string, backendNodeId: BackendNodeId }
-export type PseudoType =
+export type PseudoType = (
 	"first-line"
 	| "first-letter"
 	| "before"
@@ -31,6 +31,7 @@ export type PseudoType =
 	| "view-transition-image-pair"
 	| "view-transition-old"
 	| "view-transition-new"
+)
 export type ShadowRootType = "user-agent" | "open" | "closed"
 export type CompatibilityMode = "QuirksMode" | "LimitedQuirksMode" | "NoQuirksMode"
 export type PhysicalAxes = "Horizontal" | "Vertical" | "Both"
