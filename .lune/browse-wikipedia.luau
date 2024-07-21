@@ -1,4 +1,4 @@
--- based off of https://github.com/rust-headless-chrome/rust-headless-chrome/blob/main/README.md
+-- based off of https://github.com/rust-headless-chrome/rust-headless-chrome/blob/main/README.md#quick-start
 
 local fs = require("@lune/fs")
 local chrome = require("../src")
