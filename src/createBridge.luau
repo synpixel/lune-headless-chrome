@@ -7,7 +7,7 @@ local MAX_REQUEST_ID = 999
 
 -- fixes incorrect serialization of empty tables
 local function jsonEncode(value: any, pretty: boolean?)
-	local result = net.jsonEncode(value):gsub("{}", "[]")
+	local result = net.jsonEncode(value, pretty):gsub("{}", "[]")
 	return result
 end
 
