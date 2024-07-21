@@ -3,9 +3,7 @@ local task = require("@lune/task")
 local Future = require("./packages/future")
 local types = require("./types")
 
-local function generateProtocolId()
-	return math.random(1, 999)
-end
+local MAX_REQUEST_ID = 999
 
 -- fixes incorrect serialization of empty tables
 local function jsonEncode(value: any, pretty: boolean?)
@@ -34,7 +32,7 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 	end)
 
 	function bridge:sendOverProtocol(method, parameters)
-		local id = generateProtocolId()
+		local id = math.random(1, MAX_REQUEST_ID)
 		local request: types.BridgeProtocolRequest = {
 			id = id,
 			method = method,
