@@ -21,6 +21,27 @@ local function useElementQuad(quad: { number }): {
 	}
 end
 
+local function extractElementPosition(remoteObject: Runtime.RemoteObject): types.Point
+	if typeof(remoteObject.preview) ~= "table" then
+		return { x = 0, y = 0 }
+	end
+
+	local properties = {}
+
+	local points = mapList(remoteObject.preview, function(preview)
+		for _, property in preview.properties do
+			properties[property.name] = tonumber(property.value)
+		end
+
+		return {
+			x = properties.x + properties.width / 2,
+			y = properties.y + properties.height / 2,
+		}
+	end)
+
+	return points
+end
+
 local function createElement(tab: types.Tab, nodeId: number): types.Element
 	local node = tab:describeNode(nodeId):await()
 	local object: Runtime.RemoteObject = nil
@@ -115,16 +136,37 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 	end
 
 	function element:getPosition()
-		return mapFuture(
-			tab:sendOverProtocol(DOM.getContentQuads, { backendNodeId = node.backendNodeId }),
-			function(result)
+		return Future.spawn(function()
+			local result = tab:sendOverProtocol(DOM.getContentQuads, { backendNodeId = node.backendNodeId }):await()
+			if result.quads ~= nil and #result.quads > 0 then
 				local quad = result.quads[1]
 				local elementQuad = useElementQuad(quad)
 				local point = pointUtils.addPoints(elementQuad.bottomRight, elementQuad.topLeft)
 
 				return { x = point.x / 2, y = point.y / 2 }
 			end
-		)
+
+			local position = waitFor(function()
+				local declaration = [[
+					function() {
+						let rect = this.getBoundingClientRect();
+						if (rect.x !== 0) this.scrollIntoView();
+						return this.getBoundingClientRect();
+					}
+				]]
+
+				local result = element:callFunction(declaration):await()
+				local point = extractElementPosition(result)
+
+				if point.x == 0 then
+					return nil
+				end
+
+				return point
+			end)
+
+			return position:await()
+		end)
 	end
 
 	function element:scrollIntoView()
