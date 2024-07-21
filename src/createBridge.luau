@@ -7,6 +7,12 @@ local function generateProtocolId()
 	return math.random(1, 999)
 end
 
+-- fixes incorrect serialization of empty tables
+local function jsonEncode(value: any, pretty: boolean?)
+	local result = net.jsonEncode(value):gsub("{}", "[]")
+	return result
+end
+
 local function createBridge(socket: net.WebSocket): types.Bridge
 	local protocolListeners: { [number]: (result: any) -> () } = {}
 	local bridge = {}
@@ -29,13 +35,13 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 
 	function bridge:sendOverProtocol(method, parameters)
 		local id = generateProtocolId()
-		local protocol: types.BridgeProtocolRequest = {
+		local request: types.BridgeProtocolRequest = {
 			id = id,
 			method = method,
 			params = parameters,
 		}
 
-		socket.send(net.jsonEncode(protocol))
+		socket.send(jsonEncode(request))
 
 		local future, listener = Future.pending()
 		protocolListeners[id] = listener
@@ -50,6 +56,8 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 
 		task.cancel(responseStreamThread)
 		responseStreamThread = nil
+
+		socket.close(0)
 	end
 
 	return bridge
