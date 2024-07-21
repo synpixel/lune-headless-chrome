@@ -21,7 +21,9 @@ export type BridgeProtocolRequest = {
 export type BridgeProtocolResponse = {
 	id: number,
 	result: { [string]: any }?,
-} | {
+}
+
+export type BridgeProtocolEvent = {
 	method: string,
 	params: { [string]: any }?,
 }

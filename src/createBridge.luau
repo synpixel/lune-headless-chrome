@@ -26,7 +26,7 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 		end
 	end
 
-	local function flushEventConnections(response: types.BridgeProtocolResponse)
+	local function flushEventConnections(response: types.BridgeProtocolEvent)
 		local function flushEventListeners(listeners: { (result: any) -> () })
 			for _, listener in listeners do
 				task.spawn(listener, response.params)
@@ -43,8 +43,18 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 	local responseStreamThread = task.spawn(function()
 		while true do
 			local response = net.jsonDecode(socket.next() :: string)
-			flushListeners(response)
-			flushEventConnections(response)
+
+			-- hacky way to know if it's a response
+			if response.id ~= nil then
+				flushListeners(response)
+				continue
+			end
+
+			-- or an event
+			if response.method ~= nil then
+				flushEventConnections(response)
+				continue
+			end
 		end
 	end)
 
@@ -89,8 +99,6 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 
 		task.cancel(responseStreamThread)
 		responseStreamThread = nil
-
-		socket.close(0)
 	end
 
 	return bridge
