@@ -3,6 +3,7 @@
 local fs = require("@lune/fs")
 local chrome = require("../src")
 
+-- we aren't making the browser headless to see what's happening
 local browser = chrome.createBrowser({
 	headless = false,
 	port = 3466,
