@@ -29,4 +29,7 @@ return {
 	stop = "Profiler.stop",
 	stopPreciseCoverage = "Profiler.stopPreciseCoverage",
 	takePreciseCoverage = "Profiler.takePreciseCoverage",
+	consoleProfileFinished = "Profiler.consoleProfileFinished",
+	consoleProfileStarted = "Profiler.consoleProfileStarted",
+	preciseCoverageDeltaUpdate = "Profiler.preciseCoverageDeltaUpdate",
 }

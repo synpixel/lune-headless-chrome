@@ -21,4 +21,7 @@ return {
 	recordClockSyncMarker = "Tracing.recordClockSyncMarker",
 	requestMemoryDump = "Tracing.requestMemoryDump",
 	start = "Tracing.start",
+	bufferUsage = "Tracing.bufferUsage",
+	dataCollected = "Tracing.dataCollected",
+	tracingComplete = "Tracing.tracingComplete",
 }

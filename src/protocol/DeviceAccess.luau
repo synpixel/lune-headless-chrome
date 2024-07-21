@@ -6,4 +6,5 @@ return {
 	disable = "DeviceAccess.disable",
 	selectPrompt = "DeviceAccess.selectPrompt",
 	cancelPrompt = "DeviceAccess.cancelPrompt",
+	deviceRequestPrompted = "DeviceAccess.deviceRequestPrompted",
 }

@@ -19,4 +19,5 @@ return {
 	setAddresses = "Autofill.setAddresses",
 	disable = "Autofill.disable",
 	enable = "Autofill.enable",
+	addressFormFilled = "Autofill.addressFormFilled",
 }

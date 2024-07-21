@@ -30,4 +30,5 @@ return {
 	synthesizePinchGesture = "Input.synthesizePinchGesture",
 	synthesizeScrollGesture = "Input.synthesizeScrollGesture",
 	synthesizeTapGesture = "Input.synthesizeTapGesture",
+	dragIntercepted = "Input.dragIntercepted",
 }

@@ -23,4 +23,5 @@ return {
 	clearMessages = "Console.clearMessages",
 	disable = "Console.disable",
 	enable = "Console.enable",
+	messageAdded = "Console.messageAdded",
 }

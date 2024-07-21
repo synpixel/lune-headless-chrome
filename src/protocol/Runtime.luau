@@ -188,4 +188,12 @@ return {
 	addBinding = "Runtime.addBinding",
 	removeBinding = "Runtime.removeBinding",
 	getExceptionDetails = "Runtime.getExceptionDetails",
+	bindingCalled = "Runtime.bindingCalled",
+	consoleAPICalled = "Runtime.consoleAPICalled",
+	exceptionRevoked = "Runtime.exceptionRevoked",
+	exceptionThrown = "Runtime.exceptionThrown",
+	executionContextCreated = "Runtime.executionContextCreated",
+	executionContextDestroyed = "Runtime.executionContextDestroyed",
+	executionContextsCleared = "Runtime.executionContextsCleared",
+	inspectRequested = "Runtime.inspectRequested",
 }

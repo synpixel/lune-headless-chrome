@@ -14,4 +14,9 @@ export type PlayerError = {
 return {
 	enable = "Media.enable",
 	disable = "Media.disable",
+	playerPropertiesChanged = "Media.playerPropertiesChanged",
+	playerEventsAdded = "Media.playerEventsAdded",
+	playerMessagesLogged = "Media.playerMessagesLogged",
+	playerErrorsRaised = "Media.playerErrorsRaised",
+	playersCreated = "Media.playersCreated",
 }

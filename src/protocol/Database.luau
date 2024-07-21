@@ -6,4 +6,5 @@ return {
 	enable = "Database.enable",
 	executeSQL = "Database.executeSQL",
 	getDatabaseTableNames = "Database.getDatabaseTableNames",
+	addDatabase = "Database.addDatabase",
 }

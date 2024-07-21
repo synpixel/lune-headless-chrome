@@ -76,4 +76,9 @@ return {
 	stepInto = "Debugger.stepInto",
 	stepOut = "Debugger.stepOut",
 	stepOver = "Debugger.stepOver",
+	breakpointResolved = "Debugger.breakpointResolved",
+	paused = "Debugger.paused",
+	resumed = "Debugger.resumed",
+	scriptFailedToParse = "Debugger.scriptFailedToParse",
+	scriptParsed = "Debugger.scriptParsed",
 }

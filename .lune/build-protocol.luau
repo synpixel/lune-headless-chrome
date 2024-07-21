@@ -20,11 +20,16 @@ type ProtocolDomainCommandDefinition = {
 	name: string,
 }
 
+type ProtocolDomainEventDefinition = {
+	name: string,
+}
+
 type ProtocolDomainDefinition = {
 	domain: string,
 	dependencies: { string }?,
 	types: { ProtocolDomainTypeDefinition & { id: string } }?,
 	commands: { ProtocolDomainCommandDefinition }?,
+	events: { ProtocolDomainEventDefinition }?,
 }
 
 type ProtocolDefinitions = {
@@ -157,6 +162,12 @@ local function writeDomainDefinitionFile(domain: ProtocolDomainDefinition)
 	if domain.commands ~= nil then
 		for _, command in domain.commands do
 			file:appendLine(`{fixFieldNameForLuau(command.name)} = "{domain.domain}.{command.name}",`)
+		end
+	end
+
+	if domain.events ~= nil then
+		for _, event in domain.events do
+			file:appendLine(`{fixFieldNameForLuau(event.name)} = "{domain.domain}.{event.name}",`)
 		end
 	end
 

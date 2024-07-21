@@ -21,4 +21,6 @@ return {
 	continueResponse = "Fetch.continueResponse",
 	getResponseBody = "Fetch.getResponseBody",
 	takeResponseBodyAsStream = "Fetch.takeResponseBodyAsStream",
+	requestPaused = "Fetch.requestPaused",
+	authRequired = "Fetch.authRequired",
 }

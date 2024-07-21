@@ -22,4 +22,6 @@ return {
 	openUrl = "FedCm.openUrl",
 	dismissDialog = "FedCm.dismissDialog",
 	resetCooldown = "FedCm.resetCooldown",
+	dialogShown = "FedCm.dialogShown",
+	dialogClosed = "FedCm.dialogClosed",
 }

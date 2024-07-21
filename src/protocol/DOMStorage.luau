@@ -8,4 +8,8 @@ return {
 	getDOMStorageItems = "DOMStorage.getDOMStorageItems",
 	removeDOMStorageItem = "DOMStorage.removeDOMStorageItem",
 	setDOMStorageItem = "DOMStorage.setDOMStorageItem",
+	domStorageItemAdded = "DOMStorage.domStorageItemAdded",
+	domStorageItemRemoved = "DOMStorage.domStorageItemRemoved",
+	domStorageItemUpdated = "DOMStorage.domStorageItemUpdated",
+	domStorageItemsCleared = "DOMStorage.domStorageItemsCleared",
 }

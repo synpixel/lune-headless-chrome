@@ -45,4 +45,8 @@ return {
 	setPaused = "Animation.setPaused",
 	setPlaybackRate = "Animation.setPlaybackRate",
 	setTiming = "Animation.setTiming",
+	animationCanceled = "Animation.animationCanceled",
+	animationCreated = "Animation.animationCreated",
+	animationStarted = "Animation.animationStarted",
+	animationUpdated = "Animation.animationUpdated",
 }

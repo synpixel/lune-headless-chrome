@@ -22,4 +22,6 @@ return {
 	stopObserving = "BackgroundService.stopObserving",
 	setRecording = "BackgroundService.setRecording",
 	clearEvents = "BackgroundService.clearEvents",
+	recordingStateChanged = "BackgroundService.recordingStateChanged",
+	backgroundServiceEventReceived = "BackgroundService.backgroundServiceEventReceived",
 }

@@ -33,4 +33,11 @@ return {
 	autoAttachRelated = "Target.autoAttachRelated",
 	setDiscoverTargets = "Target.setDiscoverTargets",
 	setRemoteLocations = "Target.setRemoteLocations",
+	attachedToTarget = "Target.attachedToTarget",
+	detachedFromTarget = "Target.detachedFromTarget",
+	receivedMessageFromTarget = "Target.receivedMessageFromTarget",
+	targetCreated = "Target.targetCreated",
+	targetDestroyed = "Target.targetDestroyed",
+	targetCrashed = "Target.targetCrashed",
+	targetInfoChanged = "Target.targetInfoChanged",
 }

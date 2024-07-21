@@ -13,6 +13,8 @@ end
 
 local function createBridge(socket: net.WebSocket): types.Bridge
 	local protocolListeners: { [number]: (result: any) -> () } = {}
+	local protocolEventConnections: { [string]: { (result: any) -> () } } = {}
+
 	local bridge = {}
 
 	local function flushListeners(response: types.BridgeProtocolResponse)
@@ -24,10 +26,25 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 		end
 	end
 
+	local function flushEventConnections(response: types.BridgeProtocolResponse)
+		local function flushEventListeners(listeners: { (result: any) -> () })
+			for _, listener in listeners do
+				task.spawn(listener, response.params)
+			end
+		end
+
+		for event, listeners in protocolEventConnections do
+			if response.method == event then
+				flushEventListeners(listeners)
+			end
+		end
+	end
+
 	local responseStreamThread = task.spawn(function()
 		while true do
 			local response = net.jsonDecode(socket.next() :: string)
 			flushListeners(response)
+			flushEventConnections(response)
 		end
 	end)
 
@@ -45,6 +62,24 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 		protocolListeners[id] = listener
 
 		return future
+	end
+
+	function bridge:subscribeToEvent(event, callback)
+		if protocolEventConnections[event] == nil then
+			protocolEventConnections[event] = {}
+		end
+
+		table.insert(protocolEventConnections[event], callback)
+
+		return function()
+			if #protocolEventConnections[event] <= 1 then
+				protocolEventConnections[event] = nil
+				return
+			end
+
+			local index = table.find(protocolEventConnections[event], callback)
+			table.remove(protocolEventConnections[event], index)
+		end
 	end
 
 	function bridge:destroy()

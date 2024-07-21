@@ -37,4 +37,7 @@ return {
 	stopWorker = "ServiceWorker.stopWorker",
 	unregister = "ServiceWorker.unregister",
 	updateRegistration = "ServiceWorker.updateRegistration",
+	workerErrorReported = "ServiceWorker.workerErrorReported",
+	workerRegistrationUpdated = "ServiceWorker.workerRegistrationUpdated",
+	workerVersionUpdated = "ServiceWorker.workerVersionUpdated",
 }

@@ -368,4 +368,5 @@ return {
 	enable = "Audits.enable",
 	checkContrast = "Audits.checkContrast",
 	checkFormsIssues = "Audits.checkFormsIssues",
+	issueAdded = "Audits.issueAdded",
 }

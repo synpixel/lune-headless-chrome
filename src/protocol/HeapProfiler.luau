@@ -21,4 +21,9 @@ return {
 	stopSampling = "HeapProfiler.stopSampling",
 	stopTrackingHeapObjects = "HeapProfiler.stopTrackingHeapObjects",
 	takeHeapSnapshot = "HeapProfiler.takeHeapSnapshot",
+	addHeapSnapshotChunk = "HeapProfiler.addHeapSnapshotChunk",
+	heapStatsUpdate = "HeapProfiler.heapStatsUpdate",
+	lastSeenObjectId = "HeapProfiler.lastSeenObjectId",
+	reportHeapSnapshotProgress = "HeapProfiler.reportHeapSnapshotProgress",
+	resetProfiles = "HeapProfiler.resetProfiles",
 }

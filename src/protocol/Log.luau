@@ -45,4 +45,5 @@ return {
 	enable = "Log.enable",
 	startViolationsReport = "Log.startViolationsReport",
 	stopViolationsReport = "Log.stopViolationsReport",
+	entryAdded = "Log.entryAdded",
 }

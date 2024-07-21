@@ -132,4 +132,10 @@ export type PrerenderMismatchedHeaders = { headerName: string, initialValue: str
 return {
 	enable = "Preload.enable",
 	disable = "Preload.disable",
+	ruleSetUpdated = "Preload.ruleSetUpdated",
+	ruleSetRemoved = "Preload.ruleSetRemoved",
+	preloadEnabledStateUpdated = "Preload.preloadEnabledStateUpdated",
+	prefetchStatusUpdated = "Preload.prefetchStatusUpdated",
+	prerenderStatusUpdated = "Preload.prerenderStatusUpdated",
+	preloadingAttemptSourcesUpdated = "Preload.preloadingAttemptSourcesUpdated",
 }

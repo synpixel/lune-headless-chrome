@@ -64,4 +64,6 @@ return {
 	setDockTile = "Browser.setDockTile",
 	executeBrowserCommand = "Browser.executeBrowserCommand",
 	addPrivacySandboxEnrollmentOverride = "Browser.addPrivacySandboxEnrollmentOverride",
+	downloadWillBegin = "Browser.downloadWillBegin",
+	downloadProgress = "Browser.downloadProgress",
 }

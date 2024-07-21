@@ -117,4 +117,8 @@ return {
 	setShowHinge = "Overlay.setShowHinge",
 	setShowIsolatedElements = "Overlay.setShowIsolatedElements",
 	setShowWindowControlsOverlay = "Overlay.setShowWindowControlsOverlay",
+	inspectNodeRequested = "Overlay.inspectNodeRequested",
+	nodeHighlightRequested = "Overlay.nodeHighlightRequested",
+	screenshotRequested = "Overlay.screenshotRequested",
+	inspectModeCanceled = "Overlay.inspectModeCanceled",
 }

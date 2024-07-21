@@ -21,10 +21,14 @@ export type BridgeProtocolRequest = {
 export type BridgeProtocolResponse = {
 	id: number,
 	result: { [string]: any }?,
+} | {
+	method: string,
+	params: { [string]: any }?,
 }
 
 export type Bridge = {
-	sendOverProtocol: (Bridge, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }>,
+	sendOverProtocol: (Bridge, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
+	subscribeToEvent: (Browser, event: string, callback: (result: { [string]: any }?) -> ()) -> () -> (),
 	destroy: (Bridge) -> (),
 }
 
@@ -37,7 +41,7 @@ export type BrowserVersion = {
 }
 
 export type Browser = {
-	sendOverProtocol: (Browser, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }>,
+	sendOverProtocol: (Browser, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
 	getVersion: (Browser) -> Future<BrowserVersion>,
 	newTab: (Browser) -> Future<Tab>,
 	close: (Browser) -> Future<nil>,
@@ -81,7 +85,7 @@ export type PartialBrowserLaunchOptions = {
 }
 
 export type Tab = {
-	sendOverProtocol: (Tab, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }>,
+	sendOverProtocol: (Tab, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
 	getTargetId: (Tab) -> Future<string>,
 	getTargetInfo: (Tab) -> Future<Target.TargetInfo>,
 	getUrl: (Tab) -> Future<string>,

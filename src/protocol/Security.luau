@@ -54,4 +54,7 @@ return {
 	setIgnoreCertificateErrors = "Security.setIgnoreCertificateErrors",
 	handleCertificateError = "Security.handleCertificateError",
 	setOverrideCertificateErrors = "Security.setOverrideCertificateErrors",
+	certificateError = "Security.certificateError",
+	visibleSecurityStateChanged = "Security.visibleSecurityStateChanged",
+	securityStateChanged = "Security.securityStateChanged",
 }

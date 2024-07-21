@@ -38,4 +38,6 @@ return {
 	releaseSnapshot = "LayerTree.releaseSnapshot",
 	replaySnapshot = "LayerTree.replaySnapshot",
 	snapshotCommandLog = "LayerTree.snapshotCommandLog",
+	layerPainted = "LayerTree.layerPainted",
+	layerTreeDidChange = "LayerTree.layerTreeDidChange",
 }

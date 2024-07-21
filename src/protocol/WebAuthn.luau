@@ -42,4 +42,6 @@ return {
 	setUserVerified = "WebAuthn.setUserVerified",
 	setAutomaticPresenceSimulation = "WebAuthn.setAutomaticPresenceSimulation",
 	setCredentialProperties = "WebAuthn.setCredentialProperties",
+	credentialAdded = "WebAuthn.credentialAdded",
+	credentialAsserted = "WebAuthn.credentialAsserted",
 }

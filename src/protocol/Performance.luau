@@ -4,4 +4,5 @@ return {
 	enable = "Performance.enable",
 	setTimeDomain = "Performance.setTimeDomain",
 	getMetrics = "Performance.getMetrics",
+	metrics = "Performance.metrics",
 }

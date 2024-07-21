@@ -112,4 +112,6 @@ return {
 	getAXNodeAndAncestors = "Accessibility.getAXNodeAndAncestors",
 	getChildAXNodes = "Accessibility.getChildAXNodes",
 	queryAXTree = "Accessibility.queryAXTree",
+	loadComplete = "Accessibility.loadComplete",
+	nodesUpdated = "Accessibility.nodesUpdated",
 }

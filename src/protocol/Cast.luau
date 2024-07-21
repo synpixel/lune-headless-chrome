@@ -6,4 +6,6 @@ return {
 	startDesktopMirroring = "Cast.startDesktopMirroring",
 	startTabMirroring = "Cast.startTabMirroring",
 	stopCasting = "Cast.stopCasting",
+	sinksUpdated = "Cast.sinksUpdated",
+	issueUpdated = "Cast.issueUpdated",
 }

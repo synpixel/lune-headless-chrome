@@ -79,4 +79,5 @@ return {
 	setHardwareConcurrencyOverride = "Emulation.setHardwareConcurrencyOverride",
 	setUserAgentOverride = "Emulation.setUserAgentOverride",
 	setAutomationOverride = "Emulation.setAutomationOverride",
+	virtualTimeBudgetExpired = "Emulation.virtualTimeBudgetExpired",
 }

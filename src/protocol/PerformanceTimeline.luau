@@ -26,4 +26,5 @@ export type TimelineEvent = {
 }
 return {
 	enable = "PerformanceTimeline.enable",
+	timelineEventAdded = "PerformanceTimeline.timelineEventAdded",
 }

@@ -160,4 +160,9 @@ return {
 	stopRuleUsageTracking = "CSS.stopRuleUsageTracking",
 	takeCoverageDelta = "CSS.takeCoverageDelta",
 	setLocalFontsEnabled = "CSS.setLocalFontsEnabled",
+	fontsUpdated = "CSS.fontsUpdated",
+	mediaQueryResultChanged = "CSS.mediaQueryResultChanged",
+	styleSheetAdded = "CSS.styleSheetAdded",
+	styleSheetChanged = "CSS.styleSheetChanged",
+	styleSheetRemoved = "CSS.styleSheetRemoved",
 }
