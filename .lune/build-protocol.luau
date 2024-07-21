@@ -74,7 +74,7 @@ local function createFile(initialContents: string?): File
 end
 
 local function formatLuauWithStyLua(luau: string)
-	local result = process.spawn("stylua", { "-" }, { stdin = luau })
+	local result = process.spawn("stylua", { "-" }, { stdin = luau, shell = true })
 
 	if not result.ok then
 		error(result.stderr)
