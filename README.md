@@ -10,7 +10,7 @@ A headless chrome implementation for [Lune](https://github.com/lune-org/lune) ba
 local fs = require("@lune/fs")
 local chrome = require(...)
 
-local browser = chrome.createBrowser({ port = 3466 })
+local browser = chrome.createBrowser()
 local tab = browser:newTab():await()
 
 -- navigate to wikipedia
