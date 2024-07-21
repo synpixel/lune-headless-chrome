@@ -45,8 +45,8 @@ local function findAvailablePort(): number?
 	return nil
 end
 
-local function patchLaunchOptions(partialOptions: types.PartialBrowserLaunchOptions): types.BrowserLaunchOptions
-	local options = table.clone(partialOptions)
+local function patchLaunchOptions(partialOptions: types.PartialBrowserLaunchOptions?): types.BrowserLaunchOptions
+	local options = if partialOptions ~= nil then table.clone(partialOptions) else table.clone(DEFAULT_OPTIONS)
 
 	for key, default in DEFAULT_OPTIONS do
 		if options[key] == nil then

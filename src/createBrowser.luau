@@ -14,7 +14,7 @@ local function fetchBrowserProtocolInfo(port: number): Target.TargetInfo
 	return version
 end
 
-local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOptions): types.Browser
+local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOptions?): types.Browser
 	local launchOptions = patchLaunchOptions(partialLaunchOptions)
 
 	local launchResult = launchBrowser(launchOptions)
