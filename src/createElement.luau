@@ -22,24 +22,20 @@ local function useElementQuad(quad: { number }): {
 end
 
 local function extractElementPosition(remoteObject: Runtime.RemoteObject): types.Point
-	if typeof(remoteObject.preview) ~= "table" then
+	if remoteObject.preview == nil then
 		return { x = 0, y = 0 }
 	end
 
 	local properties = {}
 
-	local points = mapList(remoteObject.preview, function(preview)
-		for _, property in preview.properties do
-			properties[property.name] = tonumber(property.value)
-		end
+	for _, property in remoteObject.preview.properties do
+		properties[property.name] = tonumber(property.value)
+	end
 
-		return {
-			x = properties.x + properties.width / 2,
-			y = properties.y + properties.height / 2,
-		}
-	end)
-
-	return points
+	return {
+		x = properties.x + properties.width / 2,
+		y = properties.y + properties.height / 2,
+	}
 end
 
 local function createElement(tab: types.Tab, nodeId: number): types.Element
