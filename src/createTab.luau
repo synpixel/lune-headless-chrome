@@ -272,6 +272,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return mapFuture(
 			bridge:sendOverProtocol(DOM.querySelectorAll, { nodeId = nodeId, selector = selector }),
 			function(result)
+				if result == nil then
+					return {}
+				end
+
 				local nodeIds = filterList(result.nodeIds, function(nodeId)
 					return nodeId ~= 0
 				end)
