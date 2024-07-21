@@ -1,4 +1,5 @@
 # lune-headless-chrome
 
-headless chrome but lune (missing a lot of features)  
-check out an example at [browse-wikipedia.luau](/.lune/browse-wikipedia.luau)
+A headless chrome implementation for [Lune](https://github.com/lune-org/lune) based off of [the headless_chrome crate](https://github.com/rust-headless-chrome/rust-headless-chrome).
+
+Check out an example at [browse-wikipedia.luau](/.lune/browse-wikipedia.luau).
