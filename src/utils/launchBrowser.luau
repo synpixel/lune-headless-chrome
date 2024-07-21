@@ -35,6 +35,8 @@ local function launchBrowser(launchOptions: types.BrowserLaunchOptions): process
 
 	local arguments = {
 		"--remote-debugging-port=" .. launchOptions.port,
+		"--verbose",
+		"--log-level=0",
 		"--no-first-run",
 	}
 
@@ -89,12 +91,7 @@ local function launchBrowser(launchOptions: types.BrowserLaunchOptions): process
 		error("chrome path required")
 	end
 
-	local result = process.spawn(
-		launchOptions.path,
-		arguments,
-		{ shell = true, stdio = "forward", env = launchOptions.processEnvs }
-	)
-
+	local result = process.spawn(launchOptions.path, arguments, { shell = true, env = launchOptions.processEnvs })
 	return result
 end
 
