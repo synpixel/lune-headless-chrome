@@ -6,7 +6,7 @@ A headless chrome implementation for [Lune](https://github.com/lune-org/lune) ba
 
 > https://github.com/rust-headless-chrome/rust-headless-chrome/blob/main/README.md#quick-start
 
-```lua
+```luau
 local fs = require("@lune/fs")
 local chrome = require(...)
 
