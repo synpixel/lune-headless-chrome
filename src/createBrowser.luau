@@ -4,9 +4,11 @@ local launchBrowser = require("./utils/launchBrowser")
 local patchLaunchOptions = require("./utils/patchLaunchOptions")
 local createTab = require("./createTab")
 local Future = require("./packages/future")
+local Browser = require("./protocol/Browser")
+local Target = require("./protocol/Target")
 local types = require("./types")
 
-local function fetchBrowserProtocolInfo(port: number): types.TargetInfo
+local function fetchBrowserProtocolInfo(port: number): Target.TargetInfo
 	local response = net.request(`http://localhost:{port}/json/version`)
 	local version = net.jsonDecode(response.body)
 	return version
@@ -25,7 +27,7 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 	local browser = {}
 
 	function browser:getVersion()
-		return bridge:sendOverProtocol("Browser.getVersion")
+		return bridge:sendOverProtocol(Browser.getVersion)
 	end
 
 	function browser:newTab()
@@ -41,7 +43,7 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 	end
 
 	function browser:close()
-		return bridge:sendOverProtocol("Browser.close")
+		return bridge:sendOverProtocol(Browser.close)
 	end
 
 	return browser

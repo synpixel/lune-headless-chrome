@@ -1,7 +1,7 @@
-local function mapList<T, K>(array: { T }, transform: (value: T) -> K): { K }
+local function mapList<T, K>(list: { T }, transform: (value: T) -> K): { K }
 	local copy = {}
 
-	for _, value in array do
+	for _, value in list do
 		table.insert(copy, transform(value))
 	end
 

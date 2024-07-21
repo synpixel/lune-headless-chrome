@@ -1,33 +1,14 @@
 local Future = require("./packages/future")
+local Target = require("./protocol/Target")
+local Network = require("./protocol/Network")
+local DOM = require("./protocol/DOM")
+local Runtime = require("./protocol/Runtime")
+local Page = require("./protocol/Page")
+
+export type Future<T> = Future.Future<T>
 
 export type ProtocolInfo<ExtraInfo = {}> = ExtraInfo & {
 	webSocketDebuggerUrl: string,
-}
-
-export type TargetInfo = {
-	targetId: string,
-	-- https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22
-	type: "tab"
-		| "page"
-		| "iframe"
-		| "worker"
-		| "shared_worker"
-		| "service_worker"
-		| "worklet"
-		| "shared_storage_worklet"
-		| "browser"
-		| "webview"
-		| "other"
-		| "auction_worklet"
-		| "assistive_technology",
-	title: string,
-	url: string,
-	attached: boolean,
-	openerId: string?,
-	canAccessOpener: boolean,
-	openerFrameId: string?,
-	browserContextId: string?,
-	subtype: string?,
 }
 
 export type BridgeProtocolRequest = {
@@ -42,7 +23,7 @@ export type BridgeProtocolResponse = {
 }
 
 export type Bridge = {
-	sendOverProtocol: (Bridge, method: string, parameters: { [string]: any }?) -> Future.Future<{ [string]: any }>,
+	sendOverProtocol: (Bridge, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }>,
 	destroy: (Bridge) -> (),
 }
 
@@ -55,9 +36,9 @@ export type BrowserVersion = {
 }
 
 export type Browser = {
-	getVersion: (Browser) -> Future.Future<BrowserVersion>,
-	newTab: (Browser) -> Future.Future<Tab>,
-	close: (Browser) -> Future.Future<nil>,
+	getVersion: (Browser) -> Future<BrowserVersion>,
+	newTab: (Browser) -> Future<Tab>,
+	close: (Browser) -> Future<nil>,
 }
 
 export type BrowserLaunchOptions = {
@@ -98,168 +79,73 @@ export type PartialBrowserLaunchOptions = {
 }
 
 export type Tab = {
-	getTargetId: (Tab) -> Future.Future<string>,
-	getTargetInfo: (Tab) -> Future.Future<TargetInfo>,
-	getUrl: (Tab) -> Future.Future<string>,
-	getTitle: (Tab) -> Future.Future<string>,
-	navigateTo: (Tab, url: string) -> Future.Future<nil>,
-	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future.Future<nil>,
-	getCookies: (Tab) -> Future.Future<{ Cookie }>,
-	setCookies: (Tab, cookies: { CookieParameters }) -> Future.Future<nil>,
-	sendCharacter: (Tab, character: string) -> Future.Future<nil>,
-	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future.Future<buffer>,
-	evaluate: (Tab, expression: string, awaitPromise: boolean?) -> Future.Future<RemoteObject>,
-	enableDebugger: (Tab) -> Future.Future<nil>,
-	disableDebugger: (Tab) -> Future.Future<nil>,
-	close: (Tab) -> Future.Future<nil>,
+	sendOverProtocol: (Tab, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }>,
+	getTargetId: (Tab) -> Future<string>,
+	getTargetInfo: (Tab) -> Future<Target.TargetInfo>,
+	getUrl: (Tab) -> Future<string>,
+	getTitle: (Tab) -> Future<string>,
+	navigateTo: (Tab, url: string) -> Future<nil>,
+	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future<nil>,
+	getCookies: (Tab) -> Future<{ Network.Cookie }>,
+	setCookies: (Tab, cookies: { Network.CookieParam }) -> Future<nil>,
+	sendCharacters: (Tab, characters: string) -> Future<Tab>,
+	pressKey: (Tab, key: string) -> Future<Tab>,
+	moveMouseToPoint: (Tab, point: Point) -> Future<Tab>,
+	clickAtPoint: (Tab, point: Point) -> Future<Tab>,
+	captureScreenshot: (Tab, options: ScreenshotOptions) -> Future<buffer>,
+	evaluate: (Tab, expression: string, awaitPromise: boolean?) -> Future<Runtime.RemoteObject>,
+	getContent: (Tab) -> Future<string>,
+	describeNode: (Tab, nodeId: number) -> Future<DOM.Node>,
+	getDocument: (Tab) -> Future<DOM.Node>,
+	runQuerySelectorOnNode: (Tab, nodeId: number, selector: string) -> Future<Element?>,
+	runQuerySelectorAllOnNode: (Tab, nodeId: number, selector: string) -> Future<{ Element }>,
+	findElement: (Tab, selector: string) -> Future<Element?>,
+	findElementByXPath: (Tab, query: string) -> Future<Element?>,
+	findElements: (Tab, selector: string) -> Future<{ Element }>,
+	findElementsByXPath: (Tab, query: string) -> Future<{ Element }>,
+	waitForElement: (Tab, selector: string, timeout: number?) -> Future<Element?>,
+	waitForElementByXPath: (Tab, query: string, timeout: number?) -> Future<Element?>,
+	waitForElements: (Tab, selector: string, timeout: number?) -> Future<{ Element }>,
+	waitForElementsByXPath: (Tab, query: string, timeout: number?) -> Future<{ Element }>,
+	enableDebugger: (Tab) -> Future<nil>,
+	disableDebugger: (Tab) -> Future<nil>,
+	close: (Tab) -> Future<nil>,
 }
 
-export type CookieSameSite = "Strict" | "Lax" | "None"
-
-export type CookiePriority = "Low" | "Medium" | "High"
-
-export type CookieSourceScheme = "Unset" | "NonSecure" | "Secure"
-
-export type CookiePartitionKey = { topLevelSite: string, hasCrossSiteAncestor: boolean }
-
-export type CookieParameters = {
-	name: string,
-	value: string,
-	url: string?,
-	domain: string?,
-	path: string?,
-	secure: boolean?,
-	httpOnly: boolean?,
-	sameSite: CookieSameSite?,
-	expires: number?,
-	priority: CookiePriority?,
-	sameParty: boolean?,
-	sourceScheme: CookieSourceScheme?,
-	sourcePort: number?,
-	partitionKey: CookiePartitionKey?,
-}
-
-export type Cookie = {
-	name: string,
-	value: string,
-	domain: string,
-	path: string,
-	expires: number,
-	size: number,
-	httpOnly: boolean,
-	secure: boolean,
-	session: boolean,
-	sameSite: CookieSameSite?,
-	priority: CookiePriority,
-	sameParty: boolean,
-	sourceScheme: CookieSourceScheme,
-	sourcePort: number,
-	partitionKey: CookiePartitionKey?,
-	partitionKeyOpaque: boolean?,
-}
-
-export type Viewport = {
-	x: number,
-	y: number,
-	width: number,
-	height: number,
-	scale: number,
-}
+export type Point = { x: number, y: number }
 
 export type ScreenshotOptions = {
 	format: "jpeg" | "png" | "webp",
 	quality: number?,
-	clip: Viewport?,
+	clip: Page.Viewport?,
 	fromSurface: boolean?,
 	captureBeyondViewport: boolean?,
 	optimizeForSpeed: boolean?,
 }
 
-export type ObjectType = "object" | "function" | "undefined" | "string" | "number" | "boolean" | "symbol" | "bigint"
-
-export type ObjectSubtype =
-	"array"
-	| "null"
-	| "node"
-	| "regexp"
-	| "date"
-	| "map"
-	| "set"
-	| "weakmap"
-	| "weakset"
-	| "iterator"
-	| "generator"
-	| "error"
-	| "proxy"
-	| "promise"
-	| "typedarray"
-	| "arraybuffer"
-	| "dataview"
-	| "webassemblymemory"
-	| "wasmvalue"
-
-export type DeepSerializedValue = {
-	type: "undefined"
-		| "null"
-		| "string"
-		| "number"
-		| "boolean"
-		| "bigint"
-		| "regexp"
-		| "date"
-		| "symbol"
-		| "array"
-		| "object"
-		| "function"
-		| "map"
-		| "set"
-		| "weakmap"
-		| "weakset"
-		| "error"
-		| "proxy"
-		| "promise"
-		| "typedarray"
-		| "arraybuffer"
-		| "node"
-		| "window"
-		| "generator",
-	value: any?,
-	objectId: string?,
-	weakLocalObjectReference: number?,
-}
-
-export type ObjectPreview = {
-	type: ObjectType,
-	subtype: ObjectSubtype?,
-	description: string?,
-	overflow: boolean,
-	properties: { PropertyPreview },
-	entries: { EntryPreview }?,
-}
-
-export type PropertyPreview = {
-	name: string,
-	type: ObjectType,
-	value: string?,
-	valuePreview: ObjectPreview?,
-	subtype: ObjectSubtype?,
-}
-
-export type EntryPreview = { key: ObjectPreview?, value: ObjectPreview }
-
-export type CustomPreview = { header: string, bodyGetterId: string? }
-
-export type RemoteObject = {
-	type: ObjectType,
-	subtype: ObjectSubtype?,
-	className: string?,
-	value: any?,
-	unserializableValue: string?,
-	description: string?,
-	deepSerializedValue: DeepSerializedValue?,
-	objectId: string?,
-	preview: ObjectPreview?,
-	customPreview: CustomPreview?,
+export type Element = {
+	getDescription: (Element) -> Future<DOM.Node>,
+	getAttributes: (Element) -> Future<{ [string]: string }>,
+	findElement: (Element, selector: string) -> Future<Element?>,
+	findElementByXPath: (Element, query: string) -> Future<Element?>,
+	findElements: (Element, selector: string) -> Future<{ Element }>,
+	findElementsByXPath: (Element, query: string) -> Future<{ Element }>,
+	waitForElement: (Element, selector: string, timeout: number?) -> Future<Element?>,
+	waitForElementByXPath: (Element, query: string, timeout: number?) -> Future<Element?>,
+	waitForElements: (Element, selector: string, timeout: number?) -> Future<{ Element }>,
+	waitForElementsByXPath: (Element, query: string, timeout: number?) -> Future<{ Element }>,
+	callFunction: (
+		Element,
+		declaration: string,
+		arguments: { any }?,
+		awaitPromise: boolean?
+	) -> Future<Runtime.RemoteObject>,
+	getPosition: (Element) -> Future<Point>,
+	scrollIntoView: (Element) -> Future<Element>,
+	moveMouseOver: (Element) -> Future<Element>,
+	click: (Element) -> Future<Element>,
+	sendCharactersInto: (Element, characters: string) -> Future<Element>,
+	focus: (Element) -> Future<Element>,
 }
 
 return nil
