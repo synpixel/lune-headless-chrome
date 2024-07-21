@@ -37,6 +37,7 @@ export type BrowserVersion = {
 }
 
 export type Browser = {
+	sendOverProtocol: (Browser, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }>,
 	getVersion: (Browser) -> Future<BrowserVersion>,
 	newTab: (Browser) -> Future<Tab>,
 	close: (Browser) -> Future<nil>,
@@ -108,6 +109,8 @@ export type Tab = {
 	waitForElementByXPath: (Tab, query: string, timeout: number?) -> Future<Element?>,
 	waitForElements: (Tab, selector: string, timeout: number?) -> Future<{ Element }>,
 	waitForElementsByXPath: (Tab, query: string, timeout: number?) -> Future<{ Element }>,
+	getBounds: (Tab) -> Future<Browser.Bounds>,
+	setBounds: (Tab, bounds: Browser.Bounds) -> Future<Tab>,
 	enableDebugger: (Tab) -> Future<nil>,
 	disableDebugger: (Tab) -> Future<nil>,
 	close: (Tab) -> Future<nil>,

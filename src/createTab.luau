@@ -14,10 +14,11 @@ local Network = require("./protocol/Network")
 local Input = require("./protocol/Input")
 local DOM = require("./protocol/DOM")
 local Runtime = require("./protocol/Runtime")
+local Browser = require("./protocol/Browser")
 local Debugger = require("./protocol/Debugger")
 local types = require("./types")
 
-local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): types.Tab
+local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInfo<{ id: string }>): types.Tab
 	local socket = net.socket(protocolInfo.webSocketDebuggerUrl)
 	local bridge = createBridge(socket)
 
@@ -28,7 +29,7 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 	end
 
 	function tab:getTargetId()
-		return protocolInfo.id
+		return Future.new(protocolInfo.id)
 	end
 
 	function tab:getTargetInfo()
@@ -326,6 +327,30 @@ local function createTab(protocolInfo: types.ProtocolInfo<{ id: string }>): type
 		return waitFor(function()
 			return tab:findElementsByXPath(query):await()
 		end, timeout)
+	end
+
+	function tab:getBounds()
+		return Future.spawn(function()
+			local targetId = tab:getTargetId():await()
+			local result = browser:sendOverProtocol(Browser.getWindowForTarget, { targetId = targetId }):await()
+			return result.bounds
+		end)
+	end
+
+	function tab:setBounds(bounds)
+		return Future.spawn(function()
+			local targetId = tab:getTargetId():await()
+			local result = browser:sendOverProtocol(Browser.getWindowForTarget, { targetId = targetId }):await()
+
+			browser
+				:sendOverProtocol(Browser.setWindowBounds, {
+					windowId = result.windowId,
+					bounds = bounds,
+				})
+				:await()
+
+			return tab
+		end)
 	end
 
 	function tab:enableDebugger()

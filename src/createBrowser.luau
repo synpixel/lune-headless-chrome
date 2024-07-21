@@ -1,6 +1,5 @@
 local net = require("@lune/net")
 local createBridge = require("./createBridge")
-local mapFuture = require("./utils/mapFuture")
 local launchBrowser = require("./utils/launchBrowser")
 local patchLaunchOptions = require("./utils/patchLaunchOptions")
 local createTab = require("./createTab")
@@ -27,6 +26,10 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 
 	local browser = {}
 
+	function browser:sendOverProtocol(method, parameters)
+		return bridge:sendOverProtocol(method, parameters)
+	end
+
 	function browser:getVersion()
 		return bridge:sendOverProtocol(Browser.getVersion)
 	end
@@ -39,7 +42,7 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 			})
 
 			local protocolInfo: types.ProtocolInfo<{ id: string }> = net.jsonDecode(response.body)
-			return createTab(protocolInfo)
+			return createTab(browser, protocolInfo)
 		end)
 	end
 
