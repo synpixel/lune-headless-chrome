@@ -93,6 +93,8 @@ local function launchBrowser(launchOptions: types.BrowserLaunchOptions): process
 		env = launchOptions.processEnvs,
 	})
 
+	assert(result.ok, result.stderr)
+
 	return result
 end
 
