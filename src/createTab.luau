@@ -1,4 +1,5 @@
 local net = require("@lune/net")
+local serde = require("@lune/serde")
 local Regex = require("@lune/regex")
 local createBridge = require("./createBridge")
 local createElement = require("./createElement")
@@ -59,6 +60,26 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 			acceptLanguage = acceptLanguage,
 			platform = platform,
 		})
+	end
+
+	function tab:getStorage(itemName)
+		return Future.spawn(function()
+			local object = tab:evaluate(`localStorage.getItem("{itemName}")`):await()
+			return serde.decode("json", object.value)
+		end)
+	end
+
+	function tab:setStorage(itemName, item)
+		return Future.spawn(function()
+			local value = serde.encode("json", item)
+			tab:evaluate(`localStorage.setItem("{itemName}", JSON.stringify({value}))`):await()
+		end)
+	end
+
+	function tab:removeStorage(itemName)
+		return Future.spawn(function()
+			tab:evaluate(`localStorage.removeItem("{itemName}")`):await()
+		end)
 	end
 
 	function tab:navigateTo(url)
