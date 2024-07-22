@@ -5,6 +5,7 @@ local Network = require("./protocol/Network")
 local DOM = require("./protocol/DOM")
 local Runtime = require("./protocol/Runtime")
 local Page = require("./protocol/Page")
+local Profiler = require("./protocol/Profiler")
 
 export type Future<T> = Future.Future<T>
 
@@ -135,8 +136,9 @@ export type Tab = {
 	enableStealthMode: (Tab) -> Future<nil>,
 	enableProfiler: (Tab) -> Future<Tab>,
 	disableProfiler: (Tab) -> Future<Tab>,
-	startJSCoverage: (Tab) -> Future<Tab>,
-	stopJSCoverage: (Tab) -> Future<Tab>,
+	startPreciseJSCoverage: (Tab) -> Future<Tab>,
+	stopPreciseJSCoverage: (Tab) -> Future<Tab>,
+	takePreciseJSCoverage: (Tab) -> Future<{ Profiler.ScriptCoverage }>,
 	enableDebugger: (Tab) -> Future<nil>,
 	disableDebugger: (Tab) -> Future<nil>,
 	getScriptSource: (Tab, scriptId: Runtime.ScriptId) -> Future<string>,
