@@ -100,6 +100,7 @@ export type Tab = {
 	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future<nil>,
 	getCookies: (Tab) -> Future<{ Network.Cookie }>,
 	setCookies: (Tab, cookies: { Network.CookieParam }) -> Future<nil>,
+	deleteCookies: (Tab, cookies: { DeleteCookie }) -> Future<nil>,
 	sendCharacters: (Tab, characters: string) -> Future<Tab>,
 	pressKey: (Tab, key: string) -> Future<Tab>,
 	moveMouseToPoint: (Tab, point: Point) -> Future<Tab>,
@@ -135,6 +136,14 @@ export type Tab = {
 	enableDebugger: (Tab) -> Future<nil>,
 	disableDebugger: (Tab) -> Future<nil>,
 	close: (Tab) -> Future<nil>,
+}
+
+export type DeleteCookie = {
+	name: string,
+	url: string?,
+	domain: string?,
+	path: string?,
+	partitionKey: Network.CookiePartitionKey?,
 }
 
 export type Point = { x: number, y: number }

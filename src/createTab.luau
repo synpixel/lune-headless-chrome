@@ -98,8 +98,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 
 	function tab:getCookies()
 		return Future.spawn(function()
-			local url = tab:getUrl():await()
-			local result = bridge:sendOverProtocol(Network.getCookies, { urls = { url } }):await()
+			local result = bridge:sendOverProtocol(Network.getCookies):await()
 			return result.cookies
 		end)
 	end
@@ -107,9 +106,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	function tab:setCookies(cookies)
 		return Future.spawn(function()
 			local url = tab:getUrl():await()
+			local startsWithHttp = url:find("^http") ~= nil
 
 			local patchedCookies = mapList(cookies, function(cookie)
-				if cookie.url ~= nil then
+				if cookie.url ~= nil and not startsWithHttp then
 					return cookie
 				end
 
@@ -118,7 +118,31 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 				return copy
 			end)
 
-			return bridge:sendOverProtocol(Network.setCookies, { cookies = patchedCookies }):await()
+			tab:deleteCookies(patchedCookies):await()
+			bridge:sendOverProtocol(Network.setCookies, { cookies = patchedCookies }):await()
+		end)
+	end
+
+	function tab:deleteCookies(cookies)
+		return Future.spawn(function()
+			local url = tab:getUrl():await()
+			local startsWithHttp = url:find("^http") ~= nil
+
+			local patchedCookies = mapList(cookies, function(cookie)
+				if cookie.url ~= nil and not startsWithHttp then
+					return cookie
+				end
+
+				local copy = table.clone(cookie)
+				copy.url = url
+				return copy
+			end)
+
+			local futures = mapList(patchedCookies, function(cookie)
+				return bridge:sendOverProtocol(Network.deleteCookies, cookie)
+			end)
+
+			return Future.all(futures):await()
 		end)
 	end
 
