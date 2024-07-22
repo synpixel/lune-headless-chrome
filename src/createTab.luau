@@ -158,7 +158,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return Future.spawn(function()
 			local definition = qwerty.findKeyDefinition(key)
 			if definition == nil then
-				return
+				return tab
 			end
 
 			local text = definition.text
