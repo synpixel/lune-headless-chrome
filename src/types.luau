@@ -133,6 +133,8 @@ export type Tab = {
 	bypassPlugins: (Tab) -> Future<nil>,
 	bypassWebGLVendor: (Tab) -> Future<nil>,
 	enableStealthMode: (Tab) -> Future<nil>,
+	enableProfiler: (Tab) -> Future<nil>,
+	disableProfiler: (Tab) -> Future<nil>,
 	enableDebugger: (Tab) -> Future<nil>,
 	disableDebugger: (Tab) -> Future<nil>,
 	close: (Tab) -> Future<nil>,

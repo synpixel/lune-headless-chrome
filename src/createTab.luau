@@ -17,6 +17,7 @@ local Input = require("./protocol/Input")
 local DOM = require("./protocol/DOM")
 local Runtime = require("./protocol/Runtime")
 local Browser = require("./protocol/Browser")
+local Profiler = require("./protocol/Profiler")
 local Debugger = require("./protocol/Debugger")
 local types = require("./types")
 
@@ -519,6 +520,14 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 			tab:bypassPlugins():await()
 			tab:bypassWebGLVendor():await()
 		end)
+	end
+
+	function tab:enableProfiler()
+		return bridge:sendOverProtocol(Profiler.enable)
+	end
+
+	function tab:disableProfiler()
+		return bridge:sendOverProtocol(Profiler.disable)
 	end
 
 	function tab:enableDebugger()
