@@ -523,11 +523,31 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:enableProfiler()
-		return bridge:sendOverProtocol(Profiler.enable)
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Profiler.enable):await()
+			return tab
+		end)
 	end
 
 	function tab:disableProfiler()
-		return bridge:sendOverProtocol(Profiler.disable)
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Profiler.disable):await()
+			return tab
+		end)
+	end
+
+	function tab:startJSCoverage()
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Profiler.startPreciseCoverage, { callCount = true, detailed = true }):await()
+			return tab
+		end)
+	end
+
+	function tab:stopJSCoverage()
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Profiler.stopPreciseCoverage):await()
+			return tab
+		end)
 	end
 
 	function tab:enableDebugger()
