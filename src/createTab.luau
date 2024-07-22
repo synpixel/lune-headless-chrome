@@ -265,6 +265,21 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return bridge:sendOverProtocol(Page.screencastFrameAck, { sessionId = sessionId })
 	end
 
+	function tab:printToPDF(options)
+		local patchedOptions = options
+
+		if options ~= nil then
+			patchedOptions = table.clone(options)
+			patchedOptions.transferMode = "ReturnAsBase64"
+		end
+
+		return Future.spawn(function()
+			local result = bridge:sendOverProtocol(Page.printToPDF, patchedOptions):await()
+			local data = buffer.fromstring(result.data)
+			return base64.decode(data)
+		end)
+	end
+
 	function tab:evaluate(expression, awaitPromise)
 		return Future.spawn(function()
 			local result = bridge

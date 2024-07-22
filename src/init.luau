@@ -15,6 +15,7 @@ export type ScreenshotOptions = types.ScreenshotOptions
 export type ElementScreenshotOptions = types.ElementScreenshotOptions
 export type ScreencastOptions = types.ScreencastOptions
 export type ScreencastFrame = types.ScreencastFrame
+export type PrintToPDFOptions = types.PrintToPDFOptions
 
 return {
 	createBrowser = createBrowser,

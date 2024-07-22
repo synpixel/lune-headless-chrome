@@ -111,6 +111,7 @@ export type Tab = {
 	stopScreencast: (Tab) -> Future<nil>,
 	onScreencastFrame: (Tab, callback: (frame: ScreencastFrame) -> ()) -> () -> (),
 	acknowledgeScreencastFrame: (Tab, sessionId: number) -> Future<nil>,
+	printToPDF: (Tab, options: PrintToPDFOptions?) -> Future<buffer>,
 	evaluate: (Tab, expression: string, awaitPromise: boolean?) -> Future<Runtime.RemoteObject>,
 	getContent: (Tab) -> Future<string>,
 	describeNode: (Tab, nodeId: DOM.NodeId) -> Future<DOM.Node>,
@@ -197,6 +198,26 @@ export type ScreencastFrame = {
 	data: buffer,
 	metadata: Page.ScreencastFrameMetadata,
 	sessionId: number,
+}
+
+export type PrintToPDFOptions = {
+	landscape: boolean?,
+	displayHeaderFooter: boolean?,
+	printBackground: boolean?,
+	scale: number?,
+	paperWidth: number?,
+	paperHeight: number?,
+	marginTop: number?,
+	marginBottom: number?,
+	marginLeft: number?,
+	marginRight: number?,
+	pageRanges: string?,
+	headerTemplate: string?,
+	footerTemplate: string?,
+	preferCSSPageSize: boolean?,
+	-- transferMode: ("ReturnAsBase64" | "ReturnAsStream")?,
+	generateTaggedPDF: boolean?,
+	generateDocumentOutline: boolean?,
 }
 
 export type Element = {
