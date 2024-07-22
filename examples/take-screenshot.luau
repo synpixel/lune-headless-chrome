@@ -21,6 +21,8 @@ fs.writeFile("screenshot.jpeg", jpegScreenshot)
 
 local pngScreenshot = tab:navigateTo("https://en.wikipedia.org/wiki/WebKit")
 	:await()
+	:waitUntilNavigated()
+	:await()
 	:waitForElement("#mw-content-text > div > table.infobox.vevent")
 	:await()
 	:captureScreenshot({ format = "png" })
