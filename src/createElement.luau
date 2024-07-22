@@ -1,5 +1,4 @@
 local mapList = require("./utils/mapList")
-local mapFuture = require("./utils/mapFuture")
 local waitUntil = require("./utils/waitUntil")
 local pointUtils = require("./utils/pointUtils")
 local Future = require("./packages/future")
@@ -45,12 +44,14 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 	local element = {}
 
 	function element:getDescription()
-		return mapFuture(
-			tab:sendOverProtocol(DOM.describeNode, { backendNodeId = node.backendNodeId, depth = 100 }),
-			function(result)
-				return result.node
-			end
-		)
+		return Future.spawn(function()
+			local result = tab:sendOverProtocol(DOM.describeNode, {
+				backendNodeId = node.backendNodeId,
+				depth = 100,
+			}):await()
+
+			return result.node
+		end)
 	end
 
 	function element:getAttributes()
@@ -114,8 +115,8 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 			end)
 		end
 
-		return mapFuture(
-			tab:sendOverProtocol(Runtime.callFunctionOn, {
+		return Future.spawn(function()
+			local result = tab:sendOverProtocol(Runtime.callFunctionOn, {
 				objectId = object.objectId,
 				functionDeclaration = declaration,
 				arguments = mappedArguments,
@@ -123,11 +124,10 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 				generatePreview = true,
 				silent = false,
 				awaitPromise = awaitPromise,
-			}),
-			function(result)
-				return result.result
-			end
-		)
+			}):await()
+
+			return result.result
+		end)
 	end
 
 	function element:getPosition()
@@ -165,8 +165,10 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 	end
 
 	function element:getBoxModel()
-		return mapFuture(tab:sendOverProtocol(DOM.getBoxModel, { backendNodeId = node.backendNodeId }), function(result)
+		return Future.spawn(function()
+			local result = tab:sendOverProtocol(DOM.getBoxModel, { backendNodeId = node.backendNodeId }):await()
 			local model = result.model
+
 			return {
 				content = useElementQuad(model.content),
 				padding = useElementQuad(model.padding),
@@ -241,7 +243,7 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 
 	function element:focus()
 		return Future.spawn(function()
-			element:scrollIntoView()
+			element:scrollIntoView():await()
 			tab:sendOverProtocol(DOM.focus, {
 				backendNodeId = node.backendNodeId,
 			}):await()

@@ -5,7 +5,6 @@ local createBridge = require("./createBridge")
 local createElement = require("./createElement")
 local mapList = require("./utils/mapList")
 local filterList = require("./utils/filterList")
-local mapFuture = require("./utils/mapFuture")
 local waitUntil = require("./utils/waitUntil")
 local qwerty = require("./utils/qwerty")
 local Future = require("./packages/future")
@@ -44,13 +43,15 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:getUrl()
-		return mapFuture(tab:getTargetInfo(), function(targetInfo)
+		return Future.spawn(function()
+			local targetInfo = tab:getTargetInfo():await()
 			return targetInfo.url
 		end)
 	end
 
 	function tab:getTitle()
-		return mapFuture(tab:getTargetInfo(), function(targetInfo)
+		return Future.spawn(function()
+			local targetInfo = tab:getTargetInfo():await()
 			return targetInfo.title
 		end)
 	end
@@ -71,16 +72,12 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:setStorage(itemName, item)
-		return Future.spawn(function()
-			local value = serde.encode("json", item)
-			tab:evaluate(`localStorage.setItem("{itemName}", JSON.stringify({value}))`):await()
-		end)
+		local value = serde.encode("json", item)
+		return tab:evaluate(`localStorage.setItem("{itemName}", JSON.stringify({value}))`)
 	end
 
 	function tab:removeStorage(itemName)
-		return Future.spawn(function()
-			tab:evaluate(`localStorage.removeItem("{itemName}")`):await()
-		end)
+		return tab:evaluate(`localStorage.removeItem("{itemName}")`)
 	end
 
 	function tab:navigateTo(url)
@@ -237,7 +234,8 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:captureScreenshot(options)
-		return mapFuture(bridge:sendOverProtocol(Page.captureScreenshot, options), function(result)
+		return Future.spawn(function()
+			local result = bridge:sendOverProtocol(Page.captureScreenshot, options):await()
 			local data = buffer.fromstring(result.data)
 			return base64.decode(data)
 		end)
@@ -268,20 +266,21 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:evaluate(expression, awaitPromise)
-		return mapFuture(
-			bridge:sendOverProtocol(Runtime.evaluate, {
-				expression = expression,
-				returnByValue = false,
-				generatePreview = true,
-				silent = false,
-				awaitPromise = awaitPromise,
-				includeCommandLineAPI = false,
-				userGesture = false,
-			}),
-			function(result)
-				return result.result
-			end
-		)
+		return Future.spawn(function()
+			local result = bridge
+				:sendOverProtocol(Runtime.evaluate, {
+					expression = expression,
+					returnByValue = false,
+					generatePreview = true,
+					silent = false,
+					awaitPromise = awaitPromise,
+					includeCommandLineAPI = false,
+					userGesture = false,
+				})
+				:await()
+
+			return result.result
+		end)
 	end
 
 	function tab:getContent()
@@ -294,53 +293,59 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 			content
 		]]
 
-		return mapFuture(tab:evaluate(expression), function(result)
+		return Future.spawn(function()
+			local result = tab:evaluate(expression):await()
 			return result.value
 		end)
 	end
 
 	function tab:describeNode(nodeId)
-		return mapFuture(bridge:sendOverProtocol(DOM.describeNode, { nodeId = nodeId, depth = 100 }), function(result)
+		return Future.spawn(function()
+			local result = bridge:sendOverProtocol(DOM.describeNode, { nodeId = nodeId, depth = 100 }):await()
 			return result.node
 		end)
 	end
 
 	function tab:getDocument()
-		return mapFuture(bridge:sendOverProtocol(DOM.getDocument, { depth = 0, pierce = false }), function(result)
+		return Future.spawn(function()
+			local result = bridge:sendOverProtocol(DOM.getDocument, { depth = 0, pierce = false }):await()
 			return result.root
 		end)
 	end
 
 	function tab:runQuerySelectorOnNode(nodeId, selector)
-		return mapFuture(
-			bridge:sendOverProtocol(DOM.querySelector, { nodeId = nodeId, selector = selector }),
-			function(result)
-				if result == nil or result.nodeId == 0 then
-					return
-				end
+		return Future.spawn(function()
+			local result = bridge:sendOverProtocol(DOM.querySelector, { nodeId = nodeId, selector = selector }):await()
 
-				return createElement(tab, result.nodeId)
+			if result == nil or result.nodeId == 0 then
+				return
 			end
-		)
+
+			return createElement(tab, result.nodeId)
+		end)
 	end
 
 	function tab:runQuerySelectorAllOnNode(nodeId, selector)
-		return mapFuture(
-			bridge:sendOverProtocol(DOM.querySelectorAll, { nodeId = nodeId, selector = selector }),
-			function(result)
-				if result == nil then
-					return {}
-				end
+		return Future.spawn(function()
+			local result = bridge
+				:sendOverProtocol(DOM.querySelectorAll, {
+					nodeId = nodeId,
+					selector = selector,
+				})
+				:await()
 
-				local nodeIds = filterList(result.nodeIds, function(nodeId)
-					return nodeId ~= 0
-				end)
-
-				return mapList(nodeIds, function(nodeId)
-					return createElement(tab, nodeId)
-				end)
+			if result == nil then
+				return {}
 			end
-		)
+
+			local nodeIds = filterList(result.nodeIds, function(nodeId)
+				return nodeId ~= 0
+			end)
+
+			return mapList(nodeIds, function(nodeId)
+				return createElement(tab, nodeId)
+			end)
+		end)
 	end
 
 	function tab:findElement(selector)
@@ -354,8 +359,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return Future.spawn(function()
 			tab:getDocument():await()
 
-			local result = tab:sendOverProtocol(DOM.performSearch, { query = query, includeUserAgentShadowDOM = true })
-				:await()
+			local result = tab:sendOverProtocol(DOM.performSearch, {
+				query = query,
+				includeUserAgentShadowDOM = true,
+			}):await()
 
 			local searchResults = tab:sendOverProtocol(
 				DOM.getSearchResults,
@@ -378,8 +385,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return Future.spawn(function()
 			tab:getDocument():await()
 
-			local result = tab:sendOverProtocol(DOM.performSearch, { query = query, includeUserAgentShadowDOM = true })
-				:await()
+			local result = tab:sendOverProtocol(DOM.performSearch, {
+				query = query,
+				includeUserAgentShadowDOM = true,
+			}):await()
 
 			local searchResults = tab:sendOverProtocol(
 				DOM.getSearchResults,
