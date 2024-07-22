@@ -98,6 +98,7 @@ export type Tab = {
 	setStorage: (Tab, itemName: string, item: any) -> Future<nil>,
 	removeStorage: (Tab, itemName: string) -> Future<nil>,
 	navigateTo: (Tab, url: string) -> Future<Tab>,
+	waitUntilNavigated: (Tab) -> Future<Tab>,
 	reload: (Tab, ignoreCache: boolean?, scriptToEvaluateOnLoad: string?) -> Future<nil>,
 	getCookies: (Tab) -> Future<{ Network.Cookie }>,
 	setCookies: (Tab, cookies: { Network.CookieParam }) -> Future<nil>,

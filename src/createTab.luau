@@ -24,6 +24,18 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	local socket = net.socket(protocolInfo.webSocketDebuggerUrl)
 	local bridge = createBridge(socket)
 
+	local isNavigating = false
+
+	bridge:subscribeToEvent(Page.lifecycleEvent, function(parameters)
+		if parameters.name == "networkAlmostIdle" then
+			isNavigating = false
+		elseif parameters.name == "init" then
+			isNavigating = true
+		end
+	end)
+
+	bridge:sendOverProtocol(Page.setLifecycleEventsEnabled, { enabled = true }):await()
+
 	local tab = {}
 
 	function tab:sendOverProtocol(method, parameters)
@@ -84,6 +96,12 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return Future.spawn(function()
 			bridge:sendOverProtocol(Page.navigate, { url = url }):await()
 			return tab
+		end)
+	end
+
+	function tab:waitUntilNavigated()
+		return waitUntil(function()
+			return not isNavigating, tab
 		end)
 	end
 
