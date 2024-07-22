@@ -538,6 +538,13 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return bridge:sendOverProtocol(Debugger.disable)
 	end
 
+	function tab:getScriptSource(scriptId)
+		return Future.spawn(function()
+			local result = bridge:sendOverProtocol(Debugger.getScriptSource, { scriptId = scriptId }):await()
+			return result.scriptSource
+		end)
+	end
+
 	function tab:close()
 		return bridge:sendOverProtocol(Page.close)
 	end

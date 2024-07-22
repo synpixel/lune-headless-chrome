@@ -137,6 +137,7 @@ export type Tab = {
 	disableProfiler: (Tab) -> Future<nil>,
 	enableDebugger: (Tab) -> Future<nil>,
 	disableDebugger: (Tab) -> Future<nil>,
+	getScriptSource: (Tab, scriptId: Runtime.ScriptId) -> Future<string>,
 	close: (Tab) -> Future<nil>,
 }
 
