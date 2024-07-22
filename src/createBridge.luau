@@ -92,7 +92,7 @@ local function createBridge(socket: net.WebSocket): types.Bridge
 		end
 	end
 
-	function bridge:destroy()
+	function bridge:close()
 		if responseStreamThread == nil then
 			return
 		end

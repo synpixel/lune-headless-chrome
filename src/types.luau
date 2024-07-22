@@ -32,7 +32,7 @@ export type BridgeProtocolEvent = {
 export type Bridge = {
 	sendOverProtocol: (Bridge, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
 	subscribeToEvent: (Bridge, event: string, callback: (result: { [string]: any }?) -> ()) -> () -> (),
-	destroy: (Bridge) -> (),
+	close: (Bridge) -> (),
 }
 
 export type BrowserVersion = {
