@@ -5,10 +5,9 @@ local patchLaunchOptions = require("./utils/patchLaunchOptions")
 local createTab = require("./createTab")
 local Future = require("./packages/future")
 local Browser = require("./protocol/Browser")
-local Target = require("./protocol/Target")
 local types = require("./types")
 
-local function fetchBrowserProtocolInfo(port: number): Target.TargetInfo
+local function fetchBrowserProtocolInfo(port: number): types.ProtocolInfo
 	local response = net.request(`http://localhost:{port}/json/version`)
 	local version = net.jsonDecode(response.body)
 	return version
