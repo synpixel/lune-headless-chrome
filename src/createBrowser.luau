@@ -44,6 +44,7 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 	end
 
 	function browser:close()
+		bridge:close()
 		return bridge:sendOverProtocol(Browser.close)
 	end
 

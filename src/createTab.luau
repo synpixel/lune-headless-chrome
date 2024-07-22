@@ -586,6 +586,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:close()
+		bridge:close()
 		return bridge:sendOverProtocol(Page.close)
 	end
 
