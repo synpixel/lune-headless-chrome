@@ -1,6 +1,6 @@
 local mapList = require("./utils/mapList")
 local mapFuture = require("./utils/mapFuture")
-local waitFor = require("./utils/waitFor")
+local waitUntil = require("./utils/waitUntil")
 local pointUtils = require("./utils/pointUtils")
 local Future = require("./packages/future")
 local DOM = require("./protocol/DOM")
@@ -67,38 +67,42 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 	end
 
 	function element:findElement(selector)
-		return tab:runQuerySelectorOnNode(nodeId, selector):await()
+		return tab:runQuerySelectorOnNode(nodeId, selector)
 	end
 
 	element.findElementByXPath = tab.findElementByXPath :: any
 
 	function element:findElements(selector)
-		return tab:runQuerySelectorAllOnNode(nodeId, selector):await()
+		return tab:runQuerySelectorAllOnNode(nodeId, selector)
 	end
 
 	element.findElementsByXPath = tab.findElementsByXPath :: any
 
 	function element:waitForElement(selector, timeout)
-		return waitFor(function()
-			return element:findElement(selector)
+		return waitUntil(function()
+			local otherElement = element:findElement(selector):await()
+			return otherElement ~= nil, otherElement
 		end, timeout)
 	end
 
 	function element:waitForElementByXPath(query, timeout)
-		return waitFor(function()
-			return element:findElementByXPath(query)
+		return waitUntil(function()
+			local otherElement = element:findElementByXPath(query):await()
+			return otherElement ~= nil, otherElement
 		end, timeout)
 	end
 
 	function element:waitForElements(selector, timeout)
-		return waitFor(function()
-			return element:findElements(selector):await()
+		return waitUntil(function()
+			local otherElements = element:findElements(selector):await()
+			return #otherElements > 0, otherElements
 		end, timeout)
 	end
 
 	function element:waitForElementsByXPath(query, timeout)
-		return waitFor(function()
-			return element:findElementsByXPath(query):await()
+		return waitUntil(function()
+			local otherElements = element:findElementsByXPath(query):await()
+			return #otherElements > 0, otherElements
 		end, timeout)
 	end
 
@@ -137,7 +141,7 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 				return { x = point.x / 2, y = point.y / 2 }
 			end
 
-			local position = waitFor(function()
+			local position = waitUntil(function()
 				local declaration = [[
 					function() {
 						let rect = this.getBoundingClientRect();
@@ -150,10 +154,10 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 				local point = extractElementPosition(result)
 
 				if point.x == 0 then
-					return nil
+					return false, nil
 				end
 
-				return point
+				return true, point
 			end)
 
 			return position:await()

@@ -6,7 +6,7 @@ local createElement = require("./createElement")
 local mapList = require("./utils/mapList")
 local filterList = require("./utils/filterList")
 local mapFuture = require("./utils/mapFuture")
-local waitFor = require("./utils/waitFor")
+local waitUntil = require("./utils/waitUntil")
 local qwerty = require("./utils/qwerty")
 local Future = require("./packages/future")
 local base64 = require("./packages/base64")
@@ -393,26 +393,30 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:waitForElement(selector, timeout)
-		return waitFor(function()
-			return tab:findElement(selector):await()
+		return waitUntil(function()
+			local element = tab:findElement(selector):await()
+			return element ~= nil, element
 		end, timeout)
 	end
 
 	function tab:waitForElementByXPath(query, timeout)
-		return waitFor(function()
-			return tab:findElementByXPath(query):await()
+		return waitUntil(function()
+			local element = tab:findElementByXPath(query):await()
+			return element ~= nil, element
 		end, timeout)
 	end
 
 	function tab:waitForElements(selector, timeout)
-		return waitFor(function()
-			return tab:findElements(selector):await()
+		return waitUntil(function()
+			local elements = tab:findElements(selector):await()
+			return #elements > 0, elements
 		end, timeout)
 	end
 
 	function tab:waitForElementsByXPath(query, timeout)
-		return waitFor(function()
-			return tab:findElementsByXPath(query):await()
+		return waitUntil(function()
+			local elements = tab:findElementsByXPath(query):await()
+			return #elements > 0, elements
 		end, timeout)
 	end
 
