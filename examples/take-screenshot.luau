@@ -8,7 +8,13 @@ local tab = browser:newTab():await()
 
 local jpegScreenshot = tab:navigateTo("https://www.wikipedia.org/")
 	:await()
-	:captureScreenshot({ format = "jpeg", quality = 75, fromSurface = true })
+	:waitUntilNavigated()
+	:await()
+	:captureScreenshot({
+		format = "jpeg",
+		quality = 75,
+		fromSurface = true,
+	})
 	:await()
 
 fs.writeFile("screenshot.jpeg", jpegScreenshot)
