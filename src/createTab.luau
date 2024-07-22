@@ -1,4 +1,5 @@
 local net = require("@lune/net")
+local Regex = require("@lune/regex")
 local createBridge = require("./createBridge")
 local createElement = require("./createElement")
 local mapList = require("./utils/mapList")
@@ -50,6 +51,14 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return mapFuture(tab:getTargetInfo(), function(targetInfo)
 			return targetInfo.title
 		end)
+	end
+
+	function tab:setUserAgent(userAgent, acceptLanguage, platform)
+		return tab:sendOverProtocol(Network.setUserAgentOverride, {
+			userAgent = userAgent,
+			acceptLanguage = acceptLanguage,
+			platform = platform,
+		})
 	end
 
 	function tab:navigateTo(url)
@@ -382,6 +391,88 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 				:await()
 
 			return tab
+		end)
+	end
+
+	function tab:bypassUserAgent()
+		return Future.spawn(function()
+			local object = tab:evaluate("window.navigator.userAgent", true):await()
+			local userAgent = object.value:gsub("HeadlessChrome/", "Chrome/")
+
+			local regex = Regex.new("(([^)]+))")
+			userAgent = regex:replace(userAgent, "(Windows NT 10.0; Win64; x64)")
+
+			tab:setUserAgent(userAgent):await()
+		end)
+	end
+
+	function tab:bypassWebDriver()
+		return bridge:sendOverProtocol(Page.addScriptToEvaluateOnNewDocument, {
+			source = 'Object.defineProperty(navigator, "webdriver", { get: () => undefined });',
+		})
+	end
+
+	function tab:bypassChrome()
+		return bridge:sendOverProtocol(Page.addScriptToEvaluateOnNewDocument, {
+			source = "window.chrome = { runtime: {} };",
+		})
+	end
+
+	function tab:bypassPermissions()
+		local source = [[
+			const originalQuery = window.navigator.permissions.query;
+
+			function stealthQuery(parameters) {
+				return parameters.name === "notifications"
+					? Promise.resolve({ state: Notification.permission })
+					: originalQuery(parameters);
+			}
+
+			window.navigator.permissions.__proto__.query = stealthQuery;
+		]]
+
+		return bridge:sendOverProtocol(Page.addScriptToEvaluateOnNewDocument, { source = source })
+	end
+
+	function tab:bypassPlugins()
+		local source = [[
+			Object.defineProperty(navigator, "plugins", {
+				get: () => [
+					{ filename: "internal-pdf-viewer" },
+					{ filename: "adsfkjlkjhalkh" },
+					{ filename: "internal-nacl-plugin" },
+				],
+			});
+		]]
+
+		return bridge:sendOverProtocol(Page.addScriptToEvaluateOnNewDocument, { source = source })
+	end
+
+	function tab:bypassWebGLVendor()
+		local source = [[
+			const getParameter = WebGLRenderingContext.getParameter;
+			WebGLRenderingContext.prototype.getParameter = (parameter) => {
+				// UNMASKED_VENDOR_WEBGL
+				if (parameter === 37445) return "Google Inc. (NVIDIA)";
+
+				// UNMASKED_RENDERER_WEBGL
+				if (parameter === 37446) return "ANGLE (NVIDIA, NVIDIA GeForce GTX 1050 Direct3D11 vs_5_0 ps_5_0, D3D11-27.21.14.5671)";
+
+				return getParameter(parameter);
+			};
+		]]
+
+		return bridge:sendOverProtocol(Page.addScriptToEvaluateOnNewDocument, { source = source })
+	end
+
+	function tab:enableStealthMode()
+		return Future.spawn(function()
+			tab:bypassUserAgent():await()
+			tab:bypassWebDriver():await()
+			tab:bypassChrome():await()
+			tab:bypassPermissions():await()
+			tab:bypassPlugins():await()
+			tab:bypassWebGLVendor():await()
 		end)
 	end
 
