@@ -95,31 +95,31 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 
 	function element:waitForElements(selector, timeout)
 		return Future.spawn(function()
-			local result = waitUntil(function()
-				local elements = element:findElements(selector):await()
-				return #elements > 0, elements
+			local otherElements = waitUntil(function()
+				local result = element:findElements(selector):await()
+				return #result > 0, result
 			end, timeout):await()
 
-			if result == nil then
+			if otherElements == nil then
 				return {}
 			end
 
-			return result
+			return otherElements
 		end)
 	end
 
 	function element:waitForElementsByXPath(query, timeout)
 		return Future.spawn(function()
-			local result = waitUntil(function()
-				local elements = element:findElementsByXPath(query):await()
-				return #elements > 0, elements
+			local otherElements = waitUntil(function()
+				local result = element:findElementsByXPath(query):await()
+				return #result > 0, result
 			end, timeout):await()
 
-			if result == nil then
+			if otherElements == nil then
 				return {}
 			end
 
-			return result
+			return otherElements
 		end)
 	end
 
