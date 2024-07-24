@@ -3,7 +3,9 @@
 local fs = require("@lune/fs")
 local chrome = require("../src")
 
-local browser = chrome.createBrowser()
+local browser = chrome.createBrowser({
+	windowSize = { width = 1920, height = 1080 },
+})
 local tab = browser:newTab():await()
 
 local jpegScreenshot = tab:navigateTo("https://www.wikipedia.org/")
