@@ -24,6 +24,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	local socket = net.socket(protocolInfo.webSocketDebuggerUrl)
 	local bridge = createBridge(socket)
 
+	--[[
 	local isNavigating = false
 
 	bridge:subscribeToEvent(Page.lifecycleEvent, function(parameters)
@@ -35,6 +36,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end)
 
 	bridge:sendOverProtocol(Page.setLifecycleEventsEnabled, { enabled = true }):await()
+	]]
 
 	local tab = {}
 
