@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type PlayerId = string
 export type Timestamp = number
 export type PlayerMessage = { level: "error" | "warning" | "info" | "debug", message: string }

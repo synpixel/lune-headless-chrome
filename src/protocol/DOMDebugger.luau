@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local DOM = require("./DOM")
 local Runtime = require("./Runtime")
 export type DOMBreakpointType = "subtree-modified" | "attribute-modified" | "node-removed"

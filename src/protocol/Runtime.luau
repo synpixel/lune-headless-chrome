@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type ScriptId = string
 export type SerializationOptions =
 	{ serialization: "deep" | "json" | "idOnly", maxDepth: number?, additionalParameters: {} }

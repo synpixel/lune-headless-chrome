@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Runtime = require("./Runtime")
 local Debugger = require("./Debugger")
 export type ProfileNode = {

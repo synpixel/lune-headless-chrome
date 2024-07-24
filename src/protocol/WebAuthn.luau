@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type AuthenticatorId = string
 export type AuthenticatorProtocol = "u2f" | "ctap2"
 export type Ctap2Version = "ctap2_0" | "ctap2_1"

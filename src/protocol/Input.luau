@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type TouchPoint = {
 	x: number,
 	y: number,

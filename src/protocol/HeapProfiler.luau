@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Runtime = require("./Runtime")
 export type HeapSnapshotObjectId = string
 export type SamplingHeapProfileNode = {

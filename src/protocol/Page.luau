@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Debugger = require("./Debugger")
 local DOM = require("./DOM")
 local IO = require("./IO")

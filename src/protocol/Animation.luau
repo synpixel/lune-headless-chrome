@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Runtime = require("./Runtime")
 local DOM = require("./DOM")
 export type Animation = {

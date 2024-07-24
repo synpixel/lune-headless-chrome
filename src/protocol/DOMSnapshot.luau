@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local CSS = require("./CSS")
 local DOM = require("./DOM")
 local DOMDebugger = require("./DOMDebugger")

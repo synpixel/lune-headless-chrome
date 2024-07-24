@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type RuleSetId = string
 export type RuleSet = {
 	id: RuleSetId,

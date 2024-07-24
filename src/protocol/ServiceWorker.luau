@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Target = require("./Target")
 export type RegistrationID = string
 export type ServiceWorkerRegistration = { registrationId: RegistrationID, scopeURL: string, isDeleted: boolean }

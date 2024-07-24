@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Browser = require("./Browser")
 local Network = require("./Network")
 export type SerializedStorageKey = string

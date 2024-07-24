@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type SerializedStorageKey = string
 export type StorageId = { securityOrigin: string?, storageKey: SerializedStorageKey?, isLocalStorage: boolean }
 export type Item = { string }

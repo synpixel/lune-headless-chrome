@@ -145,6 +145,8 @@ end
 local function writeDomainDefinitionFile(domain: ProtocolDomainDefinition)
 	local file = createFile()
 
+	file:appendLine("-- this file was automatically generated and not intended for manual editing")
+
 	if domain.dependencies ~= nil then
 		for _, dependency in domain.dependencies do
 			file:appendLine(`local {dependency} = require("./{dependency}")`)

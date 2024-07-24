@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type CertificateId = number
 export type MixedContentType = "blockable" | "optionally-blockable" | "none"
 export type SecurityState = "unknown" | "neutral" | "insecure" | "secure" | "info" | "insecure-broken"

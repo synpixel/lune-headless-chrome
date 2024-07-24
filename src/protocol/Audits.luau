@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Network = require("./Network")
 export type AffectedCookie = { name: string, path: string, domain: string }
 export type AffectedRequest = { requestId: Network.RequestId, url: string? }

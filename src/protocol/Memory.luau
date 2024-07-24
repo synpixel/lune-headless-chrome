@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type PressureLevel = "moderate" | "critical"
 export type SamplingProfileNode = { size: number, total: number, stack: { string } }
 export type SamplingProfile = { samples: { SamplingProfileNode }, modules: { Module } }

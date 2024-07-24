@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type CreditCard = { number: string, name: string, expiryMonth: string, expiryYear: string, cvc: string }
 export type AddressField = { name: string, value: string }
 export type AddressFields = { fields: { AddressField } }

@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Storage = require("./Storage")
 export type CacheId = string
 export type CachedResponseType = "basic" | "cors" | "default" | "error" | "opaqueResponse" | "opaqueRedirect"

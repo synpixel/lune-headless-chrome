@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type TargetID = string
 export type SessionID = string
 export type TargetInfo = {

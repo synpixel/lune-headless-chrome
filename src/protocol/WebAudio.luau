@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type GraphObjectId = string
 export type ContextType = "realtime" | "offline"
 export type ContextState = "suspended" | "running" | "closed"

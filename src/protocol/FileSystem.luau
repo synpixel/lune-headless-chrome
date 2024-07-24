@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Network = require("./Network")
 local Storage = require("./Storage")
 export type File = { name: string, lastModified: Network.TimeSinceEpoch, size: number, type: string }

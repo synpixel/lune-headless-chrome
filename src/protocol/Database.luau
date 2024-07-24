@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type DatabaseId = string
 export type Database = { id: DatabaseId, domain: string, name: string, version: string }
 export type Error = { message: string, code: number }

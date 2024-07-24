@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Runtime = require("./Runtime")
 local Storage = require("./Storage")
 export type DatabaseWithObjectStores = { name: string, version: number, objectStores: { ObjectStore } }

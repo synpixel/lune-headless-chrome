@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local Network = require("./Network")
 local IO = require("./IO")
 local Page = require("./Page")

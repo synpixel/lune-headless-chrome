@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type LoginState = "SignIn" | "SignUp"
 export type DialogType = "AccountChooser" | "AutoReauthn" | "ConfirmIdpLogin" | "Error"
 export type DialogButton = "ConfirmIdpLoginContinue" | "ErrorGotIt" | "ErrorMoreDetails"

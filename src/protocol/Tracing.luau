@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local IO = require("./IO")
 export type MemoryDumpConfig = {}
 export type TraceConfig = {

@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type Sink = { name: string, id: string, session: string? }
 return {
 	enable = "Cast.enable",

@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 local DOM = require("./DOM")
 export type AXNodeId = string
 export type AXValueType = (

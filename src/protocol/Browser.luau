@@ -1,3 +1,4 @@
+-- this file was automatically generated and not intended for manual editing
 export type BrowserContextID = string
 export type WindowID = number
 export type WindowState = "normal" | "minimized" | "maximized" | "fullscreen"
