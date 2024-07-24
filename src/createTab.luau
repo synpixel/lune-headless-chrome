@@ -460,11 +460,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 				return #result > 0, result
 			end, timeout):await()
 
-			if elements == nil then
-				return {}
-			end
-
-			return elements
+			return elements or {}
 		end)
 	end
 
@@ -475,11 +471,7 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 				return #result > 0, result
 			end, timeout):await()
 
-			if elements == nil then
-				return {}
-			end
-
-			return elements
+			return elements or {}
 		end)
 	end
 

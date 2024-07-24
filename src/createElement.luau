@@ -100,11 +100,7 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 				return #result > 0, result
 			end, timeout):await()
 
-			if otherElements == nil then
-				return {}
-			end
-
-			return otherElements
+			return otherElements or {}
 		end)
 	end
 
@@ -115,11 +111,7 @@ local function createElement(tab: types.Tab, nodeId: number): types.Element
 				return #result > 0, result
 			end, timeout):await()
 
-			if otherElements == nil then
-				return {}
-			end
-
-			return otherElements
+			return otherElements or {}
 		end)
 	end
 
