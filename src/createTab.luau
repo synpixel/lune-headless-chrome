@@ -454,17 +454,33 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:waitForElements(selector, timeout)
-		return waitUntil(function()
-			local elements = tab:findElements(selector):await()
-			return #elements > 0, elements
-		end, timeout)
+		return Future.spawn(function()
+			local result = waitUntil(function()
+				local elements = tab:findElements(selector):await()
+				return #elements > 0, elements
+			end, timeout):await()
+
+			if result == nil then
+				return {}
+			end
+
+			return result
+		end)
 	end
 
 	function tab:waitForElementsByXPath(query, timeout)
-		return waitUntil(function()
-			local elements = tab:findElementsByXPath(query):await()
-			return #elements > 0, elements
-		end, timeout)
+		return Future.spawn(function()
+			local result = waitUntil(function()
+				local elements = tab:findElementsByXPath(query):await()
+				return #elements > 0, elements
+			end, timeout):await()
+
+			if result == nil then
+				return {}
+			end
+
+			return result
+		end)
 	end
 
 	function tab:getBounds()
