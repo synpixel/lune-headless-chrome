@@ -14,7 +14,7 @@ local browser = chrome.createBrowser()
 local tab = browser:newTab():await()
 
 -- navigate to wikipedia
-tab:navigateTo("https://www.wikipedia.org/"):await():waitUntilNavigated():await()
+tab:navigateTo("https://www.wikipedia.org/"):await()
 
 -- wait for network/javascript/dom to make the search-box available
 -- and click it.

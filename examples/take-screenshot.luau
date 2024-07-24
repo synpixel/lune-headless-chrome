@@ -8,8 +8,6 @@ local tab = browser:newTab():await()
 
 local jpegScreenshot = tab:navigateTo("https://www.wikipedia.org/")
 	:await()
-	:waitUntilNavigated()
-	:await()
 	:captureScreenshot({
 		format = "jpeg",
 		quality = 75,
@@ -20,8 +18,6 @@ local jpegScreenshot = tab:navigateTo("https://www.wikipedia.org/")
 fs.writeFile("screenshot.jpeg", jpegScreenshot)
 
 local pngScreenshot = tab:navigateTo("https://en.wikipedia.org/wiki/WebKit")
-	:await()
-	:waitUntilNavigated()
 	:await()
 	:waitForElement("#mw-content-text > div > table.infobox.vevent")
 	:await()

@@ -95,15 +95,18 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	function tab:navigateTo(url)
 		return Future.spawn(function()
 			bridge:sendOverProtocol(Page.navigate, { url = url }):await()
+			-- isNavigating = true
 			return tab
 		end)
 	end
 
+	--[[
 	function tab:waitUntilNavigated()
 		return waitUntil(function()
 			return not isNavigating, tab
 		end)
 	end
+	]]
 
 	function tab:reload(ignoreCache, scriptToEvaluateOnLoad)
 		return bridge:sendOverProtocol(
