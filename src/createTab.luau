@@ -1,4 +1,3 @@
-local net = require("@lune/net")
 local serde = require("@lune/serde")
 local Regex = require("@lune/regex")
 local createBridge = require("./createBridge")
@@ -21,8 +20,7 @@ local Debugger = require("./protocol/Debugger")
 local types = require("./types")
 
 local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInfo<{ id: string }>): types.Tab
-	local socket = net.socket(protocolInfo.webSocketDebuggerUrl)
-	local bridge = createBridge(socket)
+	local bridge = createBridge(protocolInfo.webSocketDebuggerUrl)
 
 	--[[
 	local isNavigating = false
@@ -632,8 +630,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:close()
-		bridge:close()
-		return bridge:sendOverProtocol(Page.close)
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Page.close):await()
+			bridge:close()
+		end)
 	end
 
 	return tab

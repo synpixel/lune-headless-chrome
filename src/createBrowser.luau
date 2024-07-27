@@ -18,8 +18,7 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 	launchBrowser(launchOptions)
 
 	local protocolInfo = fetchBrowserProtocolInfo(launchOptions.port)
-	local socket = net.socket(protocolInfo.webSocketDebuggerUrl)
-	local bridge = createBridge(socket)
+	local bridge = createBridge(protocolInfo.webSocketDebuggerUrl)
 
 	local browser = {}
 
@@ -44,8 +43,10 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 	end
 
 	function browser:close()
-		bridge:close()
-		return bridge:sendOverProtocol(Browser.close)
+		return Future.spawn(function()
+			bridge:sendOverProtocol(Browser.close):await()
+			bridge:close()
+		end)
 	end
 
 	return browser

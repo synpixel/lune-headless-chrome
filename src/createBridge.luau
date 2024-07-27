@@ -11,7 +11,8 @@ local function jsonEncode(value: any, pretty: boolean?)
 	return result
 end
 
-local function createBridge(socket: net.WebSocket): types.Bridge
+local function createBridge(url: string): types.Bridge
+	local socket = net.socket(url)
 	local protocolListeners: { [number]: (result: any) -> () } = {}
 	local protocolEventConnections: { [string]: { (result: any) -> () } } = {}
 
