@@ -94,12 +94,11 @@ local function createBridge(url: string): types.Bridge
 	end
 
 	function bridge:close()
-		if responseStreamThread == nil then
-			return
-		end
-
 		task.cancel(responseStreamThread)
 		responseStreamThread = nil
+
+		socket.close(0)
+		socket = nil
 	end
 
 	return bridge
