@@ -159,13 +159,6 @@ export type DeleteCookie = {
 
 export type Point = { x: number, y: number }
 
-export type ElementQuad = {
-	topLeft: Point,
-	topRight: Point,
-	bottomRight: Point,
-	bottomLeft: Point,
-}
-
 export type ScreenshotOptions = {
 	format: "jpeg" | "png" | "webp",
 	quality: number?,
@@ -234,6 +227,13 @@ export type Element = {
 	sendCharactersInto: (Element, characters: string) -> Future<Element>,
 	focus: (Element) -> Future<Element>,
 	captureScreenshot: (Element, options: ElementScreenshotOptions) -> Future<buffer>,
+}
+
+export type ElementQuad = {
+	topLeft: Point,
+	topRight: Point,
+	bottomRight: Point,
+	bottomLeft: Point,
 }
 
 export type BoxModel = DOM.BoxModel & {
