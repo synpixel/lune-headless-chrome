@@ -26,6 +26,10 @@ local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOpt
 		return bridge:sendOverProtocol(method, parameters)
 	end
 
+	function browser:subscribeToEvent(event, callback)
+		return bridge:subscribeToEvent(event, callback)
+	end
+
 	function browser:getVersion()
 		return bridge:sendOverProtocol(Browser.getVersion)
 	end

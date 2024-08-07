@@ -42,6 +42,10 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		return bridge:sendOverProtocol(method, parameters)
 	end
 
+	function tab:subscribeToEvent(event, callback)
+		return bridge:subscribeToEvent(event, callback)
+	end
+
 	function tab:getTargetId()
 		return Future.new(protocolInfo.id)
 	end

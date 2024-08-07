@@ -45,6 +45,7 @@ export type BrowserVersion = {
 
 export type Browser = {
 	sendOverProtocol: (Browser, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
+	subscribeToEvent: (Browser, event: string, callback: (result: { [string]: any }?) -> ()) -> () -> (),
 	getVersion: (Browser) -> Future<BrowserVersion>,
 	newTab: (Browser) -> Future<Tab>,
 	close: (Browser) -> Future<nil>,
@@ -89,6 +90,7 @@ export type PartialBrowserLaunchOptions = {
 
 export type Tab = {
 	sendOverProtocol: (Tab, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
+	subscribeToEvent: (Tab, event: string, callback: (result: { [string]: any }?) -> ()) -> () -> (),
 	getTargetId: (Tab) -> Future<string>,
 	getTargetInfo: (Tab) -> Future<Target.TargetInfo>,
 	getUrl: (Tab) -> Future<string>,
