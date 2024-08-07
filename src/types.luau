@@ -35,22 +35,6 @@ export type Bridge = {
 	close: (Bridge) -> (),
 }
 
-export type BrowserVersion = {
-	jsVersion: string,
-	product: string,
-	protocolVersion: string,
-	revision: string,
-	userAgent: string,
-}
-
-export type Browser = {
-	sendOverProtocol: (Browser, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
-	subscribeToEvent: (Browser, event: string, callback: (result: { [string]: any }?) -> ()) -> () -> (),
-	getVersion: (Browser) -> Future<BrowserVersion>,
-	newTab: (Browser) -> Future<Tab>,
-	close: (Browser) -> Future<nil>,
-}
-
 export type BrowserLaunchOptions = {
 	headless: boolean,
 	sandbox: boolean,
@@ -86,6 +70,22 @@ export type PartialBrowserLaunchOptions = {
 	idleBrowserTimeout: number?,
 	processEnvs: { [string]: string }?,
 	proxyServer: string?,
+}
+
+export type Browser = {
+	sendOverProtocol: (Browser, method: string, parameters: { [string]: any }?) -> Future<{ [string]: any }?>,
+	subscribeToEvent: (Browser, event: string, callback: (result: { [string]: any }?) -> ()) -> () -> (),
+	getVersion: (Browser) -> Future<BrowserVersion>,
+	newTab: (Browser) -> Future<Tab>,
+	close: (Browser) -> Future<nil>,
+}
+
+export type BrowserVersion = {
+	jsVersion: string,
+	product: string,
+	protocolVersion: string,
+	revision: string,
+	userAgent: string,
 }
 
 export type Tab = {
@@ -166,26 +166,12 @@ export type ElementQuad = {
 	bottomLeft: Point,
 }
 
-export type BoxModel = DOM.BoxModel & {
-	content: ElementQuad,
-	padding: ElementQuad,
-	border: ElementQuad,
-	margin: ElementQuad,
-}
-
 export type ScreenshotOptions = {
 	format: "jpeg" | "png" | "webp",
 	quality: number?,
 	clip: Page.Viewport?,
 	fromSurface: boolean?,
 	captureBeyondViewport: boolean?,
-	optimizeForSpeed: boolean?,
-}
-
-export type ElementScreenshotOptions = {
-	format: "jpeg" | "png" | "webp",
-	quality: number?,
-	fromSurface: boolean?,
 	optimizeForSpeed: boolean?,
 }
 
@@ -248,6 +234,20 @@ export type Element = {
 	sendCharactersInto: (Element, characters: string) -> Future<Element>,
 	focus: (Element) -> Future<Element>,
 	captureScreenshot: (Element, options: ElementScreenshotOptions) -> Future<buffer>,
+}
+
+export type BoxModel = DOM.BoxModel & {
+	content: ElementQuad,
+	padding: ElementQuad,
+	border: ElementQuad,
+	margin: ElementQuad,
+}
+
+export type ElementScreenshotOptions = {
+	format: "jpeg" | "png" | "webp",
+	quality: number?,
+	fromSurface: boolean?,
+	optimizeForSpeed: boolean?,
 }
 
 return nil
