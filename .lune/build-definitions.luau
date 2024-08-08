@@ -3,7 +3,9 @@ local serde = require("@lune/serde")
 local process = require("@lune/process")
 local stdio = require("@lune/stdio")
 
-local OUT_DIR = "src/protocol"
+local INPUT_DIR = "json"
+local OUTPUT_DIR = "src/protocol"
+local SHOULD_FORMAT = true
 
 type ProtocolDomainTypeDefinition = {
 	name: string,
@@ -172,18 +174,28 @@ local function writeDomainDefinitionFile(domain: ProtocolDomainDefinition)
 
 	file:appendLine("}")
 
-	local formattedContents = formatLuauWithStyLua(file:readContents())
-	file:writeContents(formattedContents)
+	if SHOULD_FORMAT then
+		local formattedContents = formatLuauWithStyLua(file:readContents())
+		file:writeContents(formattedContents)
+	end
 
 	return file
 end
 
+if not fs.isDir(INPUT_DIR) then
+	fs.writeDir(INPUT_DIR)
+end
+
 local browserProtocolDefinitions =
-	serde.decode("json", fs.readFile("json/browser_protocol.json")) :: ProtocolDefinitions
-local jsProtocolDefinitions = serde.decode("json", fs.readFile("json/js_protocol.json")) :: ProtocolDefinitions
+	serde.decode("json", fs.readFile(`{INPUT_DIR}/browser_protocol.json`)) :: ProtocolDefinitions
+local jsProtocolDefinitions = serde.decode("json", fs.readFile(`{INPUT_DIR}/js_protocol.json`)) :: ProtocolDefinitions
+
+if not fs.isDir(OUTPUT_DIR) then
+	fs.writeDir(OUTPUT_DIR)
+end
 
 for _, domain in browserProtocolDefinitions.domains do
-	local filePath = `{OUT_DIR}/{domain.domain}.luau`
+	local filePath = `{OUTPUT_DIR}/{domain.domain}.luau`
 	local file = writeDomainDefinitionFile(domain)
 
 	fs.writeFile(filePath, file:readContents())
@@ -192,7 +204,7 @@ for _, domain in browserProtocolDefinitions.domains do
 end
 
 for _, domain in jsProtocolDefinitions.domains do
-	local filePath = `{OUT_DIR}/{domain.domain}.luau`
+	local filePath = `{OUTPUT_DIR}/{domain.domain}.luau`
 	local file = writeDomainDefinitionFile(domain)
 
 	fs.writeFile(filePath, file:readContents())
