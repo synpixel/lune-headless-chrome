@@ -3,7 +3,7 @@ local serde = require("@lune/serde")
 local process = require("@lune/process")
 local stdio = require("@lune/stdio")
 
-local PROTOCOL_OUTPUT = "src/protocol"
+local OUT_DIR = "src/protocol"
 
 type ProtocolDomainTypeDefinition = {
 	name: string,
@@ -80,10 +80,7 @@ end
 
 local function formatLuauWithStyLua(luau: string)
 	local result = process.spawn("stylua", { "-" }, { stdin = luau, shell = true })
-
-	if not result.ok then
-		error(result.stderr)
-	end
+	assert(result.ok, result.stderr)
 
 	return result.stdout
 end
@@ -186,7 +183,7 @@ local browserProtocolDefinitions =
 local jsProtocolDefinitions = serde.decode("json", fs.readFile("json/js_protocol.json")) :: ProtocolDefinitions
 
 for _, domain in browserProtocolDefinitions.domains do
-	local filePath = `{PROTOCOL_OUTPUT}/{domain.domain}.luau`
+	local filePath = `{OUT_DIR}/{domain.domain}.luau`
 	local file = writeDomainDefinitionFile(domain)
 
 	fs.writeFile(filePath, file:readContents())
@@ -195,7 +192,7 @@ for _, domain in browserProtocolDefinitions.domains do
 end
 
 for _, domain in jsProtocolDefinitions.domains do
-	local filePath = `{PROTOCOL_OUTPUT}/{domain.domain}.luau`
+	local filePath = `{OUT_DIR}/{domain.domain}.luau`
 	local file = writeDomainDefinitionFile(domain)
 
 	fs.writeFile(filePath, file:readContents())
