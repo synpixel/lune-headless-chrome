@@ -15,7 +15,8 @@ end
 
 local function createBrowser(partialLaunchOptions: types.PartialBrowserLaunchOptions?): types.Browser
 	local launchOptions = patchLaunchOptions(partialLaunchOptions)
-	launchBrowser(launchOptions)
+	local launchResult = launchBrowser(launchOptions)
+	assert(launchResult.ok, launchResult.stderr)
 
 	local protocolInfo = fetchBrowserProtocolInfo(launchOptions.port)
 	local bridge = createBridge(protocolInfo.webSocketDebuggerUrl)
