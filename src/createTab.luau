@@ -291,15 +291,13 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 	end
 
 	function tab:printToPDF(options)
-		local patchedOptions = options
-
-		if options ~= nil then
-			patchedOptions = table.clone(options)
-			patchedOptions.transferMode = "ReturnAsBase64"
-		end
+		assert(
+			options == nil or options.transferMode == "ReturnAsBase64" or options.transferMode == nil,
+			"transferMode should be ReturnAsBase64"
+		)
 
 		return Future.spawn(function()
-			local result = bridge:sendOverProtocol(Page.printToPDF, patchedOptions):await()
+			local result = bridge:sendOverProtocol(Page.printToPDF, options):await()
 			local data = buffer.fromstring(result.data)
 			return base64.decode(data)
 		end)

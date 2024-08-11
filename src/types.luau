@@ -198,6 +198,7 @@ export type PrintToPDFOptions = {
 	footerTemplate: string?,
 	preferCSSPageSize: boolean?,
 	-- transferMode: ("ReturnAsBase64" | "ReturnAsStream")?,
+	transferMode: "ReturnAsBase64"?,
 	generateTaggedPDF: boolean?,
 	generateDocumentOutline: boolean?,
 }
