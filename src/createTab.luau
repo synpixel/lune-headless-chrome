@@ -595,21 +595,21 @@ local function createTab(browser: types.Browser, protocolInfo: types.ProtocolInf
 		end)
 	end
 
-	function tab:startPreciseJSCoverage()
+	function tab:startPreciseJsCoverage()
 		return Future.spawn(function()
 			bridge:sendOverProtocol(Profiler.startPreciseCoverage, { callCount = true, detailed = true }):await()
 			return tab
 		end)
 	end
 
-	function tab:stopPreciseJSCoverage()
+	function tab:stopPreciseJsCoverage()
 		return Future.spawn(function()
 			bridge:sendOverProtocol(Profiler.stopPreciseCoverage):await()
 			return tab
 		end)
 	end
 
-	function tab:takePreciseJSCoverage()
+	function tab:takePreciseJsCoverage()
 		return Future.spawn(function()
 			local result = bridge:sendOverProtocol(Profiler.takePreciseCoverage):await()
 			return result.result
