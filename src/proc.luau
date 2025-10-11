@@ -27,7 +27,7 @@ local winreg = require("./util/winreg")
 	.idle_browser_timeout number? -- How long to keep the WebSocket to the browser for after not receiving any events from it. Defaults to 30 seconds.
 	.process_envs { [string]: string }? -- Environment variables to set for the Chromium process.
 	.proxy_server string? -- Setup the proxy server for headless chrome instance
-	@within ChromeProcess
+	@within Process
 ]=]
 export type LaunchOptions = {
 	headless: boolean?,
