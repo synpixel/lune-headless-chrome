@@ -69,5 +69,5 @@ pesde add synpixel/chrome
 - [x] DOM manipulation
 - [x] Dispatch user input
 - [x] Access and modify storage
-- [x] Intercept and network traffic
+- [x] Intercept and monitor network traffic
 - [ ] (To-Do) Auto-install a browser
