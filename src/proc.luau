@@ -2,7 +2,8 @@ local process = require("@lune/process")
 local fs = require("@lune/fs")
 local net = require("@lune/net")
 local Regex = require("@lune/regex")
-local tempfile = require("./utils/tempfile")
+local tempfile = require("./util/tempfile")
+local winreg = require("./util/winreg")
 
 --[=[
 	Represents the way in which Chrome is run. By default it will search for a Chrome
@@ -49,8 +50,8 @@ export type LaunchOptions = {
 	proxy_server: string?,
 }
 
---- @class ChromeProcess
-export type ChromeProcess = {
+--- @class Process
+export type Process = {
 	child: process.ChildProcess,
 	websocket_url: string,
 	temp_user_data_dir: string?,
@@ -83,19 +84,25 @@ local DEFAULT_ARGS = table.freeze({
 	"--use-mock-keychain",
 })
 
+local PORT_TAKEN_PATTERN = Regex.new("ERROR.*bind\\(\\)")
+local WEBSOCKET_URL_PATTERN = Regex.new("listening on (.*/devtools/browser/.*)$")
+
 local function which(binary_name: string): string?
 	local path = process.env.PATH or process.env.Path
 	if not path then
 		return nil
 	end
 
-	for _, dir in path:split(";") do
+	for _, dir in string.split(path, ";") do
 		if not fs.isDir(dir) then
 			continue
 		end
 
 		for _, file in fs.readDir(dir) do
-			if (process.os == "windows" and file:match(`{binary_name}.exe`)) or file == binary_name then
+			local is_match = if process.os == "windows"
+				then string.match(file, `^{binary_name}%.exe$`) ~= nil
+				else file == binary_name
+			if is_match then
 				return `{dir}/{file}`
 			end
 		end
@@ -104,9 +111,19 @@ local function which(binary_name: string): string?
 	return nil
 end
 
+local function get_chrome_path_from_registry(): string?
+	local ok, path = pcall(function()
+		return winreg
+			.predef("HKEY_LOCAL_MACHINE")
+			:open_subkey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe")
+			:get_value()
+	end)
+	return if ok then path else nil
+end
+
 local function default_executable(): string
 	local env_path = process.env.CHROME
-	if env_path ~= nil and fs.isFile(env_path) then
+	if env_path and fs.isFile(env_path) then
 		return env_path
 	end
 
@@ -128,7 +145,7 @@ local function default_executable(): string
 		}
 	do
 		local path = which(app)
-		if path ~= nil then
+		if path then
 			return path
 		end
 	end
@@ -154,22 +171,25 @@ local function default_executable(): string
 	end
 
 	if process.os == "windows" then
-		-- TODO: windows registry
+		local winreg_path = get_chrome_path_from_registry()
+		if winreg_path and fs.isFile(winreg_path) then
+			return winreg_path
+		end
 
-		local path = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
-		if fs.isFile(path) then
-			return path
+		local ms_edge_path = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+		if fs.isFile(ms_edge_path) then
+			return ms_edge_path
 		end
 	end
 
 	error("Could not auto detect a chrome executable")
 end
 
--- This does not work as `net.serve` won't throw
--- TODO: find an actual solution
-local function port_is_available(port: number): boolean
-	local available, handle = pcall(net.serve, port, function()
-		return nil :: any
+local function is_port_available(port: number): boolean
+	local available, handle = pcall(function()
+		return net.serve(port, function()
+			return { status = 200 }
+		end)
 	end)
 
 	if available then
@@ -180,19 +200,9 @@ local function port_is_available(port: number): boolean
 end
 
 local function get_available_port(): number
-	local ports = {}
-
-	for port = 8000, 9000 do
-		table.insert(ports, port)
-	end
-
-	for index, port in ports do
-		table.remove(ports, index)
-		table.insert(ports, math.random(1, #ports), port)
-	end
-
-	for _, port in ports do
-		if port_is_available(port) then
+	for _ = 1, 1000 do
+		local port = math.random(8000, 9000)
+		if is_port_available(port) then
 			return port
 		end
 	end
@@ -201,13 +211,10 @@ local function get_available_port(): number
 end
 
 local function get_websocket_url_from_output(child: process.ChildProcess): string
-	local port_taken_regex = Regex.new("ERROR.*bind\\(\\)")
 	local root_sandbox = "Running as root without --no-sandbox is not supported"
 
-	local regex = Regex.new("listening on (.*/devtools/browser/.*)$")
-
 	local function extract(text: string): string?
-		local captures = regex:captures(text)
+		local captures = WEBSOCKET_URL_PATTERN:captures(text)
 		if not captures then
 			return nil
 		end
@@ -221,7 +228,7 @@ local function get_websocket_url_from_output(child: process.ChildProcess): strin
 			error("Running as root with no sandbox")
 		end
 
-		if port_taken_regex:isMatch(line) then
+		if PORT_TAKEN_PATTERN:isMatch(line) then
 			error("Debug port in use")
 		end
 
@@ -235,7 +242,9 @@ local function get_websocket_url_from_output(child: process.ChildProcess): strin
 end
 
 local function start_process(launch_options: LaunchOptions): (process.ChildProcess, string?)
-	assert(launch_options.port ~= nil, "Port is required")
+	if not launch_options.port then
+		error("Port is required")
+	end
 
 	local args = {
 		`--remote-debugging-port={launch_options.port}`,
@@ -245,7 +254,7 @@ local function start_process(launch_options: LaunchOptions): (process.ChildProce
 	}
 
 	local temp_user_data_dir: string?
-	if launch_options.user_data_dir ~= nil then
+	if launch_options.user_data_dir then
 		table.insert(args, `--user-data-dir={launch_options.user_data_dir}`)
 	else
 		local user_data_dir = tempfile("chrome-luau-profile")
@@ -256,7 +265,7 @@ local function start_process(launch_options: LaunchOptions): (process.ChildProce
 	if launch_options.disable_default_args ~= true then
 		local defaults = table.clone(DEFAULT_ARGS)
 
-		if launch_options.ignore_default_args ~= nil then
+		if launch_options.ignore_default_args then
 			for _, arg in launch_options.ignore_default_args do
 				local index = table.find(defaults, arg)
 				table.remove(defaults, index)
@@ -268,17 +277,17 @@ local function start_process(launch_options: LaunchOptions): (process.ChildProce
 		end
 	end
 
-	if launch_options.args ~= nil then
+	if launch_options.args then
 		for _, arg in launch_options.args do
 			table.insert(args, arg)
 		end
 	end
 
-	if launch_options.window_size ~= nil then
+	if launch_options.window_size then
 		table.insert(args, `--window-size={launch_options.window_size.width},{launch_options.window_size.height}`)
 	end
 
-	if launch_options.headless and launch_options.devtools == false then
+	if launch_options.headless and not launch_options.devtools then
 		table.insert(args, "--headless")
 	elseif launch_options.devtools then
 		table.insert(args, "--auto-open-devtools-for-tabs")
@@ -296,7 +305,7 @@ local function start_process(launch_options: LaunchOptions): (process.ChildProce
 		table.insert(args, "--enable-gpu")
 	end
 
-	if launch_options.proxy_server ~= nil then
+	if launch_options.proxy_server then
 		table.insert(args, `--proxy-server={launch_options.proxy_server}`)
 	end
 
@@ -305,13 +314,15 @@ local function start_process(launch_options: LaunchOptions): (process.ChildProce
 		table.insert(args, "--disable-setuid-sandbox")
 	end
 
-	if launch_options.extensions ~= nil then
+	if launch_options.extensions then
 		for _, extension in launch_options.extensions do
 			table.insert(args, `--load-extension={extension}`)
 		end
 	end
 
-	assert(launch_options.path ~= nil, "Path is required")
+	if not launch_options.path then
+		error("Path is required")
+	end
 
 	return process.create(launch_options.path, args, {
 		shell = true,
@@ -320,25 +331,25 @@ local function start_process(launch_options: LaunchOptions): (process.ChildProce
 		temp_user_data_dir
 end
 
-local function new(partial_launch_options: LaunchOptions?): ChromeProcess
+local function launch(partial_launch_options: LaunchOptions?): Process
 	local launch_options: LaunchOptions = {
 		headless = true,
 		sandbox = false,
 		devtools = false,
 	}
 
-	if partial_launch_options ~= nil then
+	if partial_launch_options then
 		for key, value in partial_launch_options do
 			launch_options[key] = value
 		end
 	end
 
-	if launch_options.path == nil then
-		-- TODO: fetch
+	if not launch_options.path then
+		-- TODO: Fetch Chrome installation
 		launch_options.path = default_executable()
 	end
 
-	if launch_options.port == nil then
+	if not launch_options.port then
 		launch_options.port = get_available_port()
 	end
 
@@ -351,4 +362,4 @@ local function new(partial_launch_options: LaunchOptions?): ChromeProcess
 	}
 end
 
-return { new = new }
+return { launch = launch }

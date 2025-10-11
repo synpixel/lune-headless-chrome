@@ -1,7 +1,7 @@
 local task = require("@lune/task")
 local net = require("@lune/net")
 local serde = require("@lune/serde")
-local casing = require("./utils/casing")
+local casing = require("./util/casing")
 local Target = require("./protocol/target")
 
 export type Transport = {
@@ -16,12 +16,12 @@ export type Transport = {
 	call_method_on_browser: <Request, Response>(
 		self: Transport,
 		method: string & { __Request: Request, __Response: Response },
-		parameters: Request
+		params: Request
 	) -> Response,
 	call_method_on_target: <Request, Response>(
 		self: Transport,
 		method: string & { __Request: Request, __Response: Response },
-		parameters: Request,
+		params: Request,
 		session_id: string
 	) -> Response,
 	listen_to_browser_event: <Parameters>(
@@ -38,19 +38,21 @@ export type Transport = {
 	shutdown: (self: Transport) -> (),
 }
 
-local function unique_call_id(self: Transport): number
-	self.call_id_counter += 1
-	return self.call_id_counter
+local function unique_call_id(transport: Transport): number
+	transport.call_id_counter += 1
+	return transport.call_id_counter
 end
 
 local function call_method_on_browser<Request, Response>(
-	self: Transport,
+	transport: Transport,
 	method: string & { __Request: Request, __Response: Response },
 	params: Request
 ): Response
-	assert(self.open, "Connection was closed")
+	if not transport.open then
+		error("Connection was closed")
+	end
 
-	local id = self:unique_call_id()
+	local id = transport:unique_call_id()
 	local call = {
 		id = id,
 		method = method,
@@ -60,12 +62,12 @@ local function call_method_on_browser<Request, Response>(
 	local message = serde.encode("json", call)
 
 	local thread = coroutine.running()
-	self.waiting_calls[id] = thread
+	transport.waiting_calls[id] = thread
 
-	self.connection:send(message)
+	transport.connection:send(message)
 
 	local response = coroutine.yield()
-	if response.error ~= nil then
+	if response.error then
 		error(response.error.message)
 	end
 
@@ -73,14 +75,16 @@ local function call_method_on_browser<Request, Response>(
 end
 
 local function call_method_on_target<Request, Response>(
-	self: Transport,
+	transport: Transport,
 	method: string & { __Request: Request, __Response: Response },
 	params: Request,
 	session_id: string
 ): Response
-	assert(self.open, "Connection was closed")
+	if not transport.open then
+		error("Connection was closed")
+	end
 
-	local id = self:unique_call_id()
+	local id = transport:unique_call_id()
 	local call = {
 		id = id,
 		method = method,
@@ -90,15 +94,15 @@ local function call_method_on_target<Request, Response>(
 	local message = serde.encode("json", call)
 
 	local thread = coroutine.running()
-	self.waiting_calls[id] = thread
+	transport.waiting_calls[id] = thread
 
-	self:call_method_on_browser(Target.SendMessageToTarget, {
+	transport:call_method_on_browser(Target.SendMessageToTarget, {
 		session_id = session_id,
 		message = message,
 	})
 
 	local response = coroutine.yield()
-	if response.error ~= nil then
+	if response.error then
 		error(response.error.message)
 	end
 
@@ -106,53 +110,66 @@ local function call_method_on_target<Request, Response>(
 end
 
 local function listen_to_browser_event<Parameters>(
-	self: Transport,
+	transport: Transport,
 	event: string & { __Parameters: Parameters },
 	callback: (params: Parameters) -> ()
 ): () -> ()
 	local listener = { event = event, callback = callback }
-	table.insert(self.listeners, listener)
+	table.insert(transport.listeners, listener)
 
 	return function()
-		local index = table.find(self.listeners, listener)
-		table.remove(self.listeners, index)
+		local index = table.find(transport.listeners, listener)
+		table.remove(transport.listeners, index)
 	end
 end
 
 local function listen_to_target_event<Parameters>(
-	self: Transport,
+	transport: Transport,
 	event: string & { __Parameters: Parameters },
 	session_id: string,
 	callback: (params: Parameters) -> ()
 ): () -> ()
 	local listener = { event = event, session_id = session_id, callback = callback }
-	table.insert(self.listeners, listener)
+	table.insert(transport.listeners, listener)
 
 	return function()
-		local index = table.find(self.listeners, listener)
-		table.remove(self.listeners, index)
+		local index = table.find(transport.listeners, listener)
+		table.remove(transport.listeners, index)
 	end
 end
 
-local function handle_incoming_messages(self: Transport)
+local function handle_incoming_messages(transport: Transport)
+	local last_message_at = os.clock()
+
 	task.spawn(function()
 		while true do
-			if not self.open then
+			if not transport.open then
 				break
 			end
 
-			local success, message = pcall(self.connection.next, self.connection)
+			local success, message = pcall(function()
+				return transport.connection:next()
+			end)
 			if not success then
-				self.open = false
+				transport.open = false
 				break
 			end
+
+			local now = os.clock()
 
 			if not message then
+				if now - last_message_at > transport.idle_browser_timeout then
+					transport.open = false
+					break
+				end
+
 				continue
 			end
 
+			last_message_at = now
+
 			local response = serde.decode("json", message)
-			local session_id = if response.params ~= nil then response.params.sessionId else nil
+			local session_id = if response.params then response.params.sessionId else nil
 
 			if response.method == Target.ReceivedMessageFromTarget then
 				response = serde.decode("json", response.params.message)
@@ -160,15 +177,15 @@ local function handle_incoming_messages(self: Transport)
 
 			response = casing.camel_to_snake(response)
 
-			for id, call in self.waiting_calls do
+			for id, call in transport.waiting_calls do
 				if response.id == id then
-					self.waiting_calls[id] = nil
+					transport.waiting_calls[id] = nil
 					task.spawn(call, response)
 					break
 				end
 			end
 
-			for index, listener in self.listeners do
+			for index, listener in transport.listeners do
 				if session_id ~= listener.session_id then
 					continue
 				end
@@ -181,12 +198,12 @@ local function handle_incoming_messages(self: Transport)
 	end)
 end
 
-local function shutdown(self: Transport)
-	self.open = false
-	self.connection:close(1000)
+local function shutdown(transport: Transport)
+	transport.open = false
+	transport.connection:close(1000)
 end
 
-local function new(websocket_url: string, idle_browser_timeout: number): Transport
+local function create(websocket_url: string, idle_browser_timeout: number): Transport
 	local connection = net.socket(websocket_url)
 
 	local transport = {
@@ -209,4 +226,4 @@ local function new(websocket_url: string, idle_browser_timeout: number): Transpo
 	return transport
 end
 
-return { new = new }
+return { create = create }

@@ -3,48 +3,48 @@ local Page = require("../protocol/page")
 
 export type BoxModel = types.BoxModel
 
-local function content_viewport(self: BoxModel): Page.Viewport
+local function content_viewport(box_model: BoxModel): Page.Viewport
 	return {
-		x = self.content.top_left.x,
-		y = self.content.top_left.y,
-		width = self.content:width(),
-		height = self.content:height(),
+		x = box_model.content.top_left.x,
+		y = box_model.content.top_left.y,
+		width = box_model.content:width(),
+		height = box_model.content:height(),
 		scale = 1,
 	}
 end
 
-local function padding_viewport(self: BoxModel): Page.Viewport
+local function padding_viewport(box_model: BoxModel): Page.Viewport
 	return {
-		x = self.padding.top_left.x,
-		y = self.padding.top_left.y,
-		width = self.padding:width(),
-		height = self.padding:height(),
+		x = box_model.padding.top_left.x,
+		y = box_model.padding.top_left.y,
+		width = box_model.padding:width(),
+		height = box_model.padding:height(),
 		scale = 1,
 	}
 end
 
-local function border_viewport(self: BoxModel): Page.Viewport
+local function border_viewport(box_model: BoxModel): Page.Viewport
 	return {
-		x = self.border.top_left.x,
-		y = self.border.top_left.y,
-		width = self.border:width(),
-		height = self.border:height(),
+		x = box_model.border.top_left.x,
+		y = box_model.border.top_left.y,
+		width = box_model.border:width(),
+		height = box_model.border:height(),
 		scale = 1,
 	}
 end
 
-local function margin_viewport(self: BoxModel): Page.Viewport
+local function margin_viewport(box_model: BoxModel): Page.Viewport
 	return {
-		x = self.margin.top_left.x,
-		y = self.margin.top_left.y,
-		width = self.margin:width(),
-		height = self.margin:height(),
+		x = box_model.margin.top_left.x,
+		y = box_model.margin.top_left.y,
+		width = box_model.margin:width(),
+		height = box_model.margin:height(),
 		scale = 1,
 	}
 end
 
 --- @within BoxModel
-local function new(box_model: {
+local function create(box_model: {
 	content: types.ElementQuad,
 	padding: types.ElementQuad,
 	border: types.ElementQuad,
@@ -66,4 +66,4 @@ local function new(box_model: {
 	}
 end
 
-return { new = new }
+return { create = create }

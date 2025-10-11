@@ -1,5 +1,4 @@
-local Transport = require("./transport")
-local ChromeProcess = require("./chrome-process")
+local transport = require("./transport")
 local Dialog = require("./tab/dialog")
 local keys = require("./tab/keys")
 local Target = require("./protocol/target")
@@ -19,14 +18,14 @@ local Fetch = require("./protocol/fetch")
 
 	A Browser can either manage its own Chrome process or connect to a remote one.
 
-	`Browser.new()` will return a headless instance of whatever browser can be found using
+	`browser.create` will return a headless instance of whatever browser can be found using
 	`default_executable`, which will search on your PATH for relevant binaries or use the path
 	specified in the `CHROME` env var.
 
 	@class Browser
 ]=]
 export type Browser = {
-	transport: Transport.Transport,
+	transport: transport.Transport,
 	tabs: { Tab },
 	on_close_hooks: { () -> () },
 
@@ -61,9 +60,9 @@ export type Browser = {
 		js_version: string,
 	},
 
-	--- Create a new tab with a starting url, height / width, context ID and 'frame control'
+	--- Create a new tab and return a handle to it.
 	--- @within Browser
-	new_tab_with_options: (
+	create_tab: (
 		self: Browser,
 		options: {
 			url: string,
@@ -74,17 +73,12 @@ export type Browser = {
 			new_window: boolean?,
 			background: boolean?,
 			for_tab: boolean?,
-		}
+		}?
 	) -> Tab,
-
-	--- Create a new tab and return a handle to it.
-	--- If you want to specify its starting options, see `new_tab_with_options`.
-	--- @within Browser
-	new_tab: (self: Browser) -> Tab,
 
 	--- Creates the equivalent of a new incognito window, AKA a browser context
 	--- @within Browser
-	new_context: (self: Browser) -> Context,
+	create_context: (self: Browser) -> Context,
 
 	--- Adds tabs that have not been opened with `new_tab` to the list of tabs
 	--- @within Browser
@@ -112,21 +106,25 @@ export type Context = {
 	--- Opens a new tab in this context. It will not share cookies or a cache with the default
 	--- browsing context or any other contexts created
 	--- @within Context
-	new_tab: (self: Context) -> Tab,
+	create_tab: (self: Context) -> Tab,
 }
+
+type WaitForElementFn =
+	((self: Tab, selector: string) -> Element)
+	& ((self: Tab, selector: string, timeout: number) -> Element?)
 
 --- A handle to a single page. Exposes methods for simulating user actions (clicking,
 --- typing), and also for getting information about the DOM and other parts of the page.
 --- @class Tab
 export type Tab = {
 	target_id: string,
-	transport: Transport.Transport,
+	transport: transport.Transport,
 	session_id: string,
 	navigating: boolean,
 	target_info: Target.TargetInfo,
 	request_interceptor: RequestInterceptor?,
-	-- TODO: response_handler
-	-- TODO: loading_failed_handler
+	response_handler: { [string]: ResponseHandler },
+	loading_failed_handler: { [string]: LoadingFailedHandler },
 	auth_handler: Fetch.AuthChallengeResponse?,
 	default_timeout: number,
 	page_bindings: { [string]: (data: any) -> () },
@@ -244,9 +242,6 @@ export type Tab = {
 
 	--- @within Tab
 	wait_until_navigated: (self: Tab) -> Tab,
-
-	--- @within Tab
-	wait_for_redirect: (self: Tab) -> Tab,
 
 	--[=[
 		Get position and size of the browser window associated with this `Tab`.
@@ -421,10 +416,10 @@ export type Tab = {
 	find_elements_by_xpath: (self: Tab, selector: string) -> { Element },
 
 	--- @within Tab
-	wait_for_element: (self: Tab, selector: string, timeout: number?) -> Element?,
+	wait_for_element: WaitForElementFn,
 
 	--- @within Tab
-	wait_for_xpath: (self: Tab, selector: string, timeout: number?) -> Element?,
+	wait_for_xpath: WaitForElementFn,
 
 	--- @within Tab
 	wait_for_elements: (self: Tab, selector: string, timeout: number?) -> { Element },
@@ -434,10 +429,10 @@ export type Tab = {
 
 	--- Moves the mouse to this point (dispatches a mouseMoved event)
 	--- @within Tab
-	move_mouse_to_point: (self: Tab, point: Point) -> Tab,
+	move_mouse_to_point: (self: Tab, point: vector) -> Tab,
 
 	--- @within Tab
-	click_point: (self: Tab, point: Point) -> Tab,
+	click_point: (self: Tab, point: vector) -> Tab,
 
 	--- Does the same as `type_text` but it only dispatches a `keypress` and `input` event.
 	--- It does not send a `keydown` or `keyup` event. What this means is that it is much faster.
@@ -570,11 +565,45 @@ export type Tab = {
 	--- @within Tab
 	authenticate: (self: Tab, username: string, password: string?) -> Tab,
 
-	--- @within Tab
-	expose_function: (self: Tab, name: string, fn: (data: any) -> ()) -> (),
+	--[=[
+		Lets you register a listener for responses, and gives you a way to get the response body too.
+
+    	Please note that the 'response' does not include the *body* of the response -- Chrome tells
+    	us about them separately (because you might quickly get the status code and headers from a
+    	server well before you receive the entire response body which could, after all, be gigabytes
+    	long).
+
+    	Currently we leave it up to the caller to decide when to call `fetch_body` (the second
+    	argument to the response handler), although ideally it wouldn't be possible until Chrome has
+    	sent the `Network.loadingFinished` event.
+
+    	a option for ResponseHandler for existing handler with same name if existed.
+
+		@within Tab
+	]=]
+	register_response_handling: (self: Tab, handler_name: string, handler: ResponseHandler) -> (),
 
 	--- @within Tab
-	remove_function: (self: Tab, name: string) -> (),
+	register_loading_failed_handling: (self: Tab, handler_name: string, handler: LoadingFailedHandler) -> (),
+
+	--[=[
+		Deregister a response handler based on its name.
+
+		Return a option for ResponseHandler for removed handler if existed.
+
+		@within Tab
+	]=]
+	deregister_response_handling: (self: Tab, handler_name: string) -> (),
+
+	--- Deregister all registered handlers.
+	--- @within Tab
+	deregister_response_handling_all: (self: Tab) -> (),
+
+	--- @within Tab
+	expose_fn: (self: Tab, name: string, fn: (data: any) -> ()) -> (),
+
+	--- @within Tab
+	remove_fn: (self: Tab, name: string) -> (),
 
 	--- @within Tab
 	enable_stealth_mode: (self: Tab) -> (),
@@ -584,8 +613,42 @@ export type Tab = {
 	close: (self: Tab) -> (),
 }
 
+export type ResponseHandler = (
+	response: {
+		request_id: Network.RequestId,
+		loader_id: Network.LoaderId,
+		timestamp: Network.MonotonicTime,
+		type: Network.ResourceType,
+		response: Network.Response,
+		has_extra_info: boolean,
+		frame_id: Page.FrameId?,
+	},
+	fetch_body: () -> { body: string, base64_encoded: boolean }
+) -> ()
+
+export type LoadingFailedHandler = (
+	response: {
+		request_id: Network.RequestId,
+		loader_id: Network.LoaderId,
+		timestamp: Network.MonotonicTime,
+		type: Network.ResourceType,
+		response: Network.Response,
+		has_extra_info: boolean,
+		frame_id: Page.FrameId?,
+	},
+	params: {
+		request_id: Network.RequestId,
+		timestamp: Network.MonotonicTime,
+		type: Network.ResourceType,
+		error_text: string,
+		canceled: boolean?,
+		blocked_reason: Network.BlockedReason?,
+		cors_error_status: Network.CorsErrorStatus?,
+	}
+) -> ()
+
 export type RequestInterceptor = (
-	transport: Transport.Transport,
+	transport: transport.Transport,
 	session_id: string,
 	params: {
 		request_id: Fetch.RequestId,
@@ -702,10 +765,10 @@ export type Element = {
 	find_elements_by_xpath: (self: Element, selector: string) -> { Element },
 
 	--- @within Element
-	wait_for_element: (self: Element, selector: string, timeout: number?) -> Element?,
+	wait_for_element: WaitForElementFn,
 
 	--- @within Element
-	wait_for_xpath: (self: Element, selector: string, timeout: number?) -> Element?,
+	wait_for_xpath: WaitForElementFn,
 
 	--- @within Element
 	wait_for_elements: (self: Element, selector: string, timeout: number?) -> { Element },
@@ -714,15 +777,15 @@ export type Element = {
 	wait_for_elements_by_xpath: (self: Element, selector: string, timeout: number?) -> { Element },
 
 	--- @within Element
-	call_js_function: (
+	call_js_fn: (
 		self: Element,
-		function_declaration: string,
+		fn_declaration: string,
 		args: { string }?,
 		await_promise: boolean?
 	) -> Runtime.RemoteObject,
 
 	--- @within Element
-	get_midpoint: (self: Element) -> Point,
+	get_midpoint: (self: Element) -> vector,
 
 	--- Get boxes for this element
 	--- @within Element
@@ -760,14 +823,12 @@ export type Element = {
 	) -> buffer,
 }
 
-export type Point = { x: number, y: number }
-
 --- @class ElementQuad
 export type ElementQuad = {
-	top_left: Point,
-	top_right: Point,
-	bottom_right: Point,
-	bottom_left: Point,
+	top_left: vector,
+	top_right: vector,
+	bottom_right: vector,
+	bottom_left: vector,
 
 	--- @within ElementQuad
 	height: (self: ElementQuad) -> number,

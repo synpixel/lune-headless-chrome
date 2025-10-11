@@ -1,7 +1,7 @@
 local chrome = require("../src")
 
-local browser = chrome.Browser.new({ headless = false })
-local tab = browser:new_tab()
+local browser = chrome.browser.create({ headless = false })
+local tab = browser:create_tab()
 
 tab:navigate_to("https://www.google.com"):wait_until_navigated()
 

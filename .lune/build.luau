@@ -6,6 +6,7 @@ local stdio = require("@lune/stdio")
 type TypeDefinition = {
 	name: string,
 	description: string,
+	deprecated: boolean?,
 	optional: boolean?,
 	type: string?,
 	enum: { string }?,
@@ -16,17 +17,20 @@ type TypeDefinition = {
 
 type CommandDefinition = {
 	name: string,
+	deprecated: boolean?,
 	parameters: { TypeDefinition }?,
 	returns: { TypeDefinition }?,
 }
 
 type EventDefinition = {
 	name: string,
+	deprecated: boolean?,
 	parameters: { TypeDefinition }?,
 }
 
 type DomainDefinition = {
 	domain: string,
+	deprecated: boolean?,
 	dependencies: { string }?,
 	types: { TypeDefinition & { id: string } }?,
 	commands: { CommandDefinition }?,
@@ -37,15 +41,14 @@ type ProtocolDefinition = {
 	domains: { DomainDefinition },
 }
 
-type TransformCasingFn = ((x: string) -> string) & (<K, V>(x: { [K]: V }) -> { [K]: V })
-
 local IN = "json"
 local OUT = "src/protocol"
 local FORMAT = true
 
-local snake_to_camel: TransformCasingFn
-local camel_to_snake: TransformCasingFn
-local pascal_to_kebab: TransformCasingFn
+local snake_to_camel
+local camel_to_snake
+local camel_to_pascal
+local pascal_to_kebab
 
 do
 	local function transform(x: any, processor: (string) -> string): any
@@ -67,34 +70,42 @@ do
 		end
 	end
 
-	function snake_to_camel(x: any): any
-		return transform(x, function(str)
-			return str:gsub("_(%l)", function(char)
-				return char:upper()
-			end)
+	function snake_to_camel<T>(value: T): T
+		return transform(value, function(str)
+			return string.gsub(str, "_(%l)", string.upper)
 		end)
 	end
 
-	function camel_to_snake(x: any): any
-		return transform(x, function(str)
-			return str:gsub("(%u+)(%u%l)", "%1_%2"):gsub("([a-z%d])(%u)", "%1_%2"):lower()
+	function camel_to_snake<T>(value: T): T
+		return transform(value, function(str)
+			local result = str
+			result = string.gsub(result, "(%u+)(%u%l)", "%1_%2")
+			result = string.gsub(result, "([a-z%d])(%u)", "%1_%2")
+			result = string.lower(result)
+			return result
 		end)
 	end
 
-	function pascal_to_kebab(x: any): any
-		return transform(x, function(str)
-			return str:gsub("(%u+)(%u%l)", "%1-%2")
-				:gsub("(%l)(%u)", "%1-%2")
-				:gsub("%-", "%%")
-				:gsub("([A-Z]+)", function(word)
-					return word:lower()
-				end)
-				:gsub("%%", "-")
+	function camel_to_pascal<T>(value: T): T
+		return transform(value, function(str)
+			return string.upper(string.sub(str, 1, 1)) .. string.sub(str, 2)
+		end)
+	end
+
+	function pascal_to_kebab<T>(value: T): T
+		return transform(value, function(str)
+			local result = str
+			result = string.gsub(result, "(%u+)(%u%l)", "%1-%2")
+			result = string.gsub(result, "(%l)(%u)", "%1-%2")
+			result = string.gsub(result, "%-", "%%")
+			result = string.gsub(result, "([A-Z]+)", string.lower)
+			result = string.gsub(result, "%%", "-")
+			return result
 		end)
 	end
 end
 
-local function stylua(input: string): string
+local function fmt(input: string): string
 	local child = process.create("stylua", { "-" }, { shell = true })
 	child.stdin:write(input)
 	child.stdin:close()
@@ -119,22 +130,21 @@ end
 local function translate_type(definition: TypeDefinition): string
 	local optional_suffix = if definition.optional then "?" else ""
 
-	if definition["$ref"] ~= nil then
+	if definition["$ref"] then
 		return definition["$ref"] .. optional_suffix
 	end
 
-	if definition.enum ~= nil then
-		local enum = {}
-
+	if definition.enum then
+		local translated = ""
 		for _, value in definition.enum do
-			table.insert(enum, `"{value}"`)
+			translated ..= `| "{value}"`
 		end
 
-		return table.concat(enum, "|") .. optional_suffix
+		return translated .. optional_suffix
 	end
 
 	if definition.type == "array" then
-		if definition.items == nil then
+		if not definition.items then
 			return "{}"
 		end
 
@@ -142,7 +152,7 @@ local function translate_type(definition: TypeDefinition): string
 	end
 
 	if definition.type == "object" then
-		if definition.properties == nil then
+		if not definition.properties then
 			return "{}"
 		end
 
@@ -161,20 +171,20 @@ local function translate_type(definition: TypeDefinition): string
 		return "number" .. optional_suffix
 	end
 
-	assert(definition.type ~= nil, `unsupported type: {stdio.format(definition)}`)
+	assert(definition.type, `Unsupported type: {stdio.format(definition)}`)
 	return definition.type .. optional_suffix
 end
 
 local function write_domain_definition(domain: DomainDefinition): string
 	local file = ""
 
-	if domain.dependencies ~= nil then
+	if domain.dependencies then
 		for _, dependency in domain.dependencies do
 			file ..= `local {dependency} = require("./{pascal_to_kebab(dependency)}")\n`
 		end
 	end
 
-	if domain.types ~= nil then
+	if domain.types then
 		for _, type in domain.types do
 			file ..= `export type {type.id} = {translate_type(type)}\n`
 		end
@@ -182,11 +192,11 @@ local function write_domain_definition(domain: DomainDefinition): string
 
 	file ..= "return table.freeze {"
 
-	if domain.commands ~= nil then
+	if domain.commands then
 		for _, command in domain.commands do
 			local request_type: string
 
-			if command.parameters == nil then
+			if not command.parameters then
 				request_type = "nil"
 			else
 				request_type = "{"
@@ -199,7 +209,7 @@ local function write_domain_definition(domain: DomainDefinition): string
 			end
 
 			local response_type: string
-			if command.returns == nil then
+			if not command.returns then
 				response_type = "nil"
 			else
 				response_type = "{"
@@ -211,16 +221,16 @@ local function write_domain_definition(domain: DomainDefinition): string
 				response_type ..= "}"
 			end
 
-			local pascal_name = command.name:sub(1, 1):upper() .. command.name:sub(2)
+			local pascal_name = camel_to_pascal(command.name)
 			file ..= `{pascal_name} = "{domain.domain}.{command.name}" :: string & \{ __Request: {request_type}, __Response: {response_type} \},`
 		end
 	end
 
-	if domain.events ~= nil then
+	if domain.events then
 		for _, event in domain.events do
 			local params_type: string
 
-			if event.parameters == nil then
+			if not event.parameters then
 				params_type = "nil"
 			else
 				params_type = "{"
@@ -232,14 +242,14 @@ local function write_domain_definition(domain: DomainDefinition): string
 				params_type ..= "}"
 			end
 
-			local pascal_name = event.name:sub(1, 1):upper() .. event.name:sub(2)
+			local pascal_name = camel_to_pascal(event.name)
 			file ..= `{pascal_name} = "{domain.domain}.{event.name}" :: string & \{ __Parameters: {params_type} \},`
 		end
 	end
 
 	file ..= "}"
 
-	return if FORMAT then stylua(file) else file
+	return if FORMAT then fmt(file) else file
 end
 
 local function write_method_file(...: ProtocolDefinition): string
@@ -248,9 +258,14 @@ local function write_method_file(...: ProtocolDefinition): string
 
 	for _, definition in definitions do
 		for _, domain in definition.domains do
-			if domain.commands == nil then
+			if domain.deprecated then
 				continue
 			end
+
+			if not domain.commands then
+				continue
+			end
+
 			file ..= `local {domain.domain} = require("./{pascal_to_kebab(domain.domain)}")\n`
 		end
 	end
@@ -259,12 +274,16 @@ local function write_method_file(...: ProtocolDefinition): string
 
 	for _, definition in definitions do
 		for _, domain in definition.domains do
-			if domain.commands == nil then
+			if domain.deprecated then
+				continue
+			end
+
+			if not domain.commands then
 				continue
 			end
 
 			for _, command in domain.commands do
-				local pascal_name = command.name:sub(1, 1):upper() .. command.name:sub(2)
+				local pascal_name = camel_to_pascal(command.name)
 				file ..= `{domain.domain}{pascal_name} = {domain.domain}.{pascal_name},`
 			end
 		end
@@ -272,7 +291,7 @@ local function write_method_file(...: ProtocolDefinition): string
 
 	file ..= "}"
 
-	return if FORMAT then stylua(file) else file
+	return if FORMAT then fmt(file) else file
 end
 
 local function write_event_file(...: ProtocolDefinition): string
@@ -281,9 +300,14 @@ local function write_event_file(...: ProtocolDefinition): string
 
 	for _, definition in definitions do
 		for _, domain in definition.domains do
-			if domain.events == nil then
+			if domain.deprecated then
 				continue
 			end
+
+			if not domain.events then
+				continue
+			end
+
 			file ..= `local {domain.domain} = require("./{pascal_to_kebab(domain.domain)}")\n`
 		end
 	end
@@ -292,12 +316,16 @@ local function write_event_file(...: ProtocolDefinition): string
 
 	for _, definition in definitions do
 		for _, domain in definition.domains do
-			if domain.events == nil then
+			if domain.deprecated then
+				continue
+			end
+
+			if not domain.events then
 				continue
 			end
 
 			for _, event in domain.events do
-				local pascal_name = event.name:sub(1, 1):upper() .. event.name:sub(2)
+				local pascal_name = camel_to_pascal(event.name)
 				file ..= `{domain.domain}{pascal_name} = {domain.domain}.{pascal_name},`
 			end
 		end
@@ -305,7 +333,7 @@ local function write_event_file(...: ProtocolDefinition): string
 
 	file ..= "}"
 
-	return if FORMAT then stylua(file) else file
+	return if FORMAT then fmt(file) else file
 end
 
 local browser_definition = read_json(`{IN}/browser_protocol.json`) :: ProtocolDefinition
@@ -317,29 +345,37 @@ end
 fs.writeDir(OUT)
 
 for _, domain in browser_definition.domains do
+	if domain.deprecated then
+		continue
+	end
+
 	local file = write_domain_definition(domain)
 	local path = `{OUT}/{pascal_to_kebab(domain.domain)}.luau`
 	fs.writeFile(path, file)
-	print(`{domain.domain} > {path}`)
+	print(`{domain.domain} -> {path}`)
 end
 
 for _, domain in js_definition.domains do
+	if domain.deprecated then
+		continue
+	end
+
 	local file = write_domain_definition(domain)
 	local path = `{OUT}/{pascal_to_kebab(domain.domain)}.luau`
 	fs.writeFile(path, file)
-	print(`{domain.domain} > {path}`)
+	print(`{domain.domain} -> {path}`)
 end
 
 do
 	local file = write_method_file(browser_definition, js_definition)
 	local path = `{OUT}/method.luau`
 	fs.writeFile(path, file)
-	print(`Method > {path}`)
+	print(`Method -> {path}`)
 end
 
 do
 	local file = write_event_file(browser_definition, js_definition)
 	local path = `{OUT}/event.luau`
 	fs.writeFile(path, file)
-	print(`Event > {path}`)
+	print(`Event -> {path}`)
 end

@@ -2,7 +2,7 @@
 # It is not intended for manual editing.
 format = 2
 name = "synpixel/chrome"
-version = "1.0.3"
+version = "2.0.0"
 target = "lune"
 
 [graph."synpixel/base64@3.0.1 luau"]

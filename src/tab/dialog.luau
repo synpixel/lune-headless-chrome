@@ -4,27 +4,27 @@ local Page = require("../protocol/page")
 export type Dialog = {
 	session_id: string,
 	transport: Transport.Transport,
-	accept: (self: Dialog, text: string?) -> (),
-	dismiss: (self: Dialog) -> (),
+	accept: (dialog: Dialog, text: string?) -> (),
+	dismiss: (dialog: Dialog) -> (),
 }
 
-local function handle(self: Dialog, accept: boolean, text: string?)
-	self.transport:call_method_on_target(
+local function handle(dialog: Dialog, accept: boolean, text: string?)
+	dialog.transport:call_method_on_target(
 		Page.HandleJavaScriptDialog,
 		{ accept = accept, prompt_text = text },
-		self.session_id
+		dialog.session_id
 	)
 end
 
-local function accept(self: Dialog, text: string?)
-	handle(self, true, text)
+local function accept(dialog: Dialog, text: string?)
+	handle(dialog, true, text)
 end
 
-local function dismiss(self: Dialog)
-	handle(self, false)
+local function dismiss(dialog: Dialog)
+	handle(dialog, false)
 end
 
-local function new(session_id: string, transport: Transport.Transport): Dialog
+local function create(session_id: string, transport: Transport.Transport): Dialog
 	return {
 		session_id = session_id,
 		transport = transport,
@@ -33,4 +33,4 @@ local function new(session_id: string, transport: Transport.Transport): Dialog
 	}
 end
 
-return { new = new }
+return { create = create }
