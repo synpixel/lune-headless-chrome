@@ -109,10 +109,6 @@ export type Context = {
 	create_tab: (self: Context) -> Tab,
 }
 
-type WaitForElementFn =
-	((self: Tab, selector: string) -> Element)
-	& ((self: Tab, selector: string, timeout: number) -> Element?)
-
 --- A handle to a single page. Exposes methods for simulating user actions (clicking,
 --- typing), and also for getting information about the DOM and other parts of the page.
 --- @class Tab
@@ -416,10 +412,12 @@ export type Tab = {
 	find_elements_by_xpath: (self: Tab, selector: string) -> { Element },
 
 	--- @within Tab
-	wait_for_element: WaitForElementFn,
+	wait_for_element: ((self: Tab, selector: string) -> Element)
+		& ((self: Tab, selector: string, timeout: number) -> Element?),
 
 	--- @within Tab
-	wait_for_xpath: WaitForElementFn,
+	wait_for_xpath: ((self: Tab, selector: string) -> Element)
+		& ((self: Tab, selector: string, timeout: number) -> Element?),
 
 	--- @within Tab
 	wait_for_elements: (self: Tab, selector: string, timeout: number?) -> { Element },
@@ -765,10 +763,12 @@ export type Element = {
 	find_elements_by_xpath: (self: Element, selector: string) -> { Element },
 
 	--- @within Element
-	wait_for_element: WaitForElementFn,
+	wait_for_element: ((self: Element, selector: string) -> Element)
+		& ((self: Element, selector: string, timeout: number) -> Element?),
 
 	--- @within Element
-	wait_for_xpath: WaitForElementFn,
+	wait_for_xpath: ((self: Element, selector: string) -> Element)
+		& ((self: Element, selector: string, timeout: number) -> Element?),
 
 	--- @within Element
 	wait_for_elements: (self: Element, selector: string, timeout: number?) -> { Element },
