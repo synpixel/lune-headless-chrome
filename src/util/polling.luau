@@ -6,8 +6,8 @@ export type Polling = {
 	pause_until: <T>(self: Polling, try: () -> T?) -> T?,
 }
 
-local TIMEOUT_DEFAULT = 10
-local SLEEP_DEFAULT = 1 / 10
+local DEFAULT_TIMEOUT = 10
+local DEFAULT_SLEEP = 1 / 10
 
 local function pause_until<T>(polling: Polling, try: () -> T?): T?
 	local start = os.clock()
@@ -35,15 +35,15 @@ local function create(timeout: number, sleep: number): Polling
 end
 
 local function with_timeout(timeout: number): Polling
-	return create(timeout, SLEEP_DEFAULT)
+	return create(timeout, DEFAULT_SLEEP)
 end
 
 local function with_sleep(sleep: number): Polling
-	return create(TIMEOUT_DEFAULT, sleep)
+	return create(DEFAULT_TIMEOUT, sleep)
 end
 
 local function forever(): Polling
-	return create(math.huge, SLEEP_DEFAULT)
+	return create(math.huge, DEFAULT_SLEEP)
 end
 
 return {
