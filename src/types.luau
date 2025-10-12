@@ -1,5 +1,5 @@
 local transport = require("./transport")
-local Dialog = require("./tab/dialog")
+local dialog = require("./tab/dialog")
 local keys = require("./tab/keys")
 local Target = require("./protocol/target")
 local Page = require("./protocol/page")
@@ -380,7 +380,7 @@ export type Tab = {
 
 	--- Get the handle of the dialog opened in this tab.
 	--- @within Tab
-	get_dialog: (self: Tab) -> Dialog.Dialog,
+	get_dialog: (self: Tab) -> dialog.Dialog,
 
 	--- @within Tab
 	get_document: (self: Tab) -> DOM.Node,
