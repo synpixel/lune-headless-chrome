@@ -25,18 +25,18 @@ tab:wait_for_element("input#searchInput"):click()
 -- Type in a query and press `Enter`
 tab:type_text("WebKit"):press_key("Enter"):wait_until_navigated()
 
--- We should end up on the WebKit-page once navigated
+-- We should end up on the WebKit page once navigated
 local element = tab:wait_for_element("#firstHeading")
 assert(string.sub(tab:get_url(), -6) == "WebKit")
 
 -- Take a screenshot of the entire browser window
 local jpeg = tab:capture_screenshot({ format = "jpeg", from_surface = true })
--- Save the screenshot to disc
+-- Save the screenshot to disk
 fs.writeFile("screenshot.jpeg", jpeg)
 
--- Take a screenshot of just the WebKit-Infobox
+-- Take a screenshot of just the WebKit infobox
 local png = tab:wait_for_element("#mw-content-text > div > table.infobox.vevent"):capture_screenshot({ format = "png" })
--- Save the screenshot to disc
+-- Save the screenshot to disk
 fs.writeFile("screenshot.png", png)
 
 -- Run JavaScript in the page
