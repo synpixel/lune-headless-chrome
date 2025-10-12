@@ -99,9 +99,7 @@ local function which(binary_name: string): string?
 		end
 
 		for _, file in fs.readDir(dir) do
-			local is_match = if process.os == "windows"
-				then string.match(file, `^{binary_name}%.exe$`) ~= nil
-				else file == binary_name
+			local is_match = if process.os == "windows" then file == `{binary_name}.exe` else file == binary_name
 			if is_match then
 				return `{dir}/{file}`
 			end
